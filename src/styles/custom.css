@@ -302,3 +302,9 @@ div.dt-container select.dt-input{
   border: none !important;
   outline: none !important;
 }
+
+.background-color{
+  background-color: #1A516B;
+  padding: 4px;
+  color: #fcf9f9;
+}
