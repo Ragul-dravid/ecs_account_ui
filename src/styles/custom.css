@@ -184,7 +184,7 @@
 .btn-button.disabled {
   color: #fff;
   background-color: #4066D5;
-  border-color: #006e8fdc;
+  border-color: #223f95df;
 }
 
 .btn-button-check:checked + .btn-button,

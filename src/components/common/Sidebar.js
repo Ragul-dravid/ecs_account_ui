@@ -2,22 +2,35 @@ import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import Logo from "../../assets/Logo.png";
 
-function Sidebar() {
+function Sidebar({ onLogout }) {
   const [leadMenuOpen, setLeadMenuOpen] = useState(false);
   const [studentMenuOpen, setStudentMenuOpen] = useState(false);
   const [referMenuOpen, setReferMenuOpen] = useState(false);
   const [activeSubmenu, setActiveSubmenu] = useState(null);
   const [activeReferSubmenu, setActiveReferSubmenu] = useState(null);
 
+  const handelLogOutClick = () => {
+    onLogout();
+  };
+
   const toggleReferMenu = () => {
     setReferMenuOpen(!referMenuOpen);
     setActiveReferSubmenu(null);
+    if (studentMenuOpen) {
+      setStudentMenuOpen(false);
+      setActiveSubmenu(null);
+    }
   };
 
   const toggleStudentMenu = () => {
     setStudentMenuOpen(!studentMenuOpen);
     setActiveSubmenu(null);
+    if (referMenuOpen) {
+      setReferMenuOpen(false);
+      setActiveReferSubmenu(null);
+    }
   };
+
 
 
   const handleSubmenuClick = (submenu) => {
@@ -84,7 +97,7 @@ function Sidebar() {
                 to="/users"
                 onClick={closeDropdown}
               >
-                <i className="bi bi-house"></i> Dashboard
+               <i class='bx bx-bar-chart'></i>Dashboard
               </NavLink>
             </li>
             <li className="nav-item">
@@ -93,16 +106,16 @@ function Sidebar() {
                 to="/items"
                 onClick={closeDropdown}
               >
-                <i class="bi bi-calendar3"></i>Items
+               <i class='bx bx-category' ></i>Items
               </NavLink>
             </li>
             <li className="nav-item">
               <NavLink
                 className="nav-link"
-                to="/banking"
+                to="/bank"
                 onClick={closeDropdown}
               >
-                <i class="bi bi-calendar3"></i>Banking
+                <i class='bx bxs-bank'></i>Banking
               </NavLink>
             </li>
             <li className="nav-item">
@@ -112,7 +125,7 @@ function Sidebar() {
                 }`}
                 onClick={toggleReferMenu}
               >
-                <i className="bi bi-bar-chart"></i> Sales
+                <i class='bx bx-cart'></i>Sales
                 {referMenuOpen && (
                   <i
                     className="bi bi-chevron-up"
@@ -202,7 +215,7 @@ function Sidebar() {
                 onClick={toggleStudentMenu}
               >
                 
-                <i className="bi bi-bar-chart"></i> Purchases
+                <i class='bx bx-basket'></i> Purchases
                 {studentMenuOpen && (
                   <i
                     className="bi bi-chevron-up"
@@ -263,10 +276,10 @@ function Sidebar() {
             <li className="nav-item">
               <NavLink
                 className="nav-link"
-                to="/chartofaccounts"
+                to="/chartofaccount"
                 onClick={closeDropdown}
               >
-                <i className="bi bi-house"></i> Chart of Accounts
+                <i class='bx bx-briefcase-alt-2'></i> Chart of Accounts
               </NavLink>
             </li>
             <li className="nav-item">
@@ -275,7 +288,7 @@ function Sidebar() {
                 to="/report"
                 onClick={closeDropdown}
               >
-                <i className="bi bi-house"></i> Reports
+                <i class='bx bx-spreadsheet'></i>Reports
               </NavLink>
             </li>
 
@@ -283,24 +296,18 @@ function Sidebar() {
           <hr className="navbar-divider my-5 opacity-20" />
           <div className="mt-auto"></div>
           <ul className="navbar-nav">
-            <li className="nav-item">
-              <NavLink
-                className="nav-link"
-                to="/account"
-                onClick={closeDropdown}
-              >
-                <i className="bi bi-person-square"></i> Account
-              </NavLink>
-            </li>
-            <li className="nav-item">
-              <NavLink
-                className="nav-link"
-                to="/logout"
-                onClick={closeDropdown}
-              >
-                <i className="bi bi-box-arrow-left"></i> Logout
-              </NavLink>
-            </li>
+          <div className="mt-auto logutBtn">
+            <button className="nav-link ps-4" to={"#"}>
+              <i className="bi bi-person-square"></i> Account
+            </button>
+            <button
+              to={"#"}
+              className="nav-link ps-4"
+              onClick={handelLogOutClick}
+            >
+              <i className="bi bi-box-arrow-left"></i> Logout
+            </button>
+          </div>
           </ul>
         </div>
       </div>

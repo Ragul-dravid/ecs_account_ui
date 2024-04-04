@@ -17,7 +17,7 @@ function Login({ onLogin }) {
   return (
     <div
       className="d-flex flex-column justify-content-center align-items-center vh-100"
-      style={{ minHeight: "100vh", backgroundColor: "#a5e5e5" }}
+      style={{ minHeight: "100vh", backgroundColor: "#4066D5" }}
     >
       <div className="d-flex justify-content-center  align-items-center my-3">
         <img
@@ -28,7 +28,7 @@ function Login({ onLogin }) {
           height="50"
         />
         <span className="text-white fs-2 fw-bolder mx-3" style={{textShadow:'1px 1px 2px black'}}> 
-          ATS
+         Accounts
         </span>
       </div>
       <div
