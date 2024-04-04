@@ -260,7 +260,7 @@ function Sidebar({ onLogout }) {
                   <NavLink
                    
                     className="nav-link"
-                    to="/paymentsMade"
+                    to="/paymentmade"
                     onClick={() => handleSubmenuClick("create")}
                   >
                     <li
