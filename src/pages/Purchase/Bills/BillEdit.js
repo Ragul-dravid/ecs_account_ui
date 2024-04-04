@@ -2,12 +2,13 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-
 function BillsEdit() {
-    const [rows, setRows] = useState([{ id: 1 }]); // Initialize rows with one row having an id
-    const AddRowContent = () => {
-      setRows((prevRows) => [...prevRows, { id: prevRows.length + 1 }]);
-    };
+  const validationSchema = Yup.object({});
+
+  const [rows, setRows] = useState([{ id: 1 }]); // Initialize rows with one row having an id
+  const AddRowContent = () => {
+    setRows((prevRows) => [...prevRows, { id: prevRows.length + 1 }]);
+  };
   // const validationSchema = Yup.object({
   //   firstName: Yup.string().required("*First Name is required"),
   //   lastName: Yup.string().required("*Last Name is required"),
@@ -31,19 +32,19 @@ function BillsEdit() {
       dueDate: "02-03-2024",
       orderNumber: "321435",
       subject: "Manikandan",
-      itemDetails:"Apple",
-      tax:"Commission",
-      quantity:"10.0",
-      rate:"10.0",
-      discount:"10",
-      amount:"100000",
-      subTotal:"100000",
-      adjustment:"100000",
-      total:"200000"
+      itemDetails: "Apple",
+      tax: "Commission",
+      quantity: "10.0",
+      rate: "10.0",
+      discount: "10",
+      amount: "100000",
+      subTotal: "100000",
+      adjustment: "100000",
+      total: "200000"
     },
-    // validationSchema: validationSchema,
+    validationSchema: validationSchema,
     onSubmit: async (values) => {
-      console.log("User Datas:", values);
+      console.log("Bill Datas:", values);
     },
   });
 
@@ -66,11 +67,11 @@ function BillsEdit() {
                   </button>
 
                 </Link>
-                <div className="col-12">
-                  <button type="submit" className="btn btn-button btn-sm">
-                    Save
-                  </button>
-                </div>
+
+                <button type="submit" className="btn btn-button btn-sm">
+                  Update
+                </button>
+
               </div>
             </div>
           </div>
@@ -103,7 +104,7 @@ function BillsEdit() {
                   <option value="Antony">Antony</option>
 
                 </select>
-              
+
               </div>
               <div className="col-md-6 col-12 mb-2">
                 <lable className="form-lable">
@@ -113,7 +114,7 @@ function BillsEdit() {
                   <input
                     type="text"
                     name="bill"
-                    className="form-control " 
+                    className="form-control "
                     {...formik.getFieldProps("bill")}
                   />
                 </div>
@@ -150,7 +151,7 @@ function BillsEdit() {
                   <input
                     type="date"
                     name="billDate"
-                    className="form-control"  
+                    className="form-control"
                     {...formik.getFieldProps("billDate")}
                   />
                 </div>
@@ -164,10 +165,10 @@ function BillsEdit() {
                   <input
                     type="date"
                     name="dueDate"
-                    className="form-control"  
+                    className="form-control"
                     {...formik.getFieldProps("dueDate")}
                   />
-                  
+
                 </div>
               </div>
               <div className="col-md-6 col-12 mb-2">
@@ -181,7 +182,7 @@ function BillsEdit() {
                     className="form-control "
                     {...formik.getFieldProps("orderNumber")}
                   />
-                 
+
                 </div>
               </div>
 
@@ -193,171 +194,159 @@ function BillsEdit() {
                   <input
                     type="text"
                     name="subject"
-                    className="form-control"  
+                    className="form-control"
                     {...formik.getFieldProps("subject")}
                   />
-                  
+
                 </div>
               </div>
             </div>
             <div className="row">
-              <div className="background-color">
-                Item Table
-              </div>
-              <table class="table  ">
-                <thead>
-                  <tr>
-                    <th scope="col">S.NO</th>
-                    <th scope="col">ITEM DETAILS</th>
-                    <th scope="col">QUANTITY</th>
-                    <th scope="col">RATE</th>
-                    <th scope="col">DISCOUNT</th>
-                    <th scope="col">TAX</th>
-                    <th scope="col">AMOUNT</th>
-                  </tr>
-                </thead>
-                <tbody class="table-group">
-                {rows.map((row, index) => (
-                    <tr key={index}>
-                    <th scope="row">1</th>
-                    <td>
-                    <select 
-                          name="itemDetails"
-                          {...formik.getFieldProps("itemDetails")}
-                          className="">
+              <div className="background-color">Item Table</div>
+              <div className="table-responsive">
+                <table class="table ">
+                  <thead>
+                    <tr>
+                      <th scope="col">S.NO</th>
+                      <th scope="col">ITEM DETAILS</th>
+                      <th scope="col">QUANTITY</th>
+                      <th scope="col">RATE</th>
+                      <th scope="col">DISCOUNT</th>
+                      <th scope="col">TAX</th>
+                      <th scope="col">AMOUNT</th>
+                    </tr>
+                  </thead>
+                  <tbody className="table-group">
+                  {rows.map((row, index) => (
+                      <tr key={index}>
+                        <th scope="row">{index + 1}</th>
+                        <td>
+                          <select
+                            name={`items[${index}].itemDetails${index}`}
+                            {...formik.getFieldProps(`items[${index}].itemDetails${index}`)}
+                            className="form-select"
+                          >
                             <option></option>
                             <option value={"Apple"}>Apple</option>
                             <option value={"Orange"}>Orange</option>
                           </select>
-                    </td>
-                    <td>
-                    <input 
-                          name="quantity"
-                          
-                          className=""
-                            {...formik.getFieldProps("quantity")}
-                            />
-                    </td>
-                    <td> <input 
-                          name="rate"
-                          
-                          className=""
-                            {...formik.getFieldProps("rate")}
-                            /></td>
-                    <td><input 
-                          name="discount"
-                          
-                          className=""
-                            {...formik.getFieldProps("discount")}
-                            /></td>
-                    <td><select 
-                          name="tax"
-                          {...formik.getFieldProps("tax")}
-                          className="">
+                        </td>
+                        <td>
+                          <input
+                            type="text"
+                            name={`items[${index}].quantity${index}`}
+                            className="form-control"
+                            {...formik.getFieldProps(`items[${index}].quantity${index}`)}
+                          />
+                        </td>
+                        <td>
+                          <input
+                            type="text"
+                            name={`items[${index}].rate${index}`}
+                            className="form-control"
+                            {...formik.getFieldProps(`items[${index}].rate${index}`)}
+                          />
+                        </td>
+                        <td>
+                          <input
+                            type="text"
+                            name={`items[${index}].discount${index}`}
+                            className="form-control"
+                            {...formik.getFieldProps(`items[${index}].discount${index}`)}
+                          /></td>
+                        <td>
+                          <select
+                            name={`items[${index}].tax${index}`}
+                            {...formik.getFieldProps(`items[${index}].tax${index}`)}
+                            className="form-select"
+                          >
                             <option></option>
                             <option value="Commission">Commission</option>
                             <option value="Brokerage">Brokerage</option>
-                          </select></td>
-                    <td> <input 
-                          name="amount"
-                          
-                          className=""
-                            {...formik.getFieldProps("amount")}
-                            /></td>
-                  </tr>
-                         ))}
-                </tbody>
-              </table>
+                          </select>
+                        </td>
+                        <td><input
+                            type="text"
+                            name={`items[${index}].amount${index}`}
+                            className="form-control"
+                            {...formik.getFieldProps(`items[${index}].amount${index}`  )}
+                          /></td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
             <button className="btn btn-button btn-sm my-4 mx-1" type="button" onClick={AddRowContent}>
               Add row
             </button>
             {rows.length > 1 && (
-               <button
-               className="btn btn-danger my-4 mx-1"
-               onClick={(e) => {
-                 e.preventDefault();
-                 setRows((prevRows) => prevRows.slice(0, -1));
-               }}
-             >
-               Delete
-             </button>
+              <button
+                className="btn btn-sm my-4 mx-1 delete border-danger bg-white text-danger"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setRows((prevRows) => prevRows.slice(0, -1));
+                }}
+              >
+                Delete
+              </button>
             )}
-            <div className="row">
-
-              <div className="col-md-6 col-12 mb-2">
-                <lable className="form-lable">
-                  Custom Notes
-                </lable>
+            <div className="row mt-5">
+              <div className="col-md-6 col-12 mb-2 pt-5">
+                <lable className="form-lable">Customer Notes</lable>
                 <div className="mb-3">
-                  <input
-                    type="text"
-                    name="bill"
-                    value="will be display on bill"
-                    className="form-control"  
-                  />
-                </div>
-                <lable className="form-lable">
-                  Terms & Conditions
-                </lable>
-                <div className="mb-3">
-                  <input
-                    type="text"
-                    name="bill"
-                    value="Enter the terms & conditions"
-                    className="form-control" 
-                      
-                  />
-                  
+                  <input type="text" {...formik.getFieldProps("customerNotes")}
+                    name="customerNotes" className="form-control" />
                 </div>
               </div>
-              <div className="card col-md-6 col-12 p-3">
-                <div className="d-flex justify-content-center align-items-center">
-                <lable className="form-lable">
-                  Sub Total
-                </lable>
-                <div className="ms-3">
-                <input 
-                           type="text"
-                           name="subTotal"
-                           className="form-control form-control-sm"
-                            {...formik.getFieldProps("subTotal")}
-                            />
-                  
+              <div className="card col-md-6 col-12 p-3 mb-4 card shadow border-2">
+                <div className=" my-4 ms-2 d-flex justify-content-between align-items-center">
+                  <lable className="form-lable">Sub Total</lable>
+                  <div className="ms-3">
+                    <input
+                      type="text"
+                      name="subTotal"
+                      {...formik.getFieldProps("subTotal")}
+                      className="form-control form-control-sm"
+                    />
+                  </div>
                 </div>
+
+                <div className=" ms-2 d-flex justify-content-between align-items-center">
+                  <lable className="form-lable">Adjustment</lable>
+                  <div className="ms-3">
+                    <input {...formik.getFieldProps("adjustment")}
+                      type="text"
+                      name="adjustment"
+                      className="form-control form-control-sm"
+                    />
+                  </div>
                 </div>
-               
-                <div className="d-flex justify-content-center align-items-center">
-                <lable className="form-lable">
-                 Adjustment
-                </lable>
-                <div className="ms-3">
-                <input 
-                           type="text"
-                           name="adjustment"
-                           className="form-control form-control-sm"
-                            {...formik.getFieldProps("adjustment")}
-                            />
-                </div>
-                </div>
-<hr className="border-dark"/>
-                <div className="d-flex justify-content-center align-items-center mt-2">
-                <lable className="form-lable">
-                 Total
-                </lable>
-                <div className="ms-3">
-                <input 
-                           type="text"
-                           name="total"
-                           className="form-control form-control-sm"
-                            {...formik.getFieldProps("total")}
-                            />
-                </div>
+                <hr className="border-dark" />
+                <div className=" ms-2 d-flex justify-content-between align-items-center mt-2">
+                  <lable className="form-lable">Total</lable>
+                  <div className="ms-3">
+                    <input {...formik.getFieldProps("total")}
+                      type="text"
+                      name="total"
+                      className="form-control form-control-sm"
+                    />
+                  </div>
                 </div>
               </div>
-
-
-
+              <hr />
+              <div className="col-12">
+                <lable className="form-lable">Terms & Conditions</lable>
+                <div className="mb-3">
+                  <textarea {...formik.getFieldProps("termsConditions")}
+                    placeholder="Enter the terms and conditions of your business in your transaction"
+                    type="text"
+                    name="termsConditions"
+                    className="form-control "
+                    style={{ width: "65%", height: "5rem" }}
+                  />
+                </div>
+              </div>
             </div>
           </div>
         </div>
