@@ -51,14 +51,14 @@ function RecordPayment() {
                                             <span>Back</span>
                                         </button>
                                     </Link>
-                                    {/* <button type="submit" className="btn btn-sm btn-primary">
-                                        <span>Save</span>
-                                    </button> */}
-                                    <Link to="/paymentReceived">
+                                    <button type="submit" className="btn btn-sm btn-primary">
+                                        <span>Record Payment</span>
+                                    </button>
+                                    {/* <Link to="/paymentReceived">
                                         <button type="submit" className="btn btn-sm btn-primary">
                                             <span>Record Payment</span>
                                         </button>
-                                    </Link>
+                                    </Link> */}
                                 </div>
                             </div>
                         </div>
