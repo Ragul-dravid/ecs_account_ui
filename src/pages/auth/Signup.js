@@ -6,7 +6,7 @@ function Signup() {
   return (
     <div
       className="d-flex flex-column justify-content-center align-items-center"
-      style={{ backgroundColor: "#a5e5e5", minHeight: "150vh" }}
+      style={{ backgroundColor: "#4066D5", minHeight: "150vh" }}
     >
       <div className="d-flex justify-content-center  align-items-center my-3">
         <img
@@ -20,7 +20,7 @@ function Signup() {
           className="text-white fs-2 fw-bolder mx-3"
           style={{ textShadow: "1px 1px 2px black" }}
         >
-          ATS
+          Accounts
         </span>
       </div>
       <div

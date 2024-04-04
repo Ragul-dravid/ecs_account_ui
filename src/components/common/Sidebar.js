@@ -2,22 +2,35 @@ import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import Logo from "../../assets/Logo.png";
 
-function Sidebar() {
+function Sidebar({ onLogout }) {
   const [leadMenuOpen, setLeadMenuOpen] = useState(false);
   const [studentMenuOpen, setStudentMenuOpen] = useState(false);
   const [referMenuOpen, setReferMenuOpen] = useState(false);
   const [activeSubmenu, setActiveSubmenu] = useState(null);
   const [activeReferSubmenu, setActiveReferSubmenu] = useState(null);
 
+  const handelLogOutClick = () => {
+    onLogout();
+  };
+
   const toggleReferMenu = () => {
     setReferMenuOpen(!referMenuOpen);
     setActiveReferSubmenu(null);
+    if (studentMenuOpen) {
+      setStudentMenuOpen(false);
+      setActiveSubmenu(null);
+    }
   };
 
   const toggleStudentMenu = () => {
     setStudentMenuOpen(!studentMenuOpen);
     setActiveSubmenu(null);
+    if (referMenuOpen) {
+      setReferMenuOpen(false);
+      setActiveReferSubmenu(null);
+    }
   };
+
 
 
   const handleSubmenuClick = (submenu) => {
@@ -283,24 +296,18 @@ function Sidebar() {
           <hr className="navbar-divider my-5 opacity-20" />
           <div className="mt-auto"></div>
           <ul className="navbar-nav">
-            <li className="nav-item">
-              <NavLink
-                className="nav-link"
-                to="/account"
-                onClick={closeDropdown}
-              >
-                <i className="bi bi-person-square"></i> Account
-              </NavLink>
-            </li>
-            <li className="nav-item">
-              <NavLink
-                className="nav-link"
-                to="/logout"
-                onClick={closeDropdown}
-              >
-                <i className="bi bi-box-arrow-left"></i> Logout
-              </NavLink>
-            </li>
+          <div className="mt-auto logutBtn">
+            <button className="nav-link ps-4" to={"#"}>
+              <i className="bi bi-person-square"></i> Account
+            </button>
+            <button
+              to={"#"}
+              className="nav-link ps-4"
+              onClick={handelLogOutClick}
+            >
+              <i className="bi bi-box-arrow-left"></i> Logout
+            </button>
+          </div>
           </ul>
         </div>
       </div>
