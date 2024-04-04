@@ -47,7 +47,6 @@ import BillView from "../pages/Purchase/Bills/BillView";
 import RecordPaymentMade from "../pages/Purchase/Paymentmade/RecordPaymentMade";
 import PaymentMadeView from "../pages/Purchase/Paymentmade/PaymentMadeView";
 
-
 import Users from "../pages/Users/Users";
 import UsersAdd from "../pages/Users/UsersAdd";
 import UsersEdit from "../pages/Users/UsersEdit";
@@ -61,7 +60,7 @@ function Admin({ handleLogout }) {
   return (
     <BrowserRouter>
       <div className="d-flex flex-column flex-lg-row h-lg-full bg-surface-secondary">
-        <Sidebar onLogout={handleLogout}/>
+        <Sidebar onLogout={handleLogout} />
         <div className="h-screen flex-grow-1 overflow-y-lg-auto">
           <main className="py-6 bg-surface-secondary">
             <Routes>
@@ -69,19 +68,18 @@ function Admin({ handleLogout }) {
               <Route path="/dashboard" element={<Dashboard />} />
 
               {/* {/ Bank /} */}
-              <Route path="/bank" element={<Bank/>} />
+              <Route path="/bank" element={<Bank />} />
               <Route path="/bank/add" element={<BankAdd />} />
               <Route path="/bank/edit" element={<BankEdit />} />
-              <Route path="/bank/view" element={<BankView/>} />
+              <Route path="/bank/view" element={<BankView />} />
 
-              <Route path="/bank/view/expense" element={<ExpenseAdd/>} />
-              <Route path="/bank/view/income" element={<IncomeAdd/>} />
-              <Route path="/bank/view/expense/edit" element={<ExpenseEdit/>} />
-              <Route path="/income/edit" element={<IncomeEdit/>} />
-              <Route path="/bank/view/expense/view" element={<ExpenseView/>} />
-              <Route path="/income/view" element={<IncomeView/>} />
+              <Route path="/bank/view/expense" element={<ExpenseAdd />} />
+              <Route path="/bank/view/income" element={<IncomeAdd />} />
+              <Route path="/bank/view/expense/edit" element={<ExpenseEdit />} />
+              <Route path="/income/edit" element={<IncomeEdit />} />
+              <Route path="/bank/view/expense/view" element={<ExpenseView />} />
+              <Route path="/income/view" element={<IncomeView />} />
 
-             
               {/* {/ Sales /} */}
               {/* {/ Customer /} */}
               <Route path="/customer" element={<Customers />} />
@@ -95,50 +93,58 @@ function Admin({ handleLogout }) {
               <Route path="/estimates/view" element={<EstimateView />} />
 
               {/* {/ Items /} */}
-                <Route path="/items" element={<Items />} />
-                <Route path="/items/additems" element={<AddItems />} />
-                <Route path="/items/edititems" element={<EditItems />} />
-                <Route path="/items/viewitems" element={<ViewItems />} />
+              <Route path="/items" element={<Items />} />
+              <Route path="/items/additems" element={<AddItems />} />
+              <Route path="/items/edititems" element={<EditItems />} />
+              <Route path="/items/viewitems" element={<ViewItems />} />
 
-                {/* {/ ChatOfAccount /} */}
-                <Route path="/chartofaccount" element={<ChartOfAccount />} />
-                <Route path="/chartofaccount/chartofaccountadd" element={<ChartofAccountAdd/>} />
-                <Route path="/chartofaccount/chartofaccountedit" element={<ChartOfAccountEdit />} />
-                <Route path="/chartofaccount/chartofaccountview" element={<ChartOfAccountView />} />
+              {/* {/ ChatOfAccount /} */}
+              <Route path="/chartofaccount" element={<ChartOfAccount />} />
+              <Route
+                path="/chartofaccount/chartofaccountadd"
+                element={<ChartofAccountAdd />}
+              />
+              <Route
+                path="/chartofaccount/chartofaccountedit"
+                element={<ChartOfAccountEdit />}
+              />
+              <Route
+                path="/chartofaccount/chartofaccountview"
+                element={<ChartOfAccountView />}
+              />
 
-{/* Bills */}
-                <Route path="/bills" element={<Bills />} />
+              {/* Bills */}
+              <Route path="/bills" element={<Bills />} />
               <Route path="/bills/add" element={<BillsAdd />} />
-              <Route path="/bills/edit" element={<BillsEdit/>} />
-              <Route path="/bills/view" element={<BillView/>} />
+              <Route path="/bills/edit" element={<BillsEdit />} />
+              <Route path="/bills/view" element={<BillView />} />
               {/* <Route path="/bills/edit" element={<BillsEdit />} />
-              <Route path="/bills/view" element={<BillsView />} />  */}
+                <Route path="/bills/view" element={<BillsView />} />  */}
 
-               {/* {/ vendor /} */}
-               <Route path="/vendor" element={<Vendor />} />
-               <Route path="/vendor/add" element={<VendorAdd />} />
-               <Route path="/vendor/edit" element={<VendorEdit />} />
-               <Route path="/vendor/view" element={<VendorView />} />
+              {/* {/ vendor /} */}
+              <Route path="/vendor" element={<Vendor />} />
+              <Route path="/vendor/add" element={<VendorAdd />} />
+              <Route path="/vendor/edit" element={<VendorEdit />} />
+              <Route path="/vendor/view" element={<VendorView />} />
 
-               {/* {/ payment /} */}
-               <Route path="/paymentmade" element={<Paymentmade />} />
-               <Route path="/recordpaymentmade" element={<RecordPaymentMade/>} />
-               <Route path="/paymentmadeview" element={<PaymentMadeView/>} />
-
-
-           
+              {/* {/ payment /} */}
+              <Route path="/paymentmade" element={<Paymentmade />} />
+              <Route
+                path="/recordpaymentmade"
+                element={<RecordPaymentMade />}
+              />
+              <Route path="/paymentmadeview" element={<PaymentMadeView />} />
 
               {/* {/ Department /} */}
-              <Route path="/department" element={<Department/>}/>
-              <Route path="/department/add" element={<DepartmentAdd/>}/>
-              <Route path="/department/edit" element={<DepartmentEdit/>}/>
+              <Route path="/department" element={<Department />} />
+              <Route path="/department/add" element={<DepartmentAdd />} />
+              <Route path="/department/edit" element={<DepartmentEdit />} />
 
               {/* Users */}
               <Route path="/users" element={<Users />} />
               <Route path="/users/add" element={<UsersAdd />} />
               <Route path="/users/edit" element={<UsersEdit />} />
               <Route path="/users/view" element={<UsersView />} />
-
             </Routes>
             <Footer />
           </main>
