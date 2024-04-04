@@ -94,7 +94,7 @@ function Sidebar({ onLogout }) {
             <li className="nav-item">
               <NavLink
                 className="nav-link"
-                to="/users"
+                to="/dashboard"
                 onClick={closeDropdown}
               >
                <i class='bx bx-bar-chart'></i>Dashboard
@@ -192,7 +192,7 @@ function Sidebar({ onLogout }) {
                   <NavLink
                    
                     className="nav-link"
-                    to="/payementRecived"
+                    to="/paymentReceived"
                     onClick={() => handleReferSubmenuClick("create")}
                   >
                     <li
@@ -202,7 +202,7 @@ function Sidebar({ onLogout }) {
                           : ""
                       }`}
                     >
-                      Payement Recived
+                      Payement Received
                     </li>
                   </NavLink>
                 </ul>
