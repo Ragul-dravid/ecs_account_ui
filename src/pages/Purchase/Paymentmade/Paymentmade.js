@@ -123,16 +123,12 @@ const Paymentmade = () => {
                   <td className="text-center">{data.mode}</td>
                   <td>
                     <div>
-                      <Link to="/paymentmadeview">
+                      <Link to="/paymentmade/view">
                         <button className="btn btn-sm ps-0 shadow-none border-none">
                           <FaEye />
                         </button>
                       </Link>
-                      {/* <Link to="/paymentmade/edit">
-                        <button className="btn btn-sm shadow-none border-none">
-                          <FaEdit />
-                        </button>
-                      </Link> */}
+                     
                       <DeleteModel />
                     </div>
                   </td>

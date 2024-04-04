@@ -28,7 +28,7 @@ const BillView = () => {
                 <button type="submit" className="btn btn-button rounded-pill p-1">
                   <MdOutlineDownloadForOffline size={25}/>
                 </button>
-                <Link to="/recordpaymentmade">
+                <Link to="/bills/view/recordpaymentmade">
                 <button type="submit" className="btn btn-button rounded">
                   Record Payment
                 </button>

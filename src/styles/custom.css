@@ -308,3 +308,8 @@ div.dt-container select.dt-input{
   padding: 4px;
   color: #fcf9f9;
 }
+
+.delete:hover{
+background-color: red !important;
+color: white !important;
+}

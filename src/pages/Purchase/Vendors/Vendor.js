@@ -3,7 +3,7 @@ import "datatables.net-dt";
 import "datatables.net-responsive-dt";
 import $ from "jquery";
 import { Link } from "react-router-dom";
-import { FaEye, FaEdit } from "react-icons/fa";
+import { FaEye, FaEdit, FaPlus } from "react-icons/fa";
 import DeleteModel from "../../../components/common/DeleteModel";
 // import DeleteModel from "../../components/common/DeleteModel";
 
@@ -71,7 +71,7 @@ const Vendor = () => {
               <div className="hstack gap-2 justify-content-end">
                 <Link to="/vendor/add">
                   <button type="submit" className="btn btn-sm btn-button">
-                    <span>Add New Vendor</span>
+                  <span cla>Add <FaPlus  className="pb-1"/></span>
                   </button>
                 </Link>
               </div>
