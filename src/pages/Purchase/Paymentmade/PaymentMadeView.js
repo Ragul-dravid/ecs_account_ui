@@ -1,9 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import Logo from "../../../assets/Logo.png"
 import { MdOutlineDownloadForOffline } from "react-icons/md";
 import { FaTelegramPlane } from "react-icons/fa";
-import { colors } from "@mui/material";
+
 
 const PaymentMadeView = () => {
   return (
