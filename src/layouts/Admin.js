@@ -69,7 +69,7 @@ function Admin({ handleLogout }) {
       <div className="d-flex flex-column flex-lg-row h-lg-full bg-surface-secondary">
         <Sidebar onLogout={handleLogout} />
         <div className="h-screen flex-grow-1 overflow-y-lg-auto">
-          <main className="py-6 bg-surface-secondary">
+          <main className="py-1 bg-surface-secondary">
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/dashboard" element={<Dashboard />} />

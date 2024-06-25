@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 function ViewItems() {
   return (
-    <div className="container-fluid minHeight">
+    <div className="container-fluid px-2 minHeight">
       <div className="card shadow border-0 mb-2 top-header">
         <div className="container-fluid py-4">
           <div className="row align-items-center">
@@ -68,7 +68,7 @@ function ViewItems() {
               </div>
             </div>
             <div className="col-md-6 col-12"></div>
-            <h3 className="p-5">Sales Infermation</h3>
+            <h3 className="py-5">Sales Information</h3>
             <div className="col-md-6 col-12">
               <div className="row mb-3">
                 <div className="col-6 d-flex justify-content-start align-items-center">
@@ -106,7 +106,7 @@ function ViewItems() {
               </div>
             </div>
             <div className="col-md-6 col-12"></div>
-            <h3 className="p-5">Perchace Infermation</h3>
+            <h3 className="py-5">Purchase Information</h3>
             <div className="col-md-6 col-12">
               <div className="row mb-3">
                 <div className="col-6 d-flex justify-content-start align-items-center">

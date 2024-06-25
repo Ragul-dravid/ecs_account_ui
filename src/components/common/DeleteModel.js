@@ -10,7 +10,7 @@ const DeleteModel = () => {
   return (
     <>
        <button
-        className="btn btn-sm shadow-none border-none"
+        className="btn btn-light btn-sm shadow-none border-none"
         onClick={handleShow}
       >
         <MdDelete />

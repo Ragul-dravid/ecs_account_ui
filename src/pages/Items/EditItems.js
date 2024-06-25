@@ -35,7 +35,7 @@ function EditItems() {
   });
 
   return (
-    <div className="container-fluid minHeight m-0">
+    <div className="container-fluid px-2 minHeight m-0">
       <div className="card shadow border-0 mb-2 top-header">
         <div className="container-fluid py-4">
           <div className="row align-items-center">
@@ -51,7 +51,11 @@ function EditItems() {
                     <span>Back</span>
                   </button>
                 </Link>
-                <button type="submit" className="btn btn-button" onClick={formik.handleSubmit}>
+                <button
+                  type="submit"
+                  className="btn btn-sm btn-button"
+                  onClick={formik.handleSubmit}
+                >
                   Save
                 </button>
               </div>
@@ -73,7 +77,7 @@ function EditItems() {
                     name="type"
                     id="inlineRadio1"
                     value="Good"
-                    checked ={formik.values.type === "Good"}
+                    checked={formik.values.type === "Good"}
                     onChange={formik.handleChange}
                   />
                   <label className="form-check-label" htmlFor="inlineRadio1">
@@ -87,7 +91,7 @@ function EditItems() {
                     name="type"
                     id="inlineRadio2"
                     value="Service"
-                    checked ={formik.values.type === "Service"}
+                    checked={formik.values.type === "Service"}
                     onChange={formik.handleChange}
                   />
                   <label className="form-check-label" htmlFor="inlineRadio2">
@@ -101,7 +105,9 @@ function EditItems() {
                   <select
                     name="unit"
                     className={`form-select  ${
-                      formik.touched.unit && formik.errors.unit ? "is-invalid" : ""
+                      formik.touched.unit && formik.errors.unit
+                        ? "is-invalid"
+                        : ""
                     }`}
                     {...formik.getFieldProps("unit")}
                   >
@@ -166,95 +172,113 @@ function EditItems() {
                 </div>
               </div>
               <div className="col-md-6 col-12 mb-2">
-              
                 <div class="input-group mb-3 d-flex">
-                <label className="form-lable pt-2 pe-2">Selling Price</label>
+                  <label className="form-lable pt-2 pe-2">Selling Price</label>
                   <div class="input-group-prepend">
                     <span class="input-group-text" id="basic-addon1">
                       INR
                     </span>
                   </div>
-                  <input type="text" class="form-control" name="sellingprice"
-                   className={`form-control ${
-                    formik.touched.sellingprice && formik.errors.sellingprice
-                      ? "is-invalid"
-                      : ""
-                  }`}
-                  {...formik.getFieldProps("sellingprice")}
-                />
-                {formik.touched.sellingprice && formik.errors.sellingprice && (
-                  <div className="invalid-feedback">{formik.errors.sellingprice}</div>
-                )}
-             
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="sellingprice"
+                    className={`form-control ${
+                      formik.touched.sellingprice && formik.errors.sellingprice
+                        ? "is-invalid"
+                        : ""
+                    }`}
+                    {...formik.getFieldProps("sellingprice")}
+                  />
+                  {formik.touched.sellingprice &&
+                    formik.errors.sellingprice && (
+                      <div className="invalid-feedback">
+                        {formik.errors.sellingprice}
+                      </div>
+                    )}
                 </div>
               </div>
               <div className="col-md-6 col-12 mb-2">
-               
                 <div class="input-group mb-3 d-flex">
-                <label className="form-lable pt-2 pe-2">Selling Price</label>
+                  <label className="form-lable pt-2 pe-2">Selling Price</label>
                   <div class="input-group-prepend">
                     <span class="input-group-text" id="basic-addon1">
                       INR
                     </span>
                   </div>
-                  <input type="text" class="form-control" name="sellingprice1"
-                   className={`form-control ${
-                    formik.touched.sellingprice1 && formik.errors.sellingprice1
-                      ? "is-invalid"
-                      : ""
-                  }`}
-                  {...formik.getFieldProps("sellingprice1")}
-                />
-                {formik.touched.sellingprice1 && formik.errors.sellingprice1 && (
-                  <div className="invalid-feedback">{formik.errors.sellingprice1}</div>
-                )}
-              
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="sellingprice1"
+                    className={`form-control ${
+                      formik.touched.sellingprice1 &&
+                      formik.errors.sellingprice1
+                        ? "is-invalid"
+                        : ""
+                    }`}
+                    {...formik.getFieldProps("sellingprice1")}
+                  />
+                  {formik.touched.sellingprice1 &&
+                    formik.errors.sellingprice1 && (
+                      <div className="invalid-feedback">
+                        {formik.errors.sellingprice1}
+                      </div>
+                    )}
                 </div>
               </div>
               <div className="col-md-6 col-12 mb-2">
-               
-                <div className="mb-3 d-flex" >
-                <lable className="form-lable text-center pt-2 pe-2">Account</lable>
-                  <select type="text" name="account" 
-                   className={`form-select  ${
-                    formik.touched.account && formik.errors.account
-                      ? "is-invalid"
-                      : ""
-                  }`}
-                  {...formik.getFieldProps("account")}
+                <div className="mb-3 d-flex">
+                  <lable className="form-lable text-center pt-2 pe-2">
+                    Account
+                  </lable>
+                  <select
+                    type="text"
+                    name="account"
+                    className={`form-select  ${
+                      formik.touched.account && formik.errors.account
+                        ? "is-invalid"
+                        : ""
+                    }`}
+                    {...formik.getFieldProps("account")}
                   >
                     <option></option>
                     <option value="sales">Sales</option>
                     <option value="gentral income">Gentral Income</option>
                   </select>
                   {formik.touched.account && formik.errors.account && (
-                    <div className="invalid-feedback">{formik.errors.account}</div>
+                    <div className="invalid-feedback">
+                      {formik.errors.account}
+                    </div>
                   )}
                 </div>
               </div>
               <div className="col-md-6 col-12 mb-2">
-               
                 <div className="mb-3 d-flex">
-                <lable className="form-lable pt-2 pe-2">Account</lable>
-                  <select type="text" name="account1" className={`form-select  ${
-                    formik.touched.account1 && formik.errors.account1
-                      ? "is-invalid"
-                      : ""
-                  }`}
-                  {...formik.getFieldProps("account1")}>
+                  <lable className="form-lable pt-2 pe-2">Account</lable>
+                  <select
+                    type="text"
+                    name="account1"
+                    className={`form-select  ${
+                      formik.touched.account1 && formik.errors.account1
+                        ? "is-invalid"
+                        : ""
+                    }`}
+                    {...formik.getFieldProps("account1")}
+                  >
                     <option></option>
                     <option value="goods sold">Cost Of Goods Sold</option>
                     <option value="travelexpence">Travel Expence</option>
                   </select>
                   {formik.touched.account1 && formik.errors.account1 && (
-                    <div className="invalid-feedback">{formik.errors.account1}</div>
+                    <div className="invalid-feedback">
+                      {formik.errors.account1}
+                    </div>
                   )}
                 </div>
               </div>
               <div className="col-md-6 col-12 mb-2">
-               
                 <div className="mb-3 d-flex">
-                <lable className="form-lable pt-2 pe-2">Description</lable>
+                  <lable className="form-lable pt-2 pe-2">Description</lable>
                   <textarea
                     type="text"
                     name="description"
@@ -266,14 +290,15 @@ function EditItems() {
                     {...formik.getFieldProps("description")}
                   />
                   {formik.touched.description && formik.errors.description && (
-                    <div className="invalid-feedback">{formik.errors.description}</div>
+                    <div className="invalid-feedback">
+                      {formik.errors.description}
+                    </div>
                   )}
                 </div>
               </div>
               <div className="col-md-6 col-12 mb-2">
-                
                 <div className="mb-3 d-flex">
-                <lable className="form-lable pt-2 pe-2">Description</lable>
+                  <lable className="form-lable pt-2 pe-2">Description</lable>
                   <textarea
                     type="text"
                     name="description1"
@@ -284,12 +309,14 @@ function EditItems() {
                     }`}
                     {...formik.getFieldProps("description1")}
                   />
-                  {formik.touched.description1 && formik.errors.description1 && (
-                    <div className="invalid-feedback">{formik.errors.description1}</div>
-                  )}
+                  {formik.touched.description1 &&
+                    formik.errors.description1 && (
+                      <div className="invalid-feedback">
+                        {formik.errors.description1}
+                      </div>
+                    )}
                 </div>
               </div>
-
             </div>
           </div>
         </div>
