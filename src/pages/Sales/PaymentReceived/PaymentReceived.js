@@ -5,61 +5,41 @@ import $ from "jquery";
 import { Link } from "react-router-dom";
 import { FaEye } from "react-icons/fa";
 import DeleteModel from "../../../components/common/DeleteModel";
-// import DeleteModel from "../../components/common/DeleteModel";
 
-const Paymentmade = () => {
+
+const PaymentReceived = () => {
   const tableRef = useRef(null);
 
   const datas = [
     {
       id: 1,
-      date: "01.02.2024",
+      date: "01-03-2004",
       paymentNumber: "B1-018",
       referenceNumber: "500",
-      vendorNumber: "Antony",
-      billNumber: "$5340",
+      customerNumber: "Harish",
+      invoiceNumber: "$5350",
       amount: "$0.00",
-      mode: "Cash",
+      mode: "Cash"
     },
     {
       id: 2,
-      date: "01.02.2024",
-      paymentNumber: "B1-018",
-      referenceNumber: "500",
-      vendorNumber: "Antony",
-      billNumber: "$5340",
+      date: "19-02-2024",
+      paymentNumber: "B1-006",
+      referenceNumber: "860",
+      customerNumber: "Mani",
+      invoiceNumber: "$5050",
       amount: "$0.00",
-      mode: "Cash",
+      mode: "Card"
     },
     {
       id: 3,
-      date: "01.02.2024",
-      paymentNumber: "B1-018",
-      referenceNumber: "500",
-      vendorNumber: "Antony",
-      billNumber: "$5340",
+      date: "15-02-2024",
+      paymentNumber: "B1-002",
+      referenceNumber: "100",
+      customerNumber: "Sangeetha",
+      invoiceNumber: "$5009",
       amount: "$0.00",
-      mode: "Cash",
-    },
-    {
-      id: 4,
-      date: "01.02.2024",
-      paymentNumber: "B1-018",
-      referenceNumber: "500",
-      vendorNumber: "Antony",
-      billNumber: "$5340",
-      amount: "$0.00",
-      mode: "Cash",
-    },
-    {
-      id: 5,
-      date: "01.02.2024",
-      paymentNumber: "B1-018",
-      referenceNumber: "500",
-      vendorNumber: "Antony",
-      billNumber: "$5340",
-      amount: "$0.00",
-      mode: "Cash",
+      mode: "Bank"
     },
   ];
 
@@ -78,12 +58,7 @@ const Paymentmade = () => {
           <div className="row align-items-center justify-content-between ">
             <div className="col">
               <div className="d-flex align-items-center gap-4">
-                <h1 className="h4 ls-tight headingColor ">Payment Made</h1>
-              </div>
-            </div>
-            <div className="col-auto">
-              <div className="hstack gap-2 justify-content-end">
-               
+                <h1 className="h4 ls-tight headingColor ">Payment Received</h1>
               </div>
             </div>
           </div>
@@ -101,8 +76,8 @@ const Paymentmade = () => {
                 <th scope="col">DATE</th>
                 <th scope="col">PAYMENT NUMBER</th>
                 <th scope="col">REFERENCE NUMBER</th>
-                <th scope="col">VENDOR NUMBER</th>
-                <th scope="col">BILL NUMBER</th>
+                <th scope="col">CUSTOMER NUMBER</th>
+                <th scope="col">INVOICE NUMBER</th>
                 <th scope="col">AMOUNT</th>
                 <th scope="col">MODE</th>
                 <th scope="col" className="text-center">
@@ -114,22 +89,21 @@ const Paymentmade = () => {
               {datas.map((data, index) => (
                 <tr key={index}>
                   <td className="text-center">{index + 1}</td>
-                  <td className="text-center">{data.date}</td>
-                  <td className="text-center">{data.paymentNumber}</td>
-                  <td className="text-center">{data.referenceNumber}</td>
-                  <td className="text-center">{data.vendorNumber}</td>
-                  <td className="text-center">{data.billNumber}</td>
-                  <td className="text-center">{data.amount}</td>
-                  <td className="text-center">{data.mode}</td>
+                  <td>{data.date}</td>
+                  <td>{data.paymentNumber}</td>
+                  <td>{data.referenceNumber}</td>
+                  <td>{data.customerNumber}</td>
+                  <td>{data.invoiceNumber}</td>
+                  <td>{data.amount}</td>
+                  <td>{data.mode}</td>
                   <td>
                     <div>
-                      <Link to="/paymentmade/view">
+                      <Link to="/paymentReceived/view">
                         <button className="btn btn-sm ps-0 shadow-none border-none">
                           <FaEye />
                         </button>
                       </Link>
-                     
-                      <DeleteModel />
+                      <DeleteModel/>
                     </div>
                   </td>
                 </tr>
@@ -144,4 +118,4 @@ const Paymentmade = () => {
   );
 };
 
-export default Paymentmade;
+export default PaymentReceived;

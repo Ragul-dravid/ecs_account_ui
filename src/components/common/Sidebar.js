@@ -31,8 +31,6 @@ function Sidebar({ onLogout }) {
     }
   };
 
-
-
   const handleSubmenuClick = (submenu) => {
     setActiveSubmenu(submenu);
     setLeadMenuOpen(true);
@@ -55,7 +53,7 @@ function Sidebar({ onLogout }) {
   return (
     <nav
       className="navbar show navbar-vertical h-lg-screen navbar-expand-lg p-0 navbar-light border-bottom border-bottom-lg-0 border-end-lg"
-      style={{ backgroundColor: "#4066D5" }}
+      style={{ backgroundColor: "#fff" }}
       id="navbarVertical"
     >
       <div className="container-fluid">
@@ -71,7 +69,7 @@ function Sidebar({ onLogout }) {
           <span className="navbar-toggler-icon text-white"></span>
         </button>
         <NavLink
-          style={{ background: "#4066D5" }}
+          style={{ background: "#fff" }}
           className={`navbar-brand logo_ats py-lg-2 px-lg-6 m-0 d-flex align-items-center justify-content-center ${
             leadMenuOpen || activeSubmenu ? "active" : ""
           }`}
@@ -83,8 +81,8 @@ function Sidebar({ onLogout }) {
             style={{ width: "60px", height: "60px" }}
           />
           <span
-            className="text-white fs-1 fw-bolder mx-3"
-            style={{ textShadow: "1px 1px 2px black" }}
+            className="text-dark fs-3 fw-bolder mx-3"
+            // style={{ textShadow: "1px 1px 2px black" }}
           >
             Accounts
           </span>
@@ -94,28 +92,20 @@ function Sidebar({ onLogout }) {
             <li className="nav-item">
               <NavLink
                 className="nav-link"
-                to="/users"
+                to="/dashboard"
                 onClick={closeDropdown}
               >
-               <i class='bx bx-bar-chart'></i>Dashboard
+                <i class="bx bx-bar-chart"></i>Dashboard
               </NavLink>
             </li>
             <li className="nav-item">
-              <NavLink
-                className="nav-link"
-                to="/items"
-                onClick={closeDropdown}
-              >
-               <i class='bx bx-category' ></i>Items
+              <NavLink className="nav-link" to="/items" onClick={closeDropdown}>
+                <i class="bx bx-category"></i>Items
               </NavLink>
             </li>
             <li className="nav-item">
-              <NavLink
-                className="nav-link"
-                to="/bank"
-                onClick={closeDropdown}
-              >
-                <i class='bx bxs-bank'></i>Banking
+              <NavLink className="nav-link" to="/bank" onClick={closeDropdown}>
+                <i class="bx bxs-bank"></i>Banking
               </NavLink>
             </li>
             <li className="nav-item">
@@ -125,7 +115,7 @@ function Sidebar({ onLogout }) {
                 }`}
                 onClick={toggleReferMenu}
               >
-                <i class='bx bx-cart'></i>Sales
+                <i class="bx bx-cart"></i>Sales
                 {referMenuOpen && (
                   <i
                     className="bi bi-chevron-up"
@@ -147,7 +137,6 @@ function Sidebar({ onLogout }) {
                     onClick={() => handleReferSubmenuClick("create")}
                   >
                     <li
-                     
                       className={`nav-item ${
                         activeReferSubmenu === "create"
                           ? "active-referSubmenu"
@@ -158,7 +147,6 @@ function Sidebar({ onLogout }) {
                     </li>
                   </NavLink>
                   <NavLink
-                   
                     className="nav-link"
                     to="/estimates"
                     onClick={() => handleReferSubmenuClick("create")}
@@ -174,7 +162,6 @@ function Sidebar({ onLogout }) {
                     </li>
                   </NavLink>
                   <NavLink
-                   
                     className="nav-link"
                     to="/invoice"
                     onClick={() => handleReferSubmenuClick("create")}
@@ -190,9 +177,8 @@ function Sidebar({ onLogout }) {
                     </li>
                   </NavLink>
                   <NavLink
-                   
                     className="nav-link"
-                    to="/payementRecived"
+                    to="/paymentReceived"
                     onClick={() => handleReferSubmenuClick("create")}
                   >
                     <li
@@ -202,7 +188,7 @@ function Sidebar({ onLogout }) {
                           : ""
                       }`}
                     >
-                      Payement Recived
+                      Payement Received
                     </li>
                   </NavLink>
                 </ul>
@@ -210,12 +196,12 @@ function Sidebar({ onLogout }) {
             </li>
             <li className="nav-item">
               <div
-                className={`nav-link ${studentMenuOpen || activeSubmenu ? "active" : ""
-                  }`}
+                className={`nav-link ${
+                  studentMenuOpen || activeSubmenu ? "active" : ""
+                }`}
                 onClick={toggleStudentMenu}
               >
-                
-                <i class='bx bx-basket'></i> Purchases
+                <i class="bx bx-basket"></i> Purchases
                 {studentMenuOpen && (
                   <i
                     className="bi bi-chevron-up"
@@ -232,42 +218,42 @@ function Sidebar({ onLogout }) {
               {studentMenuOpen && (
                 <ul className="submenu">
                   <NavLink
-                   
                     className="nav-link"
                     to="/vendor"
                     onClick={() => handleSubmenuClick("create")}
                   >
                     <li
-                      className={`nav-item ${activeSubmenu === "create" ? "active-submenu" : ""
-                        }`}
+                      className={`nav-item ${
+                        activeSubmenu === "create" ? "active-submenu" : ""
+                      }`}
                     >
-                     Vendor
+                      Vendor
                     </li>
                   </NavLink>
                   <NavLink
-                   
                     className="nav-link"
                     to="/bills"
                     onClick={() => handleSubmenuClick("create")}
                   >
                     <li
-                      className={`nav-item ${activeSubmenu === "create" ? "active-submenu" : ""
-                        }`}
+                      className={`nav-item ${
+                        activeSubmenu === "create" ? "active-submenu" : ""
+                      }`}
                     >
-                     Bills
+                      Bills
                     </li>
                   </NavLink>
                   <NavLink
-                   
                     className="nav-link"
-                    to="/paymentsMade"
+                    to="/paymentmade"
                     onClick={() => handleSubmenuClick("create")}
                   >
                     <li
-                      className={`nav-item ${activeSubmenu === "create" ? "active-submenu" : ""
-                        }`}
+                      className={`nav-item ${
+                        activeSubmenu === "create" ? "active-submenu" : ""
+                      }`}
                     >
-                     Payments Made
+                      Payments Made
                     </li>
                   </NavLink>
                 </ul>
@@ -279,7 +265,7 @@ function Sidebar({ onLogout }) {
                 to="/chartofaccount"
                 onClick={closeDropdown}
               >
-                <i class='bx bx-briefcase-alt-2'></i> Chart of Accounts
+                <i class="bx bx-briefcase-alt-2"></i> Chart of Accounts
               </NavLink>
             </li>
             <li className="nav-item">
@@ -288,26 +274,25 @@ function Sidebar({ onLogout }) {
                 to="/report"
                 onClick={closeDropdown}
               >
-                <i class='bx bx-spreadsheet'></i>Reports
+                <i class="bx bx-spreadsheet"></i>Reports
               </NavLink>
             </li>
-
           </ul>
           <hr className="navbar-divider my-5 opacity-20" />
           <div className="mt-auto"></div>
           <ul className="navbar-nav">
-          <div className="mt-auto logutBtn">
-            <button className="nav-link ps-4" to={"#"}>
-              <i className="bi bi-person-square"></i> Account
-            </button>
-            <button
-              to={"#"}
-              className="nav-link ps-4"
-              onClick={handelLogOutClick}
-            >
-              <i className="bi bi-box-arrow-left"></i> Logout
-            </button>
-          </div>
+            <div className="mt-auto logutBtn">
+              <button className="nav-link ps-4" to={"#"}>
+                <i className="bi bi-person-square"></i> Account
+              </button>
+              <button
+                to={"#"}
+                className="nav-link ps-4"
+                onClick={handelLogOutClick}
+              >
+                <i className="bi bi-box-arrow-left"></i> Logout
+              </button>
+            </div>
           </ul>
         </div>
       </div>

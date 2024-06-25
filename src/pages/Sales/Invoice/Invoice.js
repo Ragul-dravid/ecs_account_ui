@@ -3,49 +3,42 @@ import "datatables.net-dt";
 import "datatables.net-responsive-dt";
 import $ from "jquery";
 import { Link } from "react-router-dom";
-import { FaEye, FaEdit, FaPlus } from "react-icons/fa";
+import { FaEye, FaEdit } from "react-icons/fa";
+import { FaPlus } from "react-icons/fa6";
 import DeleteModel from "../../../components/common/DeleteModel";
-// import DeleteModel from "../../components/common/DeleteModel";
-
-const Vendor = () => {
+const Invoice = () => {
   const tableRef = useRef(null);
 
   const datas = [
     {
       id: 1,
-      name: "Raghul",
-      companyName: "ECS",
-      email: "ragulecs@gmail.com",
-      phone: "987665432",
-      
+      date: "01-03-2004",
+      invoiceNumber: "IN-018",
+      orderNumber: "500",
+      customerName: "Harish",
+      balanceDue: "$5350",
+      amount: "$0.00",
+      status: "PAID",
     },
     {
       id: 2,
-      name: "Raghul",
-      companyName: "ECS",
-      email: "ragulecs@gmail.com",
-      phone: "987665432",
+      date: "19-02-2024",
+      invoiceNumber: "IN-006",
+      orderNumber: "860",
+      customerName: "Mani",
+      balanceDue: "$5050",
+      amount: "$5050",
+      status: "PENDING",
     },
     {
       id: 3,
-      name: "Raghul",
-      companyName: "ECS",
-      email: "ragulecs@gmail.com",
-      phone: "987665432",
-    },
-    {
-      id: 4,
-      name: "Raghul",
-      companyName: "ECS",
-      email: "ragulecs@gmail.com",
-      phone: "987665432",
-    },
-    {
-      id: 5,
-      name: "Raghul",
-      companyName: "ECS",
-      email: "ragulecs@gmail.com",
-      phone: "987665432",
+      date: "15-02-2024",
+      invoiceNumber: "IN-002",
+      orderNumber: "100",
+      customerName: "Sangeetha",
+      balanceDue: "$5009",
+      amount: "$0.00",
+      status: "PARTLY PAID",
     },
   ];
 
@@ -64,14 +57,14 @@ const Vendor = () => {
           <div className="row align-items-center justify-content-between ">
             <div className="col">
               <div className="d-flex align-items-center gap-4">
-                <h1 className="h4 ls-tight headingColor ">Vendor</h1>
+                <h1 className="h4 ls-tight headingColor ">Invoice</h1>
               </div>
             </div>
             <div className="col-auto">
               <div className="hstack gap-2 justify-content-end">
-                <Link to="/vendor/add">
+                <Link to="/invoice/add">
                   <button type="submit" className="btn btn-sm btn-button">
-                  <span cla>Add <FaPlus  className="pb-1"/></span>
+                    <span>Add <FaPlus /></span>
                   </button>
                 </Link>
               </div>
@@ -88,12 +81,14 @@ const Vendor = () => {
                 <th scope="col" style={{ whiteSpace: "nowrap" }}>
                   S.NO
                 </th>
-                {/* <th scope="col">EMPLOYEE ID</th> */}
-                <th scope="col">NAME</th>
-                <th scope="col" >COMPANY NAME</th>
-                <th scope="col">EMAIL</th>
-                <th scope="col">PHONE</th>
-                <th scope="col" className="text-center ">
+                <th scope="col">DATE</th>
+                <th scope="col">INVOICE NUMBER</th>
+                <th scope="col">ORDER NUMBER</th>
+                <th scope="col">CUSTOMER NAME</th>
+                <th scope="col">BALANCE DUE</th>
+                <th scope="col">AMOUNT</th>
+                <th scope="col">STATUS</th>
+                <th scope="col" className="text-center">
                   ACTION
                 </th>
               </tr>
@@ -102,19 +97,29 @@ const Vendor = () => {
               {datas.map((data, index) => (
                 <tr key={index}>
                   <td className="text-center">{index + 1}</td>
-                  {/* <td>{data.empId}</td> */}
-                  <td>{data.name}</td>
-                  <td>{data.companyName}</td>
-                  <td>{data.email}</td>
-                  <td>{data.phone}</td>
-                  <td className="text-center">
+                  <td>{data.date}</td>
+                  <td>{data.invoiceNumber}</td>
+                  <td>{data.orderNumber}</td>
+                  <td>{data.customerName}</td>
+                  <td>{data.balanceDue}</td>
+                  <td>{data.amount}</td>
+                  <td>
+                    {data.status === "PAID" ? (
+                      <span className="badge text-bg-success">PAID</span>
+                    ) : data.status === "PENDING" ? (
+                      <span className="badge text-bg-danger">PENDING</span>
+                    ) : (
+                      <span className="badge text-bg-primary">PARTLY PAID</span>
+                    )}
+                  </td>
+                  <td>
                     <div>
-                      <Link to="/vendor/view">
+                      <Link to="/invoice/view">
                         <button className="btn btn-sm ps-0 shadow-none border-none">
                           <FaEye />
                         </button>
                       </Link>
-                      <Link to="/vendor/edit">
+                      <Link to="/invoice/edit">
                         <button className="btn btn-sm shadow-none border-none">
                           <FaEdit />
                         </button>
@@ -134,4 +139,4 @@ const Vendor = () => {
   );
 };
 
-export default Vendor;
+export default Invoice;

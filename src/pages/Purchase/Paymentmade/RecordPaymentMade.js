@@ -4,7 +4,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 
 function RecordPaymentMade() {
- 
+  const validationSchema = Yup.object({});
   const formik = useFormik({
     initialValues: {
       firstName: "",
@@ -15,9 +15,9 @@ function RecordPaymentMade() {
       workLocation:"",
       designation:""
     },
-    
+    validationSchema: validationSchema,
     onSubmit: async (values) => {
-      console.log("User Datas:", values);
+      console.log("paymentmade Datas:", values);
     },
   });
 

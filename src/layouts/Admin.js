@@ -55,6 +55,13 @@ import UsersView from "../pages/Users/UsersView";
 import Department from "../pages/Department/Department";
 import DepartmentAdd from "../pages/Department/DepartmentAdd";
 import DepartmentEdit from "../pages/Department/DepartmentEdit";
+import Invoice from "../pages/Sales/Invoice/Invoice";
+import InvoiceAdd from "../pages/Sales/Invoice/InvoiceAdd";
+import InvoiceEdit from "../pages/Sales/Invoice/InvoiceEdit";
+import InvoiceView from "../pages/Sales/Invoice/InvoiceView";
+import RecordPayment from "../pages/Sales/Invoice/RecordPayment";
+import PaymentReceived from "../pages/Sales/PaymentReceived/PaymentReceived";
+import PaymentReceivedView from "../pages/Sales/PaymentReceived/PaymentReceivedView";
 
 function Admin({ handleLogout }) {
   return (
@@ -62,7 +69,7 @@ function Admin({ handleLogout }) {
       <div className="d-flex flex-column flex-lg-row h-lg-full bg-surface-secondary">
         <Sidebar onLogout={handleLogout} />
         <div className="h-screen flex-grow-1 overflow-y-lg-auto">
-          <main className="py-6 bg-surface-secondary">
+          <main className="py-1 bg-surface-secondary">
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/dashboard" element={<Dashboard />} />
@@ -118,6 +125,7 @@ function Admin({ handleLogout }) {
               <Route path="/bills/add" element={<BillsAdd />} />
               <Route path="/bills/edit" element={<BillsEdit />} />
               <Route path="/bills/view" element={<BillView />} />
+              <Route path="/bills/view/recordpaymentmade" element={<RecordPaymentMade />} />
               {/* <Route path="/bills/edit" element={<BillsEdit />} />
                 <Route path="/bills/view" element={<BillsView />} />  */}
 
@@ -133,7 +141,18 @@ function Admin({ handleLogout }) {
                 path="/recordpaymentmade"
                 element={<RecordPaymentMade />}
               />
-              <Route path="/paymentmadeview" element={<PaymentMadeView />} />
+              <Route path="/paymentmade/view" element={<PaymentMadeView />} />
+
+              {/* {/ Invoice /} */}
+              <Route path="/invoice" element={<Invoice/>}/>
+              <Route path="/invoice/add" element={<InvoiceAdd/>}/>
+              <Route path="/invoice/edit" element={<InvoiceEdit/>}/>
+              <Route path="/invoice/view" element={<InvoiceView/>}/>
+              <Route path="/recordpayment" element={<RecordPayment/>}/>
+
+              {/* {/ Payment Received /} */}
+              <Route path="/paymentReceived" element={<PaymentReceived/>}/>
+              <Route path="/paymentReceived/view" element={<PaymentReceivedView/>}/>
 
               {/* {/ Department /} */}
               <Route path="/department" element={<Department />} />

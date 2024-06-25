@@ -3,7 +3,7 @@ import "datatables.net-dt";
 import "datatables.net-responsive-dt";
 import $ from "jquery";
 import { Link } from "react-router-dom";
-import { FaEye, FaEdit } from "react-icons/fa";
+import { FaEye, FaEdit, FaPlus } from "react-icons/fa";
 import DeleteModel from "../../../components/common/DeleteModel";
 // import DeleteModel from "../../components/common/DeleteModel";
 
@@ -19,7 +19,7 @@ const Bills = () => {
       vendorName: "Harish",
       balanceDue: "$5340",
       amount: "$0.00",
-      status: "chennai",
+      status: "Paid",
     },
     {
       id: 2,
@@ -29,7 +29,7 @@ const Bills = () => {
       vendorName: "Harish",
       balanceDue: "$5340",
       amount: "$0.00",
-      status: "chennai",
+      status: "Pending",
     },
     {
       id: 3,
@@ -39,7 +39,7 @@ const Bills = () => {
       vendorName: "Harish",
       balanceDue: "$5340",
       amount: "$0.00",
-      status: "chennai",
+      status: "Pending",
     },
     {
       id: 4,
@@ -49,7 +49,7 @@ const Bills = () => {
       vendorName: "Harish",
       balanceDue: "$5340",
       amount: "$0.00",
-      status: "chennai",
+      status: "Off Paid",
     },
     {
       id: 5,
@@ -59,7 +59,7 @@ const Bills = () => {
       vendorName: "Harish",
       balanceDue: "$5340",
       amount: "$0.00",
-      status: "chennai",
+      status: "Paid",
     },
   ];
 
@@ -85,7 +85,7 @@ const Bills = () => {
               <div className="hstack gap-2 justify-content-end">
                 <Link to="/bills/add">
                   <button type="submit" className="btn btn-sm btn-button">
-                    <span>Add New Bills</span>
+                  <span cla>Add <FaPlus className="pb-1"/></span>
                   </button>
                 </Link>
               </div>
@@ -124,7 +124,17 @@ const Bills = () => {
                   <td className="text-center">{data.vendorName}</td>
                   <td className="text-center">{data.balanceDue}</td>
                   <td className="text-center">{data.amount}</td>
-                  <td >{data.status}</td>
+                  <td>
+                    {data.status === "Paid" ? (
+                      <span className="badge text-bg-success">Paid</span>
+                    ) : data.status === "Pending" ? (
+                      <span className="badge text-bg-danger">Pending</span>
+                    ) : (
+                      <span className="badge text-bg-primary">
+                      Off Paid
+                      </span>
+                    )}
+                  </td>
                   <td>
                     <div>
                       <Link to="/bills/view">

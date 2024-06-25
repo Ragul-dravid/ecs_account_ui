@@ -6,18 +6,18 @@
 }
 
 .nav-link.active {
-  background-color: #6182e6;
+  color: #6182e6 !important;
 }
 
 .navbar-vertical.navbar-light .navbar-nav > .nav-item > .nav-link:hover{
-  background-color: #6182e6;
-  color: #ffffff;
+  background-color: #d8e1ff;
+  color: #000;
   cursor: pointer;
 }
 
 .navbar-vertical.navbar-light .navbar-nav > .nav-item > .nav-link:hover i ,
 .navbar-vertical.navbar-light .navbar-nav > .nav-item > .nav-link.active i{
-  color: #ffffff;
+  color: #000;
   cursor: pointer;
 }
 
@@ -197,13 +197,6 @@
   color: #fff;
 }
 
-.top-header{
-  position: sticky;
-  top: 0;
-  z-index: 10;
-}
-
-
 /* Table Css */
 
 #Table_Css table thead{
@@ -307,4 +300,13 @@ div.dt-container select.dt-input{
   background-color: #1A516B;
   padding: 4px;
   color: #fcf9f9;
+}
+
+.delete:hover{
+background-color: red !important;
+color: white !important;
+}
+
+.removeHrMargin{
+  margin: 0;
 }

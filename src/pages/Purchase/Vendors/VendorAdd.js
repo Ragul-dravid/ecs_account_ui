@@ -29,7 +29,7 @@ function VendorAdd() {
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
-      console.log("User Datas:", values);
+      console.log("Vendor Datas:", values);
     },
   });
 
