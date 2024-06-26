@@ -78,18 +78,18 @@ function VendorEdit() {
             <div className="row py-4">
               <div className="col-md-6 col-12 mb-2">
                 <lable className="form-lable">
-                 Vendor Name
+                 Contact Name
                 </lable>
                 <div className="mb-3">
                   <input
                     type="text"
-                    name="vendorName"
+                    name="firstName"
                     className={`form-control ${
                       formik.touched.firstName && formik.errors.firstName
                         ? "is-invalid"
                         : ""
                     }`}
-                    {...formik.getFieldProps("vendorName")}
+                    {...formik.getFieldProps("firstName")}
                   />
                   {formik.touched.firstName &&
                     formik.errors.firstName && (
@@ -101,18 +101,18 @@ function VendorEdit() {
               </div>
               <div className="col-md-6 col-12 mb-2">
                 <lable className="form-lable">
-                 Company Name
+                Account Number
                 </lable>
                 <div className="mb-3">
                   <input
                     type="text"
-                    name="companyName"
+                    name="lastName"
                     className={`form-control  ${
                       formik.touched.lastName && formik.errors.lastName
                         ? "is-invalid"
                         : ""
                     }`}
-                    {...formik.getFieldProps("companyName")}
+                    {...formik.getFieldProps("lastName")}
                   />
                   {formik.touched.lastName &&
                     formik.errors.lastName && (
@@ -125,18 +125,18 @@ function VendorEdit() {
 
               <div className="col-md-6 col-12 mb-2">
                 <lable className="form-lable">
-                    Vendor Phone 
+                   Primary Contact
                 </lable>
                 <div className="mb-3">
                   <input
                     type="text"
-                    name="vendorPhone"
+                    name="empID"
                     className={`form-control ${
                       formik.touched.empID && formik.errors.empID
                         ? "is-invalid"
                         : ""
                     }`}
-                    {...formik.getFieldProps("vendorPhone")}
+                    {...formik.getFieldProps("empID")}
                   />
                   {formik.touched.empID &&
                     formik.errors.empID && (
@@ -148,18 +148,18 @@ function VendorEdit() {
               </div>
               <div className="col-md-6 col-12 mb-2">
                 <lable className="form-lable">
-                 Vendor Email
+                vendor Email
                 </lable>
                 <div className="mb-3">
                   <input
                     type="text"
-                    name="vendorEmail"
+                    name="empEmail"
                     className={`form-control  ${
                       formik.touched.empEmail && formik.errors.empEmail
                         ? "is-invalid"
                         : ""
                     }`}
-                    {...formik.getFieldProps("vendorEmail")}
+                    {...formik.getFieldProps("empEmail")}
                   />
                   {formik.touched.empEmail &&
                     formik.errors.empEmail && (
@@ -172,18 +172,18 @@ function VendorEdit() {
 
               <div className="col-md-6 col-12 mb-2">
                 <lable className="form-lable">
-                 Currency
+                Vendor Phone
                 </lable>
                 <div className="mb-3">
                   <input
                     type="text"
-                    name="currency"
+                    name="empEmail"
                     className={`form-control  ${
                       formik.touched.empEmail && formik.errors.empEmail
                         ? "is-invalid"
                         : ""
                     }`}
-                    {...formik.getFieldProps("currency")}
+                    {...formik.getFieldProps("empEmail")}
                   />
                   {formik.touched.empEmail &&
                     formik.errors.empEmail && (
@@ -196,18 +196,66 @@ function VendorEdit() {
 
               <div className="col-md-6 col-12 mb-2">
                 <lable className="form-lable">
-                    PAN Number
+                    Website
                 </lable>
                 <div className="mb-3">
                   <input
                     type="text"
-                    name="panNumber"
+                    name="workLocation"
                     className={`form-control  ${
                       formik.touched.workLocation && formik.errors.workLocation
                         ? "is-invalid"
                         : ""
                     }`}
-                    {...formik.getFieldProps("panNumber")}
+                    {...formik.getFieldProps("workLocation")}
+                  />
+                  {formik.touched.workLocation &&
+                    formik.errors.workLocation && (
+                      <div className="invalid-feedback">
+                        {formik.errors.workLocation}
+                      </div>
+                    )}
+                </div>
+              </div>
+
+              <div className="col-md-6 col-12 mb-2">
+                <lable className="form-lable">
+                 Bank Name
+                </lable>
+                <div className="mb-3">
+                  <input
+                    type="text"
+                    name="empEmail"
+                    className={`form-control  ${
+                      formik.touched.empEmail && formik.errors.empEmail
+                        ? "is-invalid"
+                        : ""
+                    }`}
+                    {...formik.getFieldProps("empEmail")}
+                  />
+                  {formik.touched.empEmail &&
+                    formik.errors.empEmail && (
+                      <div className="invalid-feedback">
+                        {formik.errors.empEmail}
+                      </div>
+                    )}
+                </div>
+              </div>
+
+              <div className="col-md-6 col-12 mb-2">
+                <lable className="form-lable">
+                   Bank Account Number
+                </lable>
+                <div className="mb-3">
+                  <input
+                    type="text"
+                    name="workLocation"
+                    className={`form-control  ${
+                      formik.touched.workLocation && formik.errors.workLocation
+                        ? "is-invalid"
+                        : ""
+                    }`}
+                    {...formik.getFieldProps("workLocation")}
                   />
                   {formik.touched.workLocation &&
                     formik.errors.workLocation && (
@@ -226,9 +274,9 @@ function VendorEdit() {
                   <div className="mb-3">
                     <input
                       type="text"
-                      name="billingCountry"
+                      name="currency"
                       className={`form-control  `}
-                      {...formik.getFieldProps("billingCountry")}
+                      {...formik.getFieldProps("currency")}
                     />
                   </div>
                 </div>
@@ -240,9 +288,9 @@ function VendorEdit() {
                   <div className="mb-3">
                     <input
                       type="text"
-                      name="shipingCountry"
+                      name="currency"
                       className={`form-control  `}
-                      {...formik.getFieldProps("shipingCountry")}
+                      {...formik.getFieldProps("currency")}
                     />
                   </div>
                 </div>
@@ -259,13 +307,13 @@ function VendorEdit() {
                 <div className="mb-3">
                   <input
                     type="text"
-                    name="billingAddress"
+                    name="firstName"
                     className={`form-control ${
                       formik.touched.firstName && formik.errors.firstName
                         ? "is-invalid"
                         : ""
                     }`}
-                    {...formik.getFieldProps("billingAddress")}
+                    {...formik.getFieldProps("firstName")}
                   />
                   {formik.touched.firstName &&
                     formik.errors.firstName && (
@@ -283,13 +331,13 @@ function VendorEdit() {
                 <div className="mb-3">
                   <input
                     type="text"
-                    name="shipingAddress"
+                    name="lastName"
                     className={`form-control  ${
                       formik.touched.lastName && formik.errors.lastName
                         ? "is-invalid"
                         : ""
                     }`}
-                    {...formik.getFieldProps("shipingAddress")}
+                    {...formik.getFieldProps("lastName")}
                   />
                   {formik.touched.lastName &&
                     formik.errors.lastName && (
@@ -307,13 +355,13 @@ function VendorEdit() {
                 <div className="mb-3">
                   <input
                     type="text"
-                    name="billingCity"
+                    name="empID"
                     className={`form-control ${
                       formik.touched.empID && formik.errors.empID
                         ? "is-invalid"
                         : ""
                     }`}
-                    {...formik.getFieldProps("billingCity")}
+                    {...formik.getFieldProps("empID")}
                   />
                   {formik.touched.empID &&
                     formik.errors.empID && (
@@ -325,18 +373,18 @@ function VendorEdit() {
               </div>
               <div className="col-md-6 col-12 mb-2">
                 <lable className="form-lable">
-                 Shipping City
+                Shipping City
                 </lable>
                 <div className="mb-3">
                   <input
                     type="text"
-                    name="shipingCity"
+                    name="empEmail"
                     className={`form-control  ${
                       formik.touched.empEmail && formik.errors.empEmail
                         ? "is-invalid"
                         : ""
                     }`}
-                    {...formik.getFieldProps("shipingCity")}
+                    {...formik.getFieldProps("empEmail")}
                   />
                   {formik.touched.empEmail &&
                     formik.errors.empEmail && (
@@ -354,13 +402,13 @@ function VendorEdit() {
                 <div className="mb-3">
                   <input
                     type="text"
-                    name="billingState"
+                    name="empID"
                     className={`form-control ${
                       formik.touched.empID && formik.errors.empID
                         ? "is-invalid"
                         : ""
                     }`}
-                    {...formik.getFieldProps("billingState")}
+                    {...formik.getFieldProps("empID")}
                   />
                   {formik.touched.empID &&
                     formik.errors.empID && (
@@ -372,18 +420,18 @@ function VendorEdit() {
               </div>
               <div className="col-md-6 col-12 mb-2">
                 <lable className="form-lable">
-                 Shipping State
+                Shipping State
                 </lable>
                 <div className="mb-3">
                   <input
                     type="text"
-                    name="shipingState"
+                    name="empEmail"
                     className={`form-control  ${
                       formik.touched.empEmail && formik.errors.empEmail
                         ? "is-invalid"
                         : ""
                     }`}
-                    {...formik.getFieldProps("shipingState")}
+                    {...formik.getFieldProps("empEmail")}
                   />
                   {formik.touched.empEmail &&
                     formik.errors.empEmail && (
@@ -400,13 +448,13 @@ function VendorEdit() {
                 <div className="mb-3">
                   <input
                     type="text"
-                    name="billingZipCode"
+                    name="empID"
                     className={`form-control ${
                       formik.touched.empID && formik.errors.empID
                         ? "is-invalid"
                         : ""
                     }`}
-                    {...formik.getFieldProps("billingZipCode")}
+                    {...formik.getFieldProps("empID")}
                   />
                   {formik.touched.empID &&
                     formik.errors.empID && (
@@ -418,18 +466,18 @@ function VendorEdit() {
               </div>
               <div className="col-md-6 col-12 mb-2">
                 <lable className="form-lable">
-                 Shipping Zip Code
+                Shipping Zip Code
                 </lable>
                 <div className="mb-3">
                   <input
                     type="text"
-                    name="shipingZipCode"
+                    name="empEmail"
                     className={`form-control  ${
                       formik.touched.empEmail && formik.errors.empEmail
                         ? "is-invalid"
                         : ""
                     }`}
-                    {...formik.getFieldProps("shipingZipCode")}
+                    {...formik.getFieldProps("empEmail")}
                   />
                   {formik.touched.empEmail &&
                     formik.errors.empEmail && (
@@ -441,18 +489,18 @@ function VendorEdit() {
               </div>
               <div className="col-md-6 col-12 mb-2">
                 <lable className="form-lable">
-                    Billing Phone
+                    Billing Attention
                 </lable>
                 <div className="mb-3">
                   <input
                     type="text"
-                    name="billingPhone"
+                    name="empID"
                     className={`form-control ${
                       formik.touched.empID && formik.errors.empID
                         ? "is-invalid"
                         : ""
                     }`}
-                    {...formik.getFieldProps("billingPhone")}
+                    {...formik.getFieldProps("empID")}
                   />
                   {formik.touched.empID &&
                     formik.errors.empID && (
@@ -464,18 +512,18 @@ function VendorEdit() {
               </div>
               <div className="col-md-6 col-12 mb-2">
                 <lable className="form-lable">
-                 Shipping Phone
+                Shipping Attention
                 </lable>
                 <div className="mb-3">
                   <input
                     type="text"
-                    name="shipingPhone"
+                    name="empEmail"
                     className={`form-control  ${
                       formik.touched.empEmail && formik.errors.empEmail
                         ? "is-invalid"
                         : ""
                     }`}
-                    {...formik.getFieldProps("shipingPhone")}
+                    {...formik.getFieldProps("empEmail")}
                   />
                   {formik.touched.empEmail &&
                     formik.errors.empEmail && (
@@ -485,6 +533,19 @@ function VendorEdit() {
                     )}
                 </div>
               </div>
+              <div className="col-12">
+              <label for="exampleFormControlInput1" className="form-label">
+                Remarks
+              </label>
+              <div class="input-group mb-3">
+                <textarea
+                  class="form-control"
+                  {...formik.getFieldProps("invoiceNotes")}
+                  id="exampleFormControlTextarea1"
+                  rows="5"
+                ></textarea>
+              </div>
+            </div>
             </div>
           </div>
           

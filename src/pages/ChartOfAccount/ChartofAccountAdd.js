@@ -47,7 +47,7 @@ function ChartofAccountAdd() {
         onHide={handleClose}
       >
         <Modal.Header closeButton>
-        <Modal.Title className="headColor">Add ChartOfAccount</Modal.Title>
+        <Modal.Title className="headColor">Add Chart of Accounts</Modal.Title>
         </Modal.Header>
         <form onSubmit={formik.handleSubmit}>
           <Modal.Body>

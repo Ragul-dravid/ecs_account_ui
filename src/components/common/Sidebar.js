@@ -47,6 +47,7 @@ function Sidebar({ onLogout }) {
     setLeadMenuOpen(false);
     setActiveSubmenu(null);
     setReferMenuOpen(false);
+    setStudentMenuOpen(false);
     setActiveReferSubmenu(null);
   };
 
@@ -282,9 +283,12 @@ function Sidebar({ onLogout }) {
           <div className="mt-auto"></div>
           <ul className="navbar-nav">
             <div className="mt-auto logutBtn">
+            <li className="py-2 px-4 nav-link nav-item" style={{cursor:"pointer"}}>
               <button className="nav-link ps-4" to={"#"}>
                 <i className="bi bi-person-square"></i> Account
               </button>
+              </li>
+              <li className="py-2 px-4 nav-link nav-item" style={{cursor:"pointer"}}>
               <button
                 to={"#"}
                 className="nav-link ps-4"
@@ -292,6 +296,7 @@ function Sidebar({ onLogout }) {
               >
                 <i className="bi bi-box-arrow-left"></i> Logout
               </button>
+              </li>
             </div>
           </ul>
         </div>

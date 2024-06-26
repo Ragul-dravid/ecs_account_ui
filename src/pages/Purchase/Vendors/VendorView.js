@@ -33,7 +33,7 @@ function VendorView() {
               <div className="row mb-3">
                 <div className="col-6 d-flex justify-content-start align-items-center">
                   <p className="text-sm">
-                    <b>Company Name</b>
+                    <b>Contact Name</b>
                   </p>
                 </div>
                 <div className="col-6">
@@ -45,7 +45,7 @@ function VendorView() {
               <div className="row mb-3">
                 <div className="col-6 d-flex justify-content-start align-items-center">
                   <p className="text-sm">
-                    <b>Vendor Name </b>
+                    <b>Account Number </b>
                   </p>
                 </div>
                 <div className="col-6">
@@ -81,7 +81,7 @@ function VendorView() {
               <div className="row mb-3">
                 <div className="col-6 d-flex justify-content-start align-items-center">
                   <p className="text-sm">
-                    <b>Currency</b>
+                    <b>Primary Contact</b>
                   </p>
                 </div>
                 <div className="col-6">
@@ -93,7 +93,19 @@ function VendorView() {
               <div className="row mb-3">
                 <div className="col-6 d-flex justify-content-start align-items-center">
                   <p className="text-sm">
-                    <b>pan Number</b>
+                    <b>Bank Name</b>
+                  </p>
+                </div>
+                <div className="col-6">
+                  <p className="text-muted text-sm">: ERTH567</p>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-6 col-12">
+              <div className="row mb-3">
+                <div className="col-6 d-flex justify-content-start align-items-center">
+                  <p className="text-sm">
+                    <b>Bank Account Number</b>
                   </p>
                 </div>
                 <div className="col-6">

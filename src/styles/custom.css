@@ -253,7 +253,8 @@ div.dt-container select.dt-input{
 }
 
 .logutBtn :hover{
-  color: #ffffff !important;
+  /* color: #ffffff !important; */
+  background-color: #d8e1ff;
 }
 
 .sendMail:hover{

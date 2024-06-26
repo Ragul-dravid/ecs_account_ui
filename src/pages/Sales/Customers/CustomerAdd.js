@@ -62,242 +62,492 @@ const CustomerAdd = () => {
         </div>
       </div>
       <form onSubmit={formik.handleSubmit}>
-        <div className="card shadow border-0 my-2">
-          <div className="container mb-5 mt-5">
+      <div className="card shadow border-0 my-2">
+          <div className="row mt-3 me-2">
+            <div className="col-12 text-end">
+             
+            </div>
+          </div>
+
+          {/* User Information */}
+          {/* <div className="container fw-bold fs-5 my-4">
+            User Information
+          </div> */}
+          <div className="container mb-5">
             <div className="row py-4">
               <div className="col-md-6 col-12 mb-2">
-                <lable className="form-lable">Customer Type</lable>
-                <div className="mb-3 ms-2">
-                  <label className="mx-3">
-                    <input
-                      type="radio"
-                      name="customerType"
-                      value="business"
-                      className={`form-check-input mx-2`}
-                      {...formik.getFieldProps("customerType")}
-                    />
-                    Business
-                  </label>
-                  <label className="mx-3">
-                    <input
-                      type="radio"
-                      name="customerType"
-                      value="individual"
-                      className={`form-check-input mx-2`}
-                      {...formik.getFieldProps("customerType")}
-                    />
-                    Individual
-                  </label>
-                </div>
-              </div>
-              <div className="col-md-6 col-12 mb-2">
-                <lable className="form-lable">Customer Name</lable>
+                <lable className="form-lable">
+                 Contact Name
+                </lable>
                 <div className="mb-3">
                   <input
                     type="text"
-                    name="customerName"
-                    className={`form-control  ${
-                      formik.touched.customerName && formik.errors.customerName
+                    name="firstName"
+                    className={`form-control ${
+                      formik.touched.firstName && formik.errors.firstName
                         ? "is-invalid"
                         : ""
                     }`}
-                    {...formik.getFieldProps("customerName")}
+                    {...formik.getFieldProps("firstName")}
                   />
+                  {formik.touched.firstName &&
+                    formik.errors.firstName && (
+                      <div className="invalid-feedback">
+                        {formik.errors.firstName}
+                      </div>
+                    )}
+                </div>
+              </div>
+              <div className="col-md-6 col-12 mb-2">
+                <lable className="form-lable">
+                Account Number
+                </lable>
+                <div className="mb-3">
+                  <input
+                    type="text"
+                    name="lastName"
+                    className={`form-control  ${
+                      formik.touched.lastName && formik.errors.lastName
+                        ? "is-invalid"
+                        : ""
+                    }`}
+                    {...formik.getFieldProps("lastName")}
+                  />
+                  {formik.touched.lastName &&
+                    formik.errors.lastName && (
+                      <div className="invalid-feedback">
+                        {formik.errors.lastName}
+                      </div>
+                    )}
                 </div>
               </div>
 
               <div className="col-md-6 col-12 mb-2">
-                <lable className="form-lable">Company Name</lable>
+                <lable className="form-lable">
+                   Primary Contact
+                </lable>
                 <div className="mb-3">
                   <input
                     type="text"
-                    name="companyName"
-                    className={`form-control `}
-                    {...formik.getFieldProps("companyName")}
+                    name="empID"
+                    className={`form-control ${
+                      formik.touched.empID && formik.errors.empID
+                        ? "is-invalid"
+                        : ""
+                    }`}
+                    {...formik.getFieldProps("empID")}
                   />
+                  {formik.touched.empID &&
+                    formik.errors.empID && (
+                      <div className="invalid-feedback">
+                        {formik.errors.empID}
+                      </div>
+                    )}
                 </div>
               </div>
               <div className="col-md-6 col-12 mb-2">
-                <lable className="form-lable">Customer Email ID</lable>
+                <lable className="form-lable">
+                Customer Email
+                </lable>
                 <div className="mb-3">
                   <input
                     type="text"
-                    name="customerEmail"
-                    className={`form-control `}
-                    {...formik.getFieldProps("customerEmail")}
+                    name="empEmail"
+                    className={`form-control  ${
+                      formik.touched.empEmail && formik.errors.empEmail
+                        ? "is-invalid"
+                        : ""
+                    }`}
+                    {...formik.getFieldProps("empEmail")}
                   />
+                  {formik.touched.empEmail &&
+                    formik.errors.empEmail && (
+                      <div className="invalid-feedback">
+                        {formik.errors.empEmail}
+                      </div>
+                    )}
                 </div>
               </div>
 
               <div className="col-md-6 col-12 mb-2">
-                <lable className="form-lable">Customer Phone</lable>
-                <input
-                  type="text"
-                  name="customerPhone"
-                  className={`form-control `}
-                  {...formik.getFieldProps("customerPhone")}
-                />
-              </div>
-              <div className="col-md-6 col-12 mb-2">
-                <lable className="form-lable">PAN Number</lable>
+                <lable className="form-lable">
+                Customer Phone
+                </lable>
                 <div className="mb-3">
                   <input
                     type="text"
-                    name="panNumber"
-                    className={`form-control `}
-                    {...formik.getFieldProps("panNumber")}
+                    name="empEmail"
+                    className={`form-control  ${
+                      formik.touched.empEmail && formik.errors.empEmail
+                        ? "is-invalid"
+                        : ""
+                    }`}
+                    {...formik.getFieldProps("empEmail")}
                   />
+                  {formik.touched.empEmail &&
+                    formik.errors.empEmail && (
+                      <div className="invalid-feedback">
+                        {formik.errors.empEmail}
+                      </div>
+                    )}
                 </div>
               </div>
 
               <div className="col-md-6 col-12 mb-2">
-                <lable className="form-lable">Currency</lable>
+                <lable className="form-lable">
+                    Website
+                </lable>
                 <div className="mb-3">
                   <input
                     type="text"
-                    name="currency"
-                    className={`form-control  `}
-                    {...formik.getFieldProps("currency")}
+                    name="workLocation"
+                    className={`form-control  ${
+                      formik.touched.workLocation && formik.errors.workLocation
+                        ? "is-invalid"
+                        : ""
+                    }`}
+                    {...formik.getFieldProps("workLocation")}
                   />
+                  {formik.touched.workLocation &&
+                    formik.errors.workLocation && (
+                      <div className="invalid-feedback">
+                        {formik.errors.workLocation}
+                      </div>
+                    )}
                 </div>
               </div>
-              <div className="col-md-6 col-12 mb-2"></div>
-              <div className="container-fluid row mt-3">
-                <div className="col-md-6 col-12 mb-2">
+
+              <div className="col-md-6 col-12 mb-2">
+                <lable className="form-lable">
+                 Bank Name
+                </lable>
+                <div className="mb-3">
+                  <input
+                    type="text"
+                    name="empEmail"
+                    className={`form-control  ${
+                      formik.touched.empEmail && formik.errors.empEmail
+                        ? "is-invalid"
+                        : ""
+                    }`}
+                    {...formik.getFieldProps("empEmail")}
+                  />
+                  {formik.touched.empEmail &&
+                    formik.errors.empEmail && (
+                      <div className="invalid-feedback">
+                        {formik.errors.empEmail}
+                      </div>
+                    )}
+                </div>
+              </div>
+
+              <div className="col-md-6 col-12 mb-2">
+                <lable className="form-lable">
+                   Bank Account Number
+                </lable>
+                <div className="mb-3">
+                  <input
+                    type="text"
+                    name="workLocation"
+                    className={`form-control  ${
+                      formik.touched.workLocation && formik.errors.workLocation
+                        ? "is-invalid"
+                        : ""
+                    }`}
+                    {...formik.getFieldProps("workLocation")}
+                  />
+                  {formik.touched.workLocation &&
+                    formik.errors.workLocation && (
+                      <div className="invalid-feedback">
+                        {formik.errors.workLocation}
+                      </div>
+                    )}
+                </div>
+              </div>
+
+             <div className="col-md-6 col-12 mb-2">
                   <h3 className="my-5">Billing Address</h3>
-                  <lable className="form-lable">Billing Country</lable>
+                  <lable className="form-lable">
+                  Billing Country 
+                  </lable>
                   <div className="mb-3">
                     <input
                       type="text"
-                      name="billingCountry"
+                      name="currency"
                       className={`form-control  `}
-                      {...formik.getFieldProps("billingCountry")}
+                      {...formik.getFieldProps("currency")}
                     />
                   </div>
                 </div>
                 <div className="col-md-6 col-12 mb-2">
                   <h3 className="my-5">Shipping Address</h3>
-                  <lable className="form-lable">Shipping Country</lable>
+                  <lable className="form-lable">
+                  Shipping Country
+                  </lable>
                   <div className="mb-3">
                     <input
                       type="text"
-                      name="shippingCountry"
+                      name="currency"
                       className={`form-control  `}
-                      {...formik.getFieldProps("shippingCountry")}
+                      {...formik.getFieldProps("currency")}
                     />
                   </div>
                 </div>
-                <div className="col-md-6 col-12 mb-2">
-                  <lable className="form-lable">Billing Address</lable>
-                  <div className="mb-3">
-                    <input
-                      type="text"
-                      name="billingAddress"
-                      className={`form-control  `}
-                      {...formik.getFieldProps("billingAddress")}
-                    />
-                  </div>
-                </div>
-                <div className="col-md-6 col-12 mb-2">
-                  <lable className="form-lable">Shipping Address</lable>
-                  <div className="mb-3">
-                    <input
-                      type="text"
-                      name="shippingAddress"
-                      className={`form-control  `}
-                      {...formik.getFieldProps("shippingAddress")}
-                    />
-                  </div>
-                </div>
-                <div className="col-md-6 col-12 mb-2">
-                  <lable className="form-lable">Billing City</lable>
-                  <div className="mb-3">
-                    <input
-                      type="text"
-                      name="billingCity"
-                      className={`form-control  `}
-                      {...formik.getFieldProps("billingCity")}
-                    />
-                  </div>
-                </div>
-                <div className="col-md-6 col-12 mb-2">
-                  <lable className="form-lable">Shipping City</lable>
-                  <div className="mb-3">
-                    <input
-                      type="text"
-                      name="shippingCity"
-                      className={`form-control  `}
-                      {...formik.getFieldProps("shippingCity")}
-                    />
-                  </div>
-                </div>
-                <div className="col-md-6 col-12 mb-2">
-                  <lable className="form-lable">Billing State</lable>
-                  <div className="mb-3">
-                    <input
-                      type="text"
-                      name="billingState"
-                      className={`form-control  `}
-                      {...formik.getFieldProps("billingState")}
-                    />
-                  </div>
-                </div>
-                <div className="col-md-6 col-12 mb-2">
-                  <lable className="form-lable">Shipping State</lable>
-                  <div className="mb-3">
-                    <input
-                      type="text"
-                      name="shippingState"
-                      className={`form-control  `}
-                      {...formik.getFieldProps("shippingState")}
-                    />
-                  </div>
-                </div>
-                <div className="col-md-6 col-12 mb-2">
-                  <lable className="form-lable">Billing Zip Code</lable>
-                  <div className="mb-3">
-                    <input
-                      type="text"
-                      name="billingZipCode"
-                      className={`form-control  `}
-                      {...formik.getFieldProps("billingZipCode")}
-                    />
-                  </div>
-                </div>
-                <div className="col-md-6 col-12 mb-2">
-                  <lable className="form-lable">Shipping Zip Code</lable>
-                  <div className="mb-3">
-                    <input
-                      type="text"
-                      name="shippingZipCode"
-                      className={`form-control  `}
-                      {...formik.getFieldProps("shippingZipCode")}
-                    />
-                  </div>
-                </div>
-                <div className="col-md-6 col-12 mb-2">
-                  <lable className="form-lable">Billing Phone</lable>
-                  <div className="mb-3">
-                    <input
-                      type="text"
-                      name="billingPhone"
-                      className={`form-control  `}
-                      {...formik.getFieldProps("billingPhone")}
-                    />
-                  </div>
-                </div>
-                <div className="col-md-6 col-12 mb-2">
-                  <lable className="form-lable">Shipping Phone</lable>
-                  <div className="mb-3">
-                    <input
-                      type="text"
-                      name="shippingPhone"
-                      className={`form-control  `}
-                      {...formik.getFieldProps("shippingPhone")}
-                    />
-                  </div>
+          <div className="container mb-5">
+            <div className="row py-4">
+
+           
+              
+              
+              <div className="col-md-6 col-12 mb-2">
+                <lable className="form-lable">
+                 Billing Address
+                </lable>
+                <div className="mb-3">
+                  <input
+                    type="text"
+                    name="firstName"
+                    className={`form-control ${
+                      formik.touched.firstName && formik.errors.firstName
+                        ? "is-invalid"
+                        : ""
+                    }`}
+                    {...formik.getFieldProps("firstName")}
+                  />
+                  {formik.touched.firstName &&
+                    formik.errors.firstName && (
+                      <div className="invalid-feedback">
+                        {formik.errors.firstName}
+                      </div>
+                    )}
                 </div>
               </div>
+              
+              <div className="col-md-6 col-12 mb-2">
+                <lable className="form-lable">
+                Shipping Address
+                </lable>
+                <div className="mb-3">
+                  <input
+                    type="text"
+                    name="lastName"
+                    className={`form-control  ${
+                      formik.touched.lastName && formik.errors.lastName
+                        ? "is-invalid"
+                        : ""
+                    }`}
+                    {...formik.getFieldProps("lastName")}
+                  />
+                  {formik.touched.lastName &&
+                    formik.errors.lastName && (
+                      <div className="invalid-feedback">
+                        {formik.errors.lastName}
+                      </div>
+                    )}
+                </div>
+              </div>
+
+              <div className="col-md-6 col-12 mb-2">
+                <lable className="form-lable">
+                    Billing City
+                </lable>
+                <div className="mb-3">
+                  <input
+                    type="text"
+                    name="empID"
+                    className={`form-control ${
+                      formik.touched.empID && formik.errors.empID
+                        ? "is-invalid"
+                        : ""
+                    }`}
+                    {...formik.getFieldProps("empID")}
+                  />
+                  {formik.touched.empID &&
+                    formik.errors.empID && (
+                      <div className="invalid-feedback">
+                        {formik.errors.empID}
+                      </div>
+                    )}
+                </div>
+              </div>
+              <div className="col-md-6 col-12 mb-2">
+                <lable className="form-lable">
+                Shipping City
+                </lable>
+                <div className="mb-3">
+                  <input
+                    type="text"
+                    name="empEmail"
+                    className={`form-control  ${
+                      formik.touched.empEmail && formik.errors.empEmail
+                        ? "is-invalid"
+                        : ""
+                    }`}
+                    {...formik.getFieldProps("empEmail")}
+                  />
+                  {formik.touched.empEmail &&
+                    formik.errors.empEmail && (
+                      <div className="invalid-feedback">
+                        {formik.errors.empEmail}
+                      </div>
+                    )}
+                </div>
+              </div>
+
+              <div className="col-md-6 col-12 mb-2">
+                <lable className="form-lable">
+                    Billing State 
+                </lable>
+                <div className="mb-3">
+                  <input
+                    type="text"
+                    name="empID"
+                    className={`form-control ${
+                      formik.touched.empID && formik.errors.empID
+                        ? "is-invalid"
+                        : ""
+                    }`}
+                    {...formik.getFieldProps("empID")}
+                  />
+                  {formik.touched.empID &&
+                    formik.errors.empID && (
+                      <div className="invalid-feedback">
+                        {formik.errors.empID}
+                      </div>
+                    )}
+                </div>
+              </div>
+              <div className="col-md-6 col-12 mb-2">
+                <lable className="form-lable">
+                Shipping State
+                </lable>
+                <div className="mb-3">
+                  <input
+                    type="text"
+                    name="empEmail"
+                    className={`form-control  ${
+                      formik.touched.empEmail && formik.errors.empEmail
+                        ? "is-invalid"
+                        : ""
+                    }`}
+                    {...formik.getFieldProps("empEmail")}
+                  />
+                  {formik.touched.empEmail &&
+                    formik.errors.empEmail && (
+                      <div className="invalid-feedback">
+                        {formik.errors.empEmail}
+                      </div>
+                    )}
+                </div>
+              </div>
+              <div className="col-md-6 col-12 mb-2">
+                <lable className="form-lable">
+                    Billing Zip Code
+                </lable>
+                <div className="mb-3">
+                  <input
+                    type="text"
+                    name="empID"
+                    className={`form-control ${
+                      formik.touched.empID && formik.errors.empID
+                        ? "is-invalid"
+                        : ""
+                    }`}
+                    {...formik.getFieldProps("empID")}
+                  />
+                  {formik.touched.empID &&
+                    formik.errors.empID && (
+                      <div className="invalid-feedback">
+                        {formik.errors.empID}
+                      </div>
+                    )}
+                </div>
+              </div>
+              <div className="col-md-6 col-12 mb-2">
+                <lable className="form-lable">
+                Shipping Zip Code
+                </lable>
+                <div className="mb-3">
+                  <input
+                    type="text"
+                    name="empEmail"
+                    className={`form-control  ${
+                      formik.touched.empEmail && formik.errors.empEmail
+                        ? "is-invalid"
+                        : ""
+                    }`}
+                    {...formik.getFieldProps("empEmail")}
+                  />
+                  {formik.touched.empEmail &&
+                    formik.errors.empEmail && (
+                      <div className="invalid-feedback">
+                        {formik.errors.empEmail}
+                      </div>
+                    )}
+                </div>
+              </div>
+              <div className="col-md-6 col-12 mb-2">
+                <lable className="form-lable">
+                    Billing Attention
+                </lable>
+                <div className="mb-3">
+                  <input
+                    type="text"
+                    name="empID"
+                    className={`form-control ${
+                      formik.touched.empID && formik.errors.empID
+                        ? "is-invalid"
+                        : ""
+                    }`}
+                    {...formik.getFieldProps("empID")}
+                  />
+                  {formik.touched.empID &&
+                    formik.errors.empID && (
+                      <div className="invalid-feedback">
+                        {formik.errors.empID}
+                      </div>
+                    )}
+                </div>
+              </div>
+              <div className="col-md-6 col-12 mb-2">
+                <lable className="form-lable">
+                Shipping Attention
+                </lable>
+                <div className="mb-3">
+                  <input
+                    type="text"
+                    name="empEmail"
+                    className={`form-control  ${
+                      formik.touched.empEmail && formik.errors.empEmail
+                        ? "is-invalid"
+                        : ""
+                    }`}
+                    {...formik.getFieldProps("empEmail")}
+                  />
+                  {formik.touched.empEmail &&
+                    formik.errors.empEmail && (
+                      <div className="invalid-feedback">
+                        {formik.errors.empEmail}
+                      </div>
+                    )}
+                </div>
+              </div>
+              <div className="col-12">
+              <label for="exampleFormControlInput1" className="form-label">
+                Remarks
+              </label>
+              <div class="input-group mb-3">
+                <textarea
+                  class="form-control"
+                  {...formik.getFieldProps("invoiceNotes")}
+                  id="exampleFormControlTextarea1"
+                  rows="5"
+                ></textarea>
+              </div>
+            </div>
+            </div>
+          </div>
+          
             </div>
           </div>
         </div>

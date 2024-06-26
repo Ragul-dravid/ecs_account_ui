@@ -103,11 +103,15 @@ const Invoice = () => {
                   <td className="text-center">{data.amount}</td>
                   <td className="text-center">
                     {data.status === "PAID" ? (
-                      <span className="badge text-bg-success">PAID</span>
+                      <span className="badge badge-lg badge-dot">
+                      <i className="bg-success"></i>Paid
+                    </span>
                     ) : data.status === "PENDING" ? (
-                      <span className="badge text-bg-danger">PENDING</span>
+                      <span className="badge badge-lg badge-dot">
+                        <i className="bg-warning"></i>PENDING</span>
                     ) : (
-                      <span className="badge text-bg-primary">PARTLY PAID</span>
+                      <span className="badge badge-lg badge-dot">
+                        <i className="bg-dark"></i>PARTLY PAID</span>
                     )}
                   </td>
                   <td className="text-center">

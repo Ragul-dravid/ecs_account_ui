@@ -87,7 +87,7 @@ const EstimateAdd = () => {
                 </select>
               </div>
               <div className="col-md-6 col-12 mb-2">
-                <lable className="form-lable">Order Number</lable>
+                <lable className="form-lable">Quote Number</lable>
                 <div className="mb-3">
                   <input
                     type="text"
@@ -97,7 +97,17 @@ const EstimateAdd = () => {
                   />
                 </div>
               </div>
-              <div className="col-md-6 col-12 mb-2"></div>
+              <div className="col-md-6 col-12 mb-2">
+              <lable className="form-lable">Title</lable>
+              <div className="mb-3">
+                  <input
+                    type="text"
+                    name="estimateNumber"
+                    className="form-control"
+                    {...formik.getFieldProps("estimateNumber")}
+                  />
+                </div>
+              </div>
               <div className="col-md-6 col-12 mb-2">
                 <lable className="form-lable">Reference</lable>
                 <input

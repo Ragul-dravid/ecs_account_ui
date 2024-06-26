@@ -10,7 +10,7 @@ const CustomerView = () => {
             <div className="row align-items-center">
               <div className="col">
                 <div className="d-flex align-items-center gap-4">
-                  <h1 className="h4 ls-tight headingColor">CUSTOMER VIEW</h1>
+                  <h1 className="h4 ls-tight headingColor">View Customer</h1>
                 </div>
               </div>
               <div className="col-auto">
@@ -27,198 +27,205 @@ const CustomerView = () => {
         </div>
       </div>
       <div className="card shadow border-0 mb-2 minHeight">
-        
-        <div className="container mt-5">
+      <div className="container">
           <div className="row mt-2 p-3">
             <div className="col-md-6 col-12">
-              <div className="row my-3">
+              <div className="row mb-3">
                 <div className="col-6 d-flex justify-content-start align-items-center">
                   <p className="text-sm">
-                    <b>Customer Type</b>
+                    <b>Contact Name</b>
                   </p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: Business</p>
+                  <p className="text-muted text-sm">: Ecs</p>
                 </div>
               </div>
             </div>
             <div className="col-md-6 col-12">
-              <div className="row my-3">
+              <div className="row mb-3">
                 <div className="col-6 d-flex justify-content-start align-items-center">
                   <p className="text-sm">
-                    <b>Customer Name </b>
+                    <b>Account Number </b>
                   </p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: Kumar </p>
+                  <p className="text-muted text-sm">: keerthick </p>
                 </div>
               </div>
             </div>
             <div className="col-md-6 col-12">
-              <div className="row my-3">
-                <div className="col-6 d-flex justify-content-start align-items-center">
-                  <p className="text-sm">
-                    <b>Company Name</b>
-                  </p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm">: CloudECS info</p>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6 col-12">
-              <div className="row my-3">
-                <div className="col-6 d-flex justify-content-start align-items-center">
-                  <p className="text-sm">
-                    <b>Customer Email ID</b>
-                  </p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm">: harish@gmail.com</p>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6 col-12">
-              <div className="row my-3">
+              <div className="row mb-3">
                 <div className="col-6 d-flex justify-content-start align-items-center">
                   <p className="text-sm">
                     <b>Customer Phone</b>
                   </p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: 6385921322</p>
+                  <p className="text-muted text-sm">: 987656543</p>
                 </div>
               </div>
             </div>
             <div className="col-md-6 col-12">
-              <div className="row my-3">
+              <div className="row mb-3">
                 <div className="col-6 d-flex justify-content-start align-items-center">
                   <p className="text-sm">
-                    <b>PAN Number</b>
+                    <b>Customer Email </b>
                   </p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: GHCB2345H</p>
+                  <p className="text-muted text-sm">: ragulecs@gmail.com</p>
                 </div>
               </div>
             </div>
             <div className="col-md-6 col-12">
-              <div className="row my-3">
+              <div className="row mb-3">
                 <div className="col-6 d-flex justify-content-start align-items-center">
                   <p className="text-sm">
-                    <b>Currency</b>
+                    <b>Primary Contact</b>
                   </p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: $25000</p>
+                  <p className="text-muted text-sm">: 98766</p>
                 </div>
               </div>
             </div>
-            <div className='mt-5 mb-2'>
-               <h3>Billing Address</h3>
+            <div className="col-md-6 col-12">
+              <div className="row mb-3">
+                <div className="col-6 d-flex justify-content-start align-items-center">
+                  <p className="text-sm">
+                    <b>Bank Name</b>
+                  </p>
+                </div>
+                <div className="col-6">
+                  <p className="text-muted text-sm">: ERTH567</p>
+                </div>
+              </div>
             </div>
             <div className="col-md-6 col-12">
-              <div className="row my-3">
+              <div className="row mb-3">
+                <div className="col-6 d-flex justify-content-start align-items-center">
+                  <p className="text-sm">
+                    <b>Bank Account Number</b>
+                  </p>
+                </div>
+                <div className="col-6">
+                  <p className="text-muted text-sm">: ERTH567</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {/* Users Information */}
+        <div className="container-fluid fw-bold fs-5 my-2 ms-2">
+          Billing Address
+         </div>
+        <div className="container">
+          <div className="row mt-2 p-3">
+            <div className="col-md-6 col-12">
+              <div className="row mb-3">
                 <div className="col-6 d-flex justify-content-start align-items-center">
                   <p className="text-sm">
                     <b>Billing Country</b>
                   </p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: INDIA</p>
+                  <p className="text-muted text-sm">: India</p>
                 </div>
               </div>
             </div>
             <div className="col-md-6 col-12">
-              <div className="row my-3">
+              <div className="row mb-3">
                 <div className="col-6 d-flex justify-content-start align-items-center">
                   <p className="text-sm">
-                    <b>Billing Address</b>
+                    <b>Billing Address </b>
                   </p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: flat 14 Anna Nagar 
-                    Invoice chennai-10</p>
+                  <p className="text-muted text-sm">: Indian</p>
                 </div>
               </div>
             </div>
             <div className="col-md-6 col-12">
-              <div className="row my-3">
+              <div className="row mb-3">
                 <div className="col-6 d-flex justify-content-start align-items-center">
                   <p className="text-sm">
                     <b>Billing City</b>
                   </p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: Chennai</p>
+                  <p className="text-muted text-sm">: Trichy</p>
                 </div>
               </div>
             </div>
             <div className="col-md-6 col-12">
-              <div className="row my-3">
+              <div className="row mb-3">
                 <div className="col-6 d-flex justify-content-start align-items-center">
                   <p className="text-sm">
                     <b>Billing State</b>
                   </p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: Tamil Nadu</p>
+                  <p className="text-muted text-sm">: Trichy</p>
                 </div>
               </div>
             </div>
             <div className="col-md-6 col-12">
-              <div className="row my-3">
+              <div className="row mb-3">
                 <div className="col-6 d-flex justify-content-start align-items-center">
                   <p className="text-sm">
                     <b>Billing Zip Code</b>
                   </p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: 600010</p>
+                  <p className="text-muted text-sm">: 600243</p>
                 </div>
               </div>
             </div>
             <div className="col-md-6 col-12">
-              <div className="row my-3">
+              <div className="row mb-3">
                 <div className="col-6 d-flex justify-content-start align-items-center">
                   <p className="text-sm">
                     <b>Billing Phone</b>
                   </p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: 25052054</p>
+                  <p className="text-muted text-sm">: 12345678</p>
                 </div>
               </div>
             </div>
-            <div className='mt-5 mb-2'>
-            <h3>Shipping Address</h3>
-            </div>
+          </div>
+        </div>
+        <div className="container-fluid fw-bold fs-5 my-2 ms-2">
+          Shipping Address
+         </div>
+        <div className="container">
+          <div className="row mt-2 p-3">
             <div className="col-md-6 col-12">
-              <div className="row my-3">
+              <div className="row mb-3">
                 <div className="col-6 d-flex justify-content-start align-items-center">
                   <p className="text-sm">
                     <b>Shipping Country</b>
                   </p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: INDIA</p>
+                  <p className="text-muted text-sm">: India</p>
                 </div>
               </div>
             </div>
             <div className="col-md-6 col-12">
-              <div className="row my-3">
+              <div className="row mb-3">
                 <div className="col-6 d-flex justify-content-start align-items-center">
                   <p className="text-sm">
-                    <b>Shipping Address</b>
+                    <b>Shipping Address </b>
                   </p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: Flat 14 Anna Nagar chennai-10</p>
+                  <p className="text-muted text-sm">: Chennai </p>
                 </div>
               </div>
             </div>
             <div className="col-md-6 col-12">
-              <div className="row my-3">
+              <div className="row mb-3">
                 <div className="col-6 d-flex justify-content-start align-items-center">
                   <p className="text-sm">
                     <b>Shipping City</b>
@@ -230,10 +237,10 @@ const CustomerView = () => {
               </div>
             </div>
             <div className="col-md-6 col-12">
-              <div className="row my-3">
+              <div className="row mb-3">
                 <div className="col-6 d-flex justify-content-start align-items-center">
                   <p className="text-sm">
-                    <b>Shipping State</b>
+                    <b> Shipping State</b>
                   </p>
                 </div>
                 <div className="col-6">
@@ -242,7 +249,7 @@ const CustomerView = () => {
               </div>
             </div>
             <div className="col-md-6 col-12">
-              <div className="row my-3">
+              <div className="row mb-3">
                 <div className="col-6 d-flex justify-content-start align-items-center">
                   <p className="text-sm">
                     <b>Shipping Zip Code</b>
@@ -254,18 +261,17 @@ const CustomerView = () => {
               </div>
             </div>
             <div className="col-md-6 col-12">
-              <div className="row my-3">
+              <div className="row mb-3">
                 <div className="col-6 d-flex justify-content-start align-items-center">
                   <p className="text-sm">
                     <b>Shipping Phone</b>
                   </p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: 638596256</p>
+                  <p className="text-muted text-sm">: 9878665544</p>
                 </div>
               </div>
             </div>
-          
           </div>
         </div>
       </div>

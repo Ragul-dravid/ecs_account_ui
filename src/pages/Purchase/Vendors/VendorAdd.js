@@ -77,7 +77,7 @@ function VendorAdd() {
             <div className="row py-4">
               <div className="col-md-6 col-12 mb-2">
                 <lable className="form-lable">
-                 Vendor Name
+                 Contact Name
                 </lable>
                 <div className="mb-3">
                   <input
@@ -100,7 +100,7 @@ function VendorAdd() {
               </div>
               <div className="col-md-6 col-12 mb-2">
                 <lable className="form-lable">
-                 Company Name
+                Account Number
                 </lable>
                 <div className="mb-3">
                   <input
@@ -124,7 +124,7 @@ function VendorAdd() {
 
               <div className="col-md-6 col-12 mb-2">
                 <lable className="form-lable">
-                    Vendor Phone 
+                   Primary Contact
                 </lable>
                 <div className="mb-3">
                   <input
@@ -147,7 +147,7 @@ function VendorAdd() {
               </div>
               <div className="col-md-6 col-12 mb-2">
                 <lable className="form-lable">
-                 Vendor Email
+                vendor Email
                 </lable>
                 <div className="mb-3">
                   <input
@@ -171,7 +171,7 @@ function VendorAdd() {
 
               <div className="col-md-6 col-12 mb-2">
                 <lable className="form-lable">
-                 Currency
+                Vendor Phone
                 </lable>
                 <div className="mb-3">
                   <input
@@ -195,7 +195,55 @@ function VendorAdd() {
 
               <div className="col-md-6 col-12 mb-2">
                 <lable className="form-lable">
-                    PAN Number
+                    Website
+                </lable>
+                <div className="mb-3">
+                  <input
+                    type="text"
+                    name="workLocation"
+                    className={`form-control  ${
+                      formik.touched.workLocation && formik.errors.workLocation
+                        ? "is-invalid"
+                        : ""
+                    }`}
+                    {...formik.getFieldProps("workLocation")}
+                  />
+                  {formik.touched.workLocation &&
+                    formik.errors.workLocation && (
+                      <div className="invalid-feedback">
+                        {formik.errors.workLocation}
+                      </div>
+                    )}
+                </div>
+              </div>
+
+              <div className="col-md-6 col-12 mb-2">
+                <lable className="form-lable">
+                 Bank Name
+                </lable>
+                <div className="mb-3">
+                  <input
+                    type="text"
+                    name="empEmail"
+                    className={`form-control  ${
+                      formik.touched.empEmail && formik.errors.empEmail
+                        ? "is-invalid"
+                        : ""
+                    }`}
+                    {...formik.getFieldProps("empEmail")}
+                  />
+                  {formik.touched.empEmail &&
+                    formik.errors.empEmail && (
+                      <div className="invalid-feedback">
+                        {formik.errors.empEmail}
+                      </div>
+                    )}
+                </div>
+              </div>
+
+              <div className="col-md-6 col-12 mb-2">
+                <lable className="form-lable">
+                   Bank Account Number
                 </lable>
                 <div className="mb-3">
                   <input
@@ -324,7 +372,7 @@ function VendorAdd() {
               </div>
               <div className="col-md-6 col-12 mb-2">
                 <lable className="form-lable">
-                 Shipping City
+                Shipping City
                 </lable>
                 <div className="mb-3">
                   <input
@@ -371,7 +419,7 @@ function VendorAdd() {
               </div>
               <div className="col-md-6 col-12 mb-2">
                 <lable className="form-lable">
-                 Shipping State
+                Shipping State
                 </lable>
                 <div className="mb-3">
                   <input
@@ -417,7 +465,7 @@ function VendorAdd() {
               </div>
               <div className="col-md-6 col-12 mb-2">
                 <lable className="form-lable">
-                 Shipping Zip Code
+                Shipping Zip Code
                 </lable>
                 <div className="mb-3">
                   <input
@@ -440,7 +488,7 @@ function VendorAdd() {
               </div>
               <div className="col-md-6 col-12 mb-2">
                 <lable className="form-lable">
-                    Billing Phone
+                    Billing Attention
                 </lable>
                 <div className="mb-3">
                   <input
@@ -463,7 +511,7 @@ function VendorAdd() {
               </div>
               <div className="col-md-6 col-12 mb-2">
                 <lable className="form-lable">
-                 Shipping Phone
+                Shipping Attention
                 </lable>
                 <div className="mb-3">
                   <input
@@ -484,6 +532,19 @@ function VendorAdd() {
                     )}
                 </div>
               </div>
+              <div className="col-12">
+              <label for="exampleFormControlInput1" className="form-label">
+                Remarks
+              </label>
+              <div class="input-group mb-3">
+                <textarea
+                  class="form-control"
+                  {...formik.getFieldProps("invoiceNotes")}
+                  id="exampleFormControlTextarea1"
+                  rows="5"
+                ></textarea>
+              </div>
+            </div>
             </div>
           </div>
           

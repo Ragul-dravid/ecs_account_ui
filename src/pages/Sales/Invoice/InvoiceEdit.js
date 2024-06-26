@@ -191,7 +191,7 @@ function InvoiceEdit() {
                             </div>
                             <div className="col-md-6 col-12 mb-3">
                                 <lable className="form-lable">
-                                    Order Number<span className="text-danger">*</span>
+                                   Invoice Number<span className="text-danger">*</span>
                                 </lable>
                                 <div className="mb-3">
                                     <input

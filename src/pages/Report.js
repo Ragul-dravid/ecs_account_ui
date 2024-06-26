@@ -3,39 +3,50 @@ import "datatables.net-dt";
 import "datatables.net-responsive-dt";
 import $ from "jquery";
 import { Link } from "react-router-dom";
-import { FaEye, FaEdit, FaPlus } from "react-icons/fa";
-import DeleteModel from "../../../components/common/DeleteModel";
+import DeleteModel from "../components/common/DeleteModel";
 
-
-const Estimates = () => {
+const Report = () => {
   const tableRef = useRef(null);
+
   const datas = [
     {
       id: 1,
-      date: "2020-03-03",
-      estimateNumber: "EST-018",
-      referenceNumber: "500",
-      customerName: "Harish",
-      amount: "$5350"
+      name: "Ragul",
+      rate: "9",
+      type: "Good",
+      usage: "Unit",
     },
     {
       id: 2,
-      date: "2020-03-03",
-      estimateNumber: "EST-018",
-      referenceNumber: "500",
-      customerName: "Antony",
-      amount: "$5350"
+      name: "sakthivel",
+      rate: "10",
+      type: "Good",
+      usage: "Unit",
     },
     {
       id: 3,
-      date: "2020-03-03",
-      estimateNumber: "EST-018",
-      referenceNumber: "500",
-      customerName: "keerthi",
-      amount: "$5350"
+      name: "prem",
+      rate: "9",
+      type: "Good",
+      usage: "Unit",
     },
-
+    {
+      id: 4,
+      name: "keerthick",
+      rate: "9",
+      type: "Good",
+      usage: "Unit",
+    },
+    {
+      id: 5,
+      name: "antony",
+      rate: "9",
+      type: "Good",
+      usage: "Unit",
+    },
+    
   ];
+
   useEffect(() => {
     const table = $(tableRef.current).DataTable();
 
@@ -43,6 +54,7 @@ const Estimates = () => {
       table.destroy();
     };
   }, []);
+
   return (
     <div className="container-fluid px-2 minHeight">
       <div className="card shadow border-0 my-2">
@@ -50,21 +62,20 @@ const Estimates = () => {
           <div className="row align-items-center justify-content-between ">
             <div className="col">
               <div className="d-flex align-items-center gap-4">
-                <h1 className="h4 ls-tight headingColor ">Estimates</h1>
+                <h1 className="h4 ls-tight headingColor ">Report</h1>
               </div>
             </div>
             <div className="col-auto">
               <div className="hstack gap-2 justify-content-end">
-                <Link to="/estimates/add">
+                <Link to="/items/additems">
                   <button type="submit" className="btn btn-sm btn-button">
-                    <span>Add <FaPlus className="pb-1" /></span>
+                    <span>Add +</span>
                   </button>
                 </Link>
               </div>
             </div>
           </div>
         </div>
-
         <hr className="removeHrMargin"></hr>
         <div className="table-responsive p-2 minHeight">
           <table ref={tableRef} className="display table ">
@@ -73,11 +84,18 @@ const Estimates = () => {
                 <th scope="col" style={{ whiteSpace: "nowrap" }}>
                   S.NO
                 </th>
-                <th scope="col" className="text-center">DATE</th>
-                <th scope="col" className="text-center">ESTIMATE NUMBER</th>
-                <th scope="col" className="text-center">REFERENCE NUMBER</th>
-                <th scope="col" className="text-center">CUSTOMER NAME</th>
-                <th scope="col" className="text-center">AMOUNT</th>
+                <th scope="col" className="text-center">
+                  NAME
+                </th>
+                <th scope="col" className="text-center">
+                  Image
+                </th>
+                <th scope="col" className="text-center">
+                  Description
+                </th>
+                {/* <th scope="col" className="text-center">
+                  Usage
+                </th> */}
                 <th scope="col" className="text-center">
                   ACTION
                 </th>
@@ -87,19 +105,18 @@ const Estimates = () => {
               {datas.map((data, index) => (
                 <tr key={index}>
                   <td className="text-center">{index + 1}</td>
-                  <td className="text-center">{data.date}</td>
-                  <td className="text-center">{data.estimateNumber}</td>
-                  <td className="text-center">{data.referenceNumber}</td>
-                  <td className="text-center">{data.customerName}</td>
-                  <td className="text-center">{data.amount}</td>
+                  <td className="text-center">{data.name}</td>
+                  <td className="text-center">{data.rate}</td>
+                  <td className="text-center">{data.type}</td>
+                  {/* <td className="text-center">{data.usage}</td> */}
                   <td className="text-center">
                     <div className="gap-2">
-                      <Link to="/estimates/view">
+                      <Link to="/items/viewitems">
                         <button className="btn btn-light btn-sm  shadow-none border-none">
                           View
                         </button>
                       </Link>
-                      <Link to="/estimates/edit" className="px-2">
+                      <Link to="/items/edititems" className="px-2">
                         <button className="btn btn-light  btn-sm shadow-none border-none">
                           Edit
                         </button>
@@ -116,7 +133,7 @@ const Estimates = () => {
         <div className="card-footer border-0 py-5"></div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Estimates
+export default Report;

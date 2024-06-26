@@ -85,16 +85,16 @@ const Bills = () => {
               <div className="hstack gap-2 justify-content-end">
                 <Link to="/bills/add">
                   <button type="submit" className="btn btn-sm btn-button">
-                  <span cla>Add <FaPlus className="pb-1"/></span>
+                    <span cla>Add <FaPlus className="pb-1" /></span>
                   </button>
                 </Link>
               </div>
             </div>
           </div>
         </div>
-      
 
-      <hr className="removeHrMargin"></hr>
+
+        <hr className="removeHrMargin"></hr>
         <div className="table-responsive p-2 minHeight">
           <table ref={tableRef} className="display table ">
             <thead className="thead-light">
@@ -126,24 +126,33 @@ const Bills = () => {
                   <td className="text-center">{data.amount}</td>
                   <td>
                     {data.status === "Paid" ? (
-                      <span className="badge text-bg-success">Paid</span>
+                      <span className="badge badge-lg badge-dot">
+                        <i className="bg-success"></i>Paid
+                      </span>
                     ) : data.status === "Pending" ? (
-                      <span className="badge text-bg-danger">Pending</span>
+                      <span className="badge badge-lg badge-dot">
+                        <i className="bg-warning"></i>Pending
+                      </span>
+                    ) : data.status === "Off Paid" ? (
+                      <span className="badge badge-lg badge-dot">
+                        <i className="bg-dark"></i>Off Paid
+                      </span>
                     ) : (
-                      <span className="badge text-bg-primary">
-                      Off Paid
+                      <span className="badge badge-lg badge-dot">
+                        <i className="bg-dark"></i>Due
                       </span>
                     )}
                   </td>
+
                   <td>
                     <div>
                       <Link to="/bills/view">
-                      <button className="btn btn-light btn-sm  shadow-none border-none">
+                        <button className="btn btn-light btn-sm  shadow-none border-none">
                           View
                         </button>
                       </Link>
                       <Link to="/bills/edit" className="px-2">
-                      <button className="btn btn-light  btn-sm shadow-none border-none">
+                        <button className="btn btn-light  btn-sm shadow-none border-none">
                           Edit
                         </button>
                       </Link>
@@ -154,11 +163,11 @@ const Bills = () => {
               ))}
             </tbody>
           </table>
-        
 
-        <div className="card-footer border-0 py-5"></div>
+
+          <div className="card-footer border-0 py-5"></div>
+        </div>
       </div>
-    </div>
     </div>
   );
 };

@@ -48,7 +48,7 @@ const EstimateEdit = () => {
           <div className="row align-items-center">
             <div className="col">
               <div className="d-flex align-items-center gap-4">
-                <h1 className="h4 ls-tight headingColor">Add Estimates</h1>
+                <h1 className="h4 ls-tight headingColor">Edit Estimates</h1>
               </div>
             </div>
             <div className="col-auto">
@@ -90,7 +90,7 @@ const EstimateEdit = () => {
                 </select>
               </div>
               <div className="col-md-6 col-12 mb-2">
-                <lable className="form-lable">Order Number</lable>
+                <lable className="form-lable">Quote Number</lable>
                 <div className="mb-3">
                   <input
                     type="text"
@@ -100,7 +100,15 @@ const EstimateEdit = () => {
                   />
                 </div>
               </div>
-              <div className="col-md-6 col-12 mb-2"></div>
+              <div className="col-md-6 col-12 mb-2">
+              <lable className="form-lable">Title</lable>
+              <input
+                  type="text"
+                  name="reference"
+                  {...formik.getFieldProps("reference")}
+                  className={`form-control `}
+                />
+              </div>
               <div className="col-md-6 col-12 mb-2">
                 <lable className="form-lable">Reference</lable>
                 <input

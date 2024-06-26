@@ -45,7 +45,7 @@ function ChartofAccountEdit() {
         onHide={handleClose}
       >
         <Modal.Header closeButton>
-        <Modal.Title className="headColor">Edit ChartOfAccount</Modal.Title>
+        <Modal.Title className="headColor">Edit Chart of Accounts</Modal.Title>
         </Modal.Header>
         <form onSubmit={formik.handleSubmit}>
           <Modal.Body>

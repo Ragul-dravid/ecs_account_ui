@@ -63,6 +63,8 @@ import RecordPayment from "../pages/Sales/Invoice/RecordPayment";
 import PaymentReceived from "../pages/Sales/PaymentReceived/PaymentReceived";
 import PaymentReceivedView from "../pages/Sales/PaymentReceived/PaymentReceivedView";
 
+import Report from "../pages/Report";
+
 function Admin({ handleLogout }) {
   return (
     <BrowserRouter>
@@ -164,6 +166,8 @@ function Admin({ handleLogout }) {
               <Route path="/users/add" element={<UsersAdd />} />
               <Route path="/users/edit" element={<UsersEdit />} />
               <Route path="/users/view" element={<UsersView />} />
+
+              <Route path="/report" element={<Report />} />
             </Routes>
             <Footer />
           </main>

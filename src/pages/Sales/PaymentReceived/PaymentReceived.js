@@ -97,8 +97,8 @@ const PaymentReceived = () => {
                   <td className="text-center">{data.mode}</td>
                   <td className="text-center">
                   <div>
-                      <Link to="/paymentReceived/view">
-                        <button className="btn btn-sm ps-0 shadow-none border-none">
+                      <Link to="/paymentReceived/view" className="px-2">
+                        <button className="btn btn-light btn-sm  shadow-none border-none">
                           View
                         </button>
                       </Link>

@@ -25,7 +25,7 @@ function ChartofAccountView() {
         onHide={handleClose}
       >
         <Modal.Header closeButton>
-        <Modal.Title className="headColor">View ChartOfAccount</Modal.Title>
+        <Modal.Title className="headColor">View Chart of Accounts</Modal.Title>
         </Modal.Header>
         <form>
           <Modal.Body>
