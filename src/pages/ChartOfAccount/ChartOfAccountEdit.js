@@ -28,14 +28,15 @@ function ChartofAccountEdit() {
   });
   return (
     <>
+    
       <button
         type="submit"
-        className="btn btn-sm shadow-none border-none"
+        className="btn btn-light btn-sm  shadow-none border-none me-1"
         onClick={handleShow}
       >
-        <FaEdit />
+        Edit
       </button>
-
+      
       <Modal
         show={show}
         size="lg"
@@ -43,7 +44,9 @@ function ChartofAccountEdit() {
         centered
         onHide={handleClose}
       >
-        <Modal.Header closeButton></Modal.Header>
+        <Modal.Header closeButton>
+        <Modal.Title className="headColor">Edit ChartOfAccount</Modal.Title>
+        </Modal.Header>
         <form onSubmit={formik.handleSubmit}>
           <Modal.Body>
             <div className="row">

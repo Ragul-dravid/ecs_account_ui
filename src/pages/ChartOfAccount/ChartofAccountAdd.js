@@ -34,15 +34,21 @@ function ChartofAccountAdd() {
       >
         Add +
       </button>
-
+      <div className="d-flex align-items-center gap-4">
+                
+              </div>
       <Modal
+
+      
         show={show}
         size="lg"
         aria-labelledby="contained-modal-title-vcenter"
         centered
         onHide={handleClose}
       >
-        <Modal.Header closeButton></Modal.Header>
+        <Modal.Header closeButton>
+        <Modal.Title className="headColor">Add ChartOfAccount</Modal.Title>
+        </Modal.Header>
         <form onSubmit={formik.handleSubmit}>
           <Modal.Body>
             <div className="row">
