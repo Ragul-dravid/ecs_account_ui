@@ -72,8 +72,8 @@ const Paymentmade = () => {
   }, []);
 
   return (
-    <div className="container-fluid minHeight">
-      <div className="card shadow border-0 mb-2 top-header">
+    <div className="container-fluid minHeight px-2">
+      <div className="card shadow border-0 my-2">
         <div className="container-fluid py-4">
           <div className="row align-items-center justify-content-between ">
             <div className="col">
@@ -88,9 +88,9 @@ const Paymentmade = () => {
             </div>
           </div>
         </div>
-      </div>
-
-      <div className="card shadow border-0 my-2">
+      
+      <hr className="removeHrMargin"></hr>
+      
         <div className="table-responsive p-2 minHeight">
           <table ref={tableRef} className="display table ">
             <thead className="thead-light">
@@ -123,9 +123,9 @@ const Paymentmade = () => {
                   <td className="text-center">{data.mode}</td>
                   <td>
                     <div>
-                      <Link to="/paymentmade/view">
-                        <button className="btn btn-sm ps-0 shadow-none border-none">
-                          <FaEye />
+                      <Link to="/paymentmade/view" className="px-2">
+                      <button className="btn btn-light btn-sm  shadow-none border-none">
+                          View
                         </button>
                       </Link>
                      
@@ -136,11 +136,11 @@ const Paymentmade = () => {
               ))}
             </tbody>
           </table>
+          </div>
         </div>
-
         <div className="card-footer border-0 py-5"></div>
       </div>
-    </div>
+    
   );
 };
 

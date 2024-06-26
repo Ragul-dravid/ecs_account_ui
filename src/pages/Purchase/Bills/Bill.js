@@ -72,8 +72,8 @@ const Bills = () => {
   }, []);
 
   return (
-    <div className="container-fluid minHeight">
-      <div className="card shadow border-0 mb-2 top-header">
+    <div className="container-fluid px-2 minHeight">
+      <div className="card shadow border-0 my-2">
         <div className="container-fluid py-4">
           <div className="row align-items-center justify-content-between ">
             <div className="col">
@@ -92,9 +92,9 @@ const Bills = () => {
             </div>
           </div>
         </div>
-      </div>
+      
 
-      <div className="card shadow border-0 my-2">
+      <hr className="removeHrMargin"></hr>
         <div className="table-responsive p-2 minHeight">
           <table ref={tableRef} className="display table ">
             <thead className="thead-light">
@@ -138,13 +138,13 @@ const Bills = () => {
                   <td>
                     <div>
                       <Link to="/bills/view">
-                        <button className="btn btn-sm ps-0 shadow-none border-none">
-                          <FaEye />
+                      <button className="btn btn-light btn-sm  shadow-none border-none">
+                          View
                         </button>
                       </Link>
-                      <Link to="/bills/edit">
-                        <button className="btn btn-sm shadow-none border-none">
-                          <FaEdit />
+                      <Link to="/bills/edit" className="px-2">
+                      <button className="btn btn-light  btn-sm shadow-none border-none">
+                          Edit
                         </button>
                       </Link>
                       <DeleteModel />
@@ -154,10 +154,11 @@ const Bills = () => {
               ))}
             </tbody>
           </table>
-        </div>
+        
 
         <div className="card-footer border-0 py-5"></div>
       </div>
+    </div>
     </div>
   );
 };

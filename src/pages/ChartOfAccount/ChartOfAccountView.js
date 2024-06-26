@@ -11,12 +11,12 @@ function ChartofAccountView() {
     <>
       <button
         type="submit"
-        className="btn btn-sm shadow-none border-none"
+        className="btn btn-light btn-sm  shadow-none border-none me-1"
         onClick={handleShow}
       >
-        <FaEye />
+        View
       </button>
-
+      
       <Modal
         show={show}
         size="lg"
@@ -24,7 +24,9 @@ function ChartofAccountView() {
         centered
         onHide={handleClose}
       >
-        <Modal.Header closeButton></Modal.Header>
+        <Modal.Header closeButton>
+        <Modal.Title className="headColor">View ChartOfAccount</Modal.Title>
+        </Modal.Header>
         <form>
           <Modal.Body>
             <div className="row">

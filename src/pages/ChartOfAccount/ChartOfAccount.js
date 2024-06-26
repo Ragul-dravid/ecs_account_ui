@@ -60,8 +60,8 @@ const ChartOfAccount = () => {
   }, []);
 
   return (
-    <div className="container-fluid minHeight">
-      <div className="card shadow border-0 mb-2 top-header">
+    <div className="container-fluid px-2 minHeight">
+      <div className="card shadow border-0  my-2">
         <div className="container-fluid py-4">
           <div className="row align-items-center justify-content-between ">
             <div className="col">
@@ -76,8 +76,8 @@ const ChartOfAccount = () => {
             </div>
           </div>
         </div>
-      </div>
-      <div className="card shadow border-0 my-2">
+        <hr className="removeHrMargin"></hr>
+      
         <div className="table-responsive p-2 minHeight">
           <table
             ref={tableRef}
@@ -113,7 +113,7 @@ const ChartOfAccount = () => {
             </tbody>
           </table>
         </div>
-
+      
         <div className="card-footer border-0 py-5"></div>
       </div>
     </div>

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 function VendorView() {
   return (
-    <div className="container-fluid minHeight">
+    <div className="container-fluid px-2 minHeight">
       <div className="card shadow border-0 mb-2 top-header">
         <div className="container-fluid py-4">
           <div className="row align-items-center">
@@ -104,7 +104,7 @@ function VendorView() {
           </div>
         </div>
         {/* Users Information */}
-        <div className="container-fluid fw-bold fs-5 my-2">
+        <div className="container-fluid fw-bold fs-5 my-2 ms-2">
           Billing Address
          </div>
         <div className="container">
@@ -183,7 +183,7 @@ function VendorView() {
             </div>
           </div>
         </div>
-        <div className="container-fluid fw-bold fs-5 my-2">
+        <div className="container-fluid fw-bold fs-5 my-2 ms-2">
           Shipping Address
          </div>
         <div className="container">
