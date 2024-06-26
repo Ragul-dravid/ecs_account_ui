@@ -7,18 +7,18 @@ import * as Yup from "yup";
 
 function ExpenseEdit() {
   const validationSchema = Yup.object({
-    expensetype: Yup.string().required("*Expense Type is required"),
+    expenseAcc: Yup.string().required("*Expense Type is required"),
     date: Yup.date().required("* Date is required"),
     invoice: Yup.string().required("*Invoice is required"),
     amount: Yup.string().required("*Ammount is required"),
-    customer: Yup.string().required("*Customer is required"),
+    customerName: Yup.string().required("*Customer Name is required"),
     vendor: Yup.string().required("*vendorendor is required"),
-    GSTlegalname: Yup.string().required("* GST legal Name is required"),
-    GSTnumber: Yup.string().required("*GST Number is required"),
-    tax: Yup.string().required("*Tax is required"),
-    GSTaddress: Yup.string().required("* GST Address is required"),
-    attachreceipt: Yup.string().required("*GST Number is required"),
-    description: Yup.string().required("*Description is required"),
+    // GSTlegalname: Yup.string().required("* GST legal Name is required"),
+    // GSTnumber: Yup.string().required("*GST Number is required"),
+    // tax: Yup.string().required("*Tax is required"),
+    // GSTaddress: Yup.string().required("* GST Address is required"),
+    attachment: Yup.string().required("*GST Number is required"),
+    notes: Yup.string().required("*notes is required"),
     // empEmail: Yup.string()
     // .matches(
     //   /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
@@ -29,18 +29,18 @@ function ExpenseEdit() {
 
   const formik = useFormik({
     initialValues: {
-      expensetype: "Labour",
+      expenseAcc: "Labour",
       date: " 2024-04-01",
       invoice: " INVOICE_6829_2024-04-01",
       amount: " ₹2000",
-      customer: "Harish",
+      customerName: "Harish",
       vendor: "Ragav",
-      GSTlegalname: " ECS Cloud",
-      GSTnumber: " GST829Yyn290",
-      tax: " Taxable",
-      GSTaddress: "Sakthi Tower",
-      attachreceipt: "",
-      description: " Max.500 characters"
+      // GSTlegalname: " ECS Cloud",
+      // GSTnumber: " GST829Yyn290",
+      // tax: " Taxable",
+      // GSTaddress: "Sakthi Tower",
+      attachment: "",
+      notes: " Max.500 characters"
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
@@ -85,13 +85,13 @@ function ExpenseEdit() {
             <div className="row py-4">
               <div className="col-md-6 col-12 mb-2">
                 <lable className="form-lable">
-                  Account Type<span className="text-danger">*</span>
+                  Expense Account<span className="text-danger">*</span>
                 </lable>
                 <div className="mb-3">
                   <select
-                    name="expensetype"
-                    {...formik.getFieldProps("expensetype")}
-                    className={`form-select    ${formik.touched.expensetype && formik.errors.expensetype
+                    name="expenseAcc"
+                    {...formik.getFieldProps("expenseAcc")}
+                    className={`form-select    ${formik.touched.expenseAcc && formik.errors.expenseAcc
                       ? "is-invalid"
                       : ""
                       }`}>
@@ -100,10 +100,10 @@ function ExpenseEdit() {
                     <option value=" Internet Expenses">Internet Expenses</option>
                     <option value=" Add Expenses">Add Expenses</option>
                   </select>
-                  {formik.touched.expensetype &&
-                    formik.errors.expensetype && (
+                  {formik.touched.expenseAcc &&
+                    formik.errors.expenseAcc && (
                       <div className="invalid-feedback">
-                        {formik.errors.expensetype}
+                        {formik.errors.expenseAcc}
                       </div>
                     )}
                 </div>
@@ -207,25 +207,25 @@ function ExpenseEdit() {
 
               <div className="col-md-6 col-12 mb-2">
                 <lable className="form-lable">
-                  Customer<span className="text-danger">*</span>
+                  Customer Name<span className="text-danger">*</span>
                 </lable>
                 <div className="mb-3">
                   <select
-                    name="customer"
-                    {...formik.getFieldProps("customer")}
-                    className={`form-select    ${formik.touched.customer && formik.errors.customer
+                    name="customerName"
+                    {...formik.getFieldProps("customerName")}
+                    className={`form-select    ${formik.touched.customerName && formik.errors.customerName
                       ? "is-invalid"
                       : ""
                       }`}>
                     <option selected>None</option>
                     <option value="INR">Harish</option>
                     <option value="USD">Ragav</option>
-                    <option value="EUR">Add customer</option>
+                    <option value="EUR">Add Customer</option>
                   </select>
-                  {formik.touched.customer &&
-                    formik.errors.customer && (
+                  {formik.touched.customerName &&
+                    formik.errors.customerName && (
                       <div className="invalid-feedback">
-                        {formik.errors.customer}
+                        {formik.errors.customerName}
                       </div>
                     )}
                 </div>
@@ -257,7 +257,7 @@ function ExpenseEdit() {
                 </div>
               </div>
 
-              <div className="col-md-6 col-12 mb-2">
+              {/* <div className="col-md-6 col-12 mb-2">
                 <lable className="form-lable">
                   GST legal Name<span className="text-danger">*</span>
                 </lable>
@@ -278,9 +278,9 @@ function ExpenseEdit() {
                       </div>
                     )}
                 </div>
-              </div>
+              </div> */}
 
-              <div className="col-md-6 col-12 mb-2">
+              {/* <div className="col-md-6 col-12 mb-2">
                 <lable className="form-lable">
                   GST Number<span className="text-danger">*</span>
                 </lable>
@@ -301,9 +301,9 @@ function ExpenseEdit() {
                       </div>
                     )}
                 </div>
-              </div>
+              </div> */}
 
-              <div className="col-md-6 col-12 mb-2">
+              {/* <div className="col-md-6 col-12 mb-2">
                 <lable className="form-lable">
                   Tax<span className="text-danger">*</span>
                 </lable>
@@ -324,9 +324,9 @@ function ExpenseEdit() {
                       </div>
                     )}
                 </div>
-              </div>
+              </div> */}
 
-              <div className="col-md-6 col-12 mb-2">
+              {/* <div className="col-md-6 col-12 mb-2">
                 <lable className="form-lable">
                   GST address<span className="text-danger">*</span>
                 </lable>
@@ -347,7 +347,7 @@ function ExpenseEdit() {
                       </div>
                     )}
                 </div>
-              </div>
+              </div> */}
 
               <div className="col-md-6 col-12 mb-2">
                 <lable className="form-lable">
@@ -356,17 +356,17 @@ function ExpenseEdit() {
                 <div className="mb-3">
                   <input
                     type="file"
-                    name="attachreceipt"
-                    className={`form-control  ${formik.touched.attachreceipt && formik.errors.attachreceipt
+                    name="attachment"
+                    className={`form-control  ${formik.touched.attachment && formik.errors.attachment
                       ? "is-invalid"
                       : ""
                       }`}
-                    {...formik.getFieldProps("attachreceipt")}
+                    {...formik.getFieldProps("attachment")}
                   />
-                  {formik.touched.attachreceipt &&
-                    formik.errors.attachreceipt && (
+                  {formik.touched.attachment &&
+                    formik.errors.attachment && (
                       <div className="invalid-feedback">
-                        {formik.errors.attachreceipt}
+                        {formik.errors.attachment}
                       </div>
                     )}
                 </div>
@@ -374,22 +374,22 @@ function ExpenseEdit() {
 
               <div className="col-md-6 col-12 mb-2">
                 <lable className="form-lable">
-                  Description<span className="text-danger">*</span>
+                  Notes<span className="text-danger">*</span>
                 </lable>
                 <div className="mb-3">
                   <input
                     type="text"
-                    name="description"
-                    className={`form-control  ${formik.touched.description && formik.errors.description
+                    name="notes"
+                    className={`form-control  ${formik.touched.notes && formik.errors.notes
                       ? "is-invalid"
                       : ""
                       }`}
-                    {...formik.getFieldProps("description")}
+                    {...formik.getFieldProps("notes")}
                   />
-                  {formik.touched.description &&
-                    formik.errors.description && (
+                  {formik.touched.notes &&
+                    formik.errors.notes && (
                       <div className="invalid-feedback">
-                        {formik.errors.description}
+                        {formik.errors.notes}
                       </div>
                     )}
                 </div>

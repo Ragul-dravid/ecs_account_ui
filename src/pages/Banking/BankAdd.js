@@ -11,7 +11,7 @@ function BankAdd() {
     accountNumber: Yup.string().required("*Account Number is required"),
     ifsc: Yup.string().required("*IFSC code is required"),
     bankName: Yup.string().required("*Bank Name is required"),
-    description: Yup.string().required("*Description is required"),
+    // description: Yup.string().required("*Description is required"),
     // empEmail: Yup.string()
     // .matches(
     //   /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
@@ -28,7 +28,7 @@ function BankAdd() {
       accountNumber: "",
       ifsc: "",
       bankName: "",
-      description: ""
+      // description: ""
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
@@ -216,7 +216,7 @@ function BankAdd() {
                 </div>
               </div>
 
-              <div className="col-md-6 col-12 mb-2">
+              {/* <div className="col-md-6 col-12 mb-2">
                 <lable className="form-lable">
                   Description<span className="text-danger">*</span>
                 </lable>
@@ -237,7 +237,7 @@ function BankAdd() {
                       </div>
                     )}
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>
