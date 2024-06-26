@@ -17,28 +17,28 @@ const Bank = () => {
       accounttype: "Bank",
       accountName: "Ragul",
       runningbalance: " ₹-1,24,51,483.00",
-      
+
     },
     {
       id: 2,
       accounttype: "Credit Card",
       accountName: "Chandru",
       runningbalance: " ₹+1,24,35,483.00",
-     
+
     },
     {
       id: 3,
       accounttype: "Pretty Cash",
       accountName: "Surya",
       runningbalance: " ₹-1,24,35,483.00",
-      
+
     },
     {
       id: 4,
       accounttype: "undeposited Fund",
       accountName: "Antony",
       runningbalance: " ₹-1,24,66,483.00",
-      
+
     },
 
   ];
@@ -52,8 +52,8 @@ const Bank = () => {
   }, []);
 
   return (
-    <div className="container-fluid minHeight">
-      <div className="card shadow border-0 mb-2 top-header">
+    <div className="container-fluid px-2 minHeight">
+      <div className="card shadow border-0 my-2">
         <div className="container-fluid py-4">
           <div className="row align-items-center justify-content-between ">
             <div className="col">
@@ -72,9 +72,8 @@ const Bank = () => {
             </div>
           </div>
         </div>
-      </div>
 
-      <div className="card shadow border-0 my-2">
+        <hr className="removeHrMargin"></hr>
         <div className="table-responsive p-2 minHeight">
           <table ref={tableRef} className="display table ">
             <thead className="thead-light">
@@ -82,9 +81,9 @@ const Bank = () => {
                 <th scope="col" style={{ whiteSpace: "nowrap" }}>
                   S.NO
                 </th>
-                <th scope="col">ACCOUNT TYPE</th>
-                <th scope="col">ACCOUNT NAME</th>
-                <th scope="col">RUNNING BALANCE</th>
+                <th scope="col" className="text-center">ACCOUNT TYPE</th>
+                <th scope="col" className="text-center">ACCOUNT NAME</th>
+                <th scope="col" className="text-center">RUNNING BALANCE</th>
                 {/* <th scope="col">DEPARTMENT NAME</th>
                 <th scope="col">WORK LOCATION</th> */}
                 <th scope="col" className="text-center">
@@ -96,19 +95,19 @@ const Bank = () => {
               {datas.map((data, index) => (
                 <tr key={index}>
                   <td className="text-center">{index + 1}</td>
-                  <td>{data.accounttype}</td>
-                  <td>{data.accountName}</td>
-                  <td>{data.runningbalance}</td>
-                  <td>
-                    <div>
+                  <td className="text-center">{data.accounttype}</td>
+                  <td className="text-center">{data.accountName}</td>
+                  <td className="text-center">{data.runningbalance}</td>
+                  <td className="text-center">
+                    <div className="gap-2">
                       <Link to="/bank/view">
-                        <button className="btn btn-sm ps-0 shadow-none border-none">
-                          <FaEye />
+                        <button className="btn btn-light btn-sm  shadow-none border-none">
+                          View
                         </button>
                       </Link>
-                      <Link to="/bank/edit">
-                        <button className="btn btn-sm shadow-none border-none">
-                          <FaEdit />
+                      <Link to="/bank/edit" className="px-2">
+                        <button className="btn btn-light  btn-sm shadow-none border-none">
+                          Edit
                         </button>
                       </Link>
                       <DeleteModel />

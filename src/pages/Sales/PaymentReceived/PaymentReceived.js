@@ -52,8 +52,8 @@ const PaymentReceived = () => {
   }, []);
 
   return (
-    <div className="container-fluid minHeight">
-      <div className="card shadow border-0 mb-2 top-header">
+    <div className="container-fluid px-2 minHeight">
+      <div className="card shadow border-0 my-2">
         <div className="container-fluid py-4">
           <div className="row align-items-center justify-content-between ">
             <div className="col">
@@ -63,9 +63,8 @@ const PaymentReceived = () => {
             </div>
           </div>
         </div>
-      </div>
 
-      <div className="card shadow border-0 my-2">
+        <hr className="removeHrMargin"></hr>
         <div className="table-responsive p-2 minHeight">
           <table ref={tableRef} className="display table ">
             <thead className="thead-light">
@@ -73,13 +72,13 @@ const PaymentReceived = () => {
                 <th scope="col" style={{ whiteSpace: "nowrap" }}>
                   S.NO
                 </th>
-                <th scope="col">DATE</th>
-                <th scope="col">PAYMENT NUMBER</th>
-                <th scope="col">REFERENCE NUMBER</th>
-                <th scope="col">CUSTOMER NUMBER</th>
-                <th scope="col">INVOICE NUMBER</th>
-                <th scope="col">AMOUNT</th>
-                <th scope="col">MODE</th>
+                <th scope="col" className="text-center">DATE</th>
+                <th scope="col" className="text-center">PAYMENT NUMBER</th>
+                <th scope="col" className="text-center">REFERENCE NUMBER</th>
+                <th scope="col" className="text-center">CUSTOMER NUMBER</th>
+                <th scope="col" className="text-center">INVOICE NUMBER</th>
+                <th scope="col" className="text-center">AMOUNT</th>
+                <th scope="col" className="text-center">MODE</th>
                 <th scope="col" className="text-center">
                   ACTION
                 </th>
@@ -89,18 +88,18 @@ const PaymentReceived = () => {
               {datas.map((data, index) => (
                 <tr key={index}>
                   <td className="text-center">{index + 1}</td>
-                  <td>{data.date}</td>
-                  <td>{data.paymentNumber}</td>
-                  <td>{data.referenceNumber}</td>
-                  <td>{data.customerNumber}</td>
-                  <td>{data.invoiceNumber}</td>
-                  <td>{data.amount}</td>
-                  <td>{data.mode}</td>
-                  <td>
-                    <div>
+                  <td className="text-center">{data.date}</td>
+                  <td className="text-center">{data.paymentNumber}</td>
+                  <td className="text-center">{data.referenceNumber}</td>
+                  <td className="text-center">{data.customerNumber}</td>
+                  <td className="text-center">{data.invoiceNumber}</td>
+                  <td className="text-center">{data.amount}</td>
+                  <td className="text-center">{data.mode}</td>
+                  <td className="text-center">
+                  <div>
                       <Link to="/paymentReceived/view">
                         <button className="btn btn-sm ps-0 shadow-none border-none">
-                          <FaEye />
+                          View
                         </button>
                       </Link>
                       <DeleteModel/>

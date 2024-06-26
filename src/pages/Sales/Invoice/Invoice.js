@@ -51,8 +51,8 @@ const Invoice = () => {
   }, []);
 
   return (
-    <div className="container-fluid minHeight">
-      <div className="card shadow border-0 mb-2 top-header">
+    <div className="container-fluid px-2 minHeight">
+      <div className="card shadow border-0 my-2">
         <div className="container-fluid py-4">
           <div className="row align-items-center justify-content-between ">
             <div className="col">
@@ -71,9 +71,7 @@ const Invoice = () => {
             </div>
           </div>
         </div>
-      </div>
-
-      <div className="card shadow border-0 my-2">
+        <hr className="removeHrMargin"></hr>
         <div className="table-responsive p-2 minHeight">
           <table ref={tableRef} className="display table ">
             <thead className="thead-light">
@@ -81,13 +79,13 @@ const Invoice = () => {
                 <th scope="col" style={{ whiteSpace: "nowrap" }}>
                   S.NO
                 </th>
-                <th scope="col">DATE</th>
-                <th scope="col">INVOICE NUMBER</th>
-                <th scope="col">ORDER NUMBER</th>
-                <th scope="col">CUSTOMER NAME</th>
-                <th scope="col">BALANCE DUE</th>
-                <th scope="col">AMOUNT</th>
-                <th scope="col">STATUS</th>
+                <th scope="col" className="text-center">DATE</th>
+                <th scope="col" className="text-center">INVOICE NUMBER</th>
+                <th scope="col" className="text-center">ORDER NUMBER</th>
+                <th scope="col" className="text-center">CUSTOMER NAME</th>
+                <th scope="col" className="text-center">BALANCE DUE</th>
+                <th scope="col" className="text-center">AMOUNT</th>
+                <th scope="col" className="text-center">STATUS</th>
                 <th scope="col" className="text-center">
                   ACTION
                 </th>
@@ -97,13 +95,13 @@ const Invoice = () => {
               {datas.map((data, index) => (
                 <tr key={index}>
                   <td className="text-center">{index + 1}</td>
-                  <td>{data.date}</td>
-                  <td>{data.invoiceNumber}</td>
-                  <td>{data.orderNumber}</td>
-                  <td>{data.customerName}</td>
-                  <td>{data.balanceDue}</td>
-                  <td>{data.amount}</td>
-                  <td>
+                  <td className="text-center">{data.date}</td>
+                  <td className="text-center">{data.invoiceNumber}</td>
+                  <td className="text-center">{data.orderNumber}</td>
+                  <td className="text-center">{data.customerName}</td>
+                  <td className="text-center">{data.balanceDue}</td>
+                  <td className="text-center">{data.amount}</td>
+                  <td className="text-center">
                     {data.status === "PAID" ? (
                       <span className="badge text-bg-success">PAID</span>
                     ) : data.status === "PENDING" ? (
@@ -112,16 +110,16 @@ const Invoice = () => {
                       <span className="badge text-bg-primary">PARTLY PAID</span>
                     )}
                   </td>
-                  <td>
-                    <div>
+                  <td className="text-center">
+                    <div className="gap-2">
                       <Link to="/invoice/view">
-                        <button className="btn btn-sm ps-0 shadow-none border-none">
-                          <FaEye />
+                        <button className="btn btn-light btn-sm  shadow-none border-none">
+                          View
                         </button>
                       </Link>
-                      <Link to="/invoice/edit">
-                        <button className="btn btn-sm shadow-none border-none">
-                          <FaEdit />
+                      <Link to="/invoice/EDIT" className="px-2">
+                        <button className="btn btn-light  btn-sm shadow-none border-none">
+                          Edit
                         </button>
                       </Link>
                       <DeleteModel />

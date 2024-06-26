@@ -23,7 +23,7 @@ const BankView = () => {
 
     },
     {
-      id:2,
+      id: 2,
       date: " 01/08/24",
       type: " mous",
       description: "",
@@ -62,8 +62,8 @@ const BankView = () => {
   }, []);
 
   return (
-    <div className="container-fluid minHeight">
-      <div className="card shadow border-0 mb-2 top-header">
+    <div className="container-fluid px-2 minHeight">
+      <div className="card shadow border-0 my-2">
         <div className="container-fluid py-4">
           <div className="row align-items-center justify-content-between ">
             <div className="col">
@@ -87,9 +87,7 @@ const BankView = () => {
             </div>
           </div>
         </div>
-      </div>
-
-      <div className="card shadow border-0 my-2">
+        <hr className="removeHrMargin"></hr>
         <div className="container fw-bold fs-5 my-4">
           <span>All transactions</span>
         </div>
@@ -100,12 +98,12 @@ const BankView = () => {
                 <th scope="col" style={{ whiteSpace: "nowrap" }}>
                   S.NO
                 </th>
-                <th scope="col">DATE</th>
-                <th scope="col">TYPE</th>
-                <th scope="col">DESCRIPTION</th>
-                <th scope="col">DEPOSITS</th>
-                <th scope="col">WITHDRAWALS</th>
-                <th scope="col">RUNNING BALANCE</th>
+                <th scope="col" className="text-center">DATE</th>
+                <th scope="col" className="text-center">TYPE</th>
+                <th scope="col" className="text-center">DESCRIPTION</th>
+                <th scope="col" className="text-center">DEPOSITS</th>
+                <th scope="col" className="text-center">WITHDRAWALS</th>
+                <th scope="col" className="text-center">RUNNING BALANCE</th>
                 <th scope="col" className="text-center">
                   ACTION
                 </th>
@@ -115,22 +113,22 @@ const BankView = () => {
               {datas.map((data, index) => (
                 <tr key={index}>
                   <td className="text-center">{index + 1}</td>
-                  <td>{data.date}</td>
-                  <td>{data.type}</td>
-                  <td>{data.description}</td>
-                  <td>{data.deposits}</td>
-                  <td>{data.withdrawals}</td>
-                  <td>{data.runningbalance}</td>
-                  <td>
+                  <td className="text-center">{data.date}</td>
+                  <td className="text-center">{data.type}</td>
+                  <td className="text-center">{data.description}</td>
+                  <td className="text-center">{data.deposits}</td>
+                  <td className="text-center">{data.withdrawals}</td>
+                  <td className="text-center">{data.runningbalance}</td>
+                  <td className="text-center">
                     <div>
                       <Link to="expense/view">
                         <button className="btn btn-sm ps-0 shadow-none border-none">
-                          <FaEye />
+                          View
                         </button>
                       </Link>
                       <Link to="expense/edit">
                         <button className="btn btn-sm shadow-none border-none">
-                          <FaEdit />
+                          Edit
                         </button>
                       </Link>
                       <DeleteModel />
