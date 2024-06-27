@@ -4,9 +4,9 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 
 const EstimateAdd = () => {
-  // const [rows, setRows] = useState([]);
-  const [title, setTitle] = useState('');
-  const [summary, setSummary] = useState('');
+  // // const [rows, setRows] = useState([]);
+  // const [title, setTitle] = useState('');
+  // const [summary, setSummary] = useState('');
   const [rows, setRows] = useState([{ id: 1 }]);
   const [rowss, setRowss] = useState([]); // Initialize rows with one row having an id
   const AddRowContent = () => {
@@ -67,7 +67,6 @@ const EstimateAdd = () => {
                 >
                   Save
                 </button>
-
               </div>
             </div>
           </div>
@@ -184,7 +183,7 @@ const EstimateAdd = () => {
                               className="form-control mb-2"
                               type="text"
                               placeholder="Title"
-                              value={row.title || ''}
+                              value={row.title || ""}
                               onChange={(e) => {
                                 const newRows = [...rowss];
                                 newRows[index].title = e.target.value;
@@ -201,7 +200,7 @@ const EstimateAdd = () => {
                               className="form-control mb-4"
                               type="text"
                               placeholder="Summary"
-                              value={row.summary || ''}
+                              value={row.summary || ""}
                               onChange={(e) => {
                                 const newRows = [...rowss];
                                 newRows[index].summary = e.target.value;
@@ -217,53 +216,63 @@ const EstimateAdd = () => {
               ))}
               <div className="row">
                 <div className="col-12 mb-4">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setRowss((prev) => [...prev, { title: '', summary: '' }]); // Add a new row with empty title and summary
-                    }}
-                    className="btn btn-border btn-sm btn-button"
-                  >
-                    <i className="bx bx-plus"></i> Add Title & Summary
-                  </button>{" "}
-                  &nbsp;&nbsp;
+                  {rowss.length === 0 && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setRowss((prev) => [
+                          ...prev,
+                          { title: "", summary: "" },
+                        ]); // Add a new row with empty title and summary
+                      }}
+                      className="btn btn-border btn-sm btn-button"
+                    >
+                      <i className="bx bx-plus"></i> Add Title & Summary
+                    </button>
+                  )}
                   {rowss.length > 0 && (
                     <button
                       type="button"
                       onClick={() => setRowss((prev) => prev.slice(0, -1))}
-                      className="btn btn-outline-danger"
+                      className="btn btn-danger btn-sm "
                     >
-                      Delete
+                      Delete Title & Summary
                     </button>
                   )}
                 </div>
               </div>
             </div>
-            <div className="col-md-6 col-12 mb-3"></div>
-                            <div className="col-md-6 col-12 mb-3 d-flex align-items-end justify-content-end" style={{marginLeft:"39rem"}}>
-                                <label className="col-form-label">
-                                    Amount<span className="text-danger">*</span>
-                                </label>
-                                <div className="overflow-x-auto">
-                                    <select
-                                        {...formik.getFieldProps("tax")}
-                                        className="form-select" style={{ width: "100%" }}>
-                                        <option></option>
-                                        <option value="Commision">Tax Exclusive</option>
-                                        <option value="Brokerage">Tax Inclusive</option>
-                                        <option value="Brokerage">No Tax</option>
-                                    </select>
-                                </div>
-                                {formik.touched.taxOption && formik.errors.taxOption && (
-                                    <div className="invalid-feedback">{formik.errors.taxOption}</div>
-                                )}
-                            </div>
-            <div className="row">
-            <div className="">
-              <h3 style={{ background: "#4066D5" }} className="text-light p-2">
-                Item Table
-              </h3>
+            <div className="col-12 mb-3 d-flex align-items-end justify-content-end">
+              <label className="col-form-label">
+                Amount<span className="text-danger">*</span>&nbsp;&nbsp;
+              </label>
+              <div className="overflow-x-auto">
+                <select
+                  {...formik.getFieldProps("tax")}
+                  className="form-select"
+                  style={{ width: "100%" }}
+                >
+                  <option></option>
+                  <option value="Commision">Tax Exclusive</option>
+                  <option value="Brokerage">Tax Inclusive</option>
+                  <option value="Brokerage">No Tax</option>
+                </select>
+              </div>
+              {formik.touched.taxOption && formik.errors.taxOption && (
+                <div className="invalid-feedback">
+                  {formik.errors.taxOption}
+                </div>
+              )}
             </div>
+            <div className="row">
+              <div className="">
+                <h3
+                  style={{ background: "#4066D5" }}
+                  className="text-light p-2"
+                >
+                  Item Table
+                </h3>
+              </div>
               <div className="table-responsive">
                 <table class="table ">
                   <thead>
@@ -284,7 +293,9 @@ const EstimateAdd = () => {
                         <td>
                           <select
                             name={`items[${index}].itemDetails${index}`}
-                            {...formik.getFieldProps(`items[${index}].itemDetails${index}`)}
+                            {...formik.getFieldProps(
+                              `items[${index}].itemDetails${index}`
+                            )}
                             className="form-select"
                           >
                             <option></option>
@@ -297,7 +308,9 @@ const EstimateAdd = () => {
                             type="text"
                             name={`items[${index}].quantity${index}`}
                             className="form-control"
-                            {...formik.getFieldProps(`items[${index}].quantity${index}`)}
+                            {...formik.getFieldProps(
+                              `items[${index}].quantity${index}`
+                            )}
                           />
                         </td>
                         <td>
@@ -305,7 +318,9 @@ const EstimateAdd = () => {
                             type="text"
                             name={`items[${index}].rate${index}`}
                             className="form-control"
-                            {...formik.getFieldProps(`items[${index}].rate${index}`)}
+                            {...formik.getFieldProps(
+                              `items[${index}].rate${index}`
+                            )}
                           />
                         </td>
                         <td>
@@ -313,12 +328,17 @@ const EstimateAdd = () => {
                             type="text"
                             name={`items[${index}].discount${index}`}
                             className="form-control"
-                            {...formik.getFieldProps(`items[${index}].discount${index}`)}
-                          /></td>
+                            {...formik.getFieldProps(
+                              `items[${index}].discount${index}`
+                            )}
+                          />
+                        </td>
                         <td>
                           <select
                             name={`items[${index}].tax${index}`}
-                            {...formik.getFieldProps(`items[${index}].tax${index}`)}
+                            {...formik.getFieldProps(
+                              `items[${index}].tax${index}`
+                            )}
                             className="form-select"
                           >
                             <option></option>
@@ -326,12 +346,16 @@ const EstimateAdd = () => {
                             <option value="Brokerage">Brokerage</option>
                           </select>
                         </td>
-                        <td><input
-                          type="text"
-                          name={`items[${index}].amount${index}`}
-                          className="form-control"
-                          {...formik.getFieldProps(`items[${index}].amount${index}`)}
-                        /></td>
+                        <td>
+                          <input
+                            type="text"
+                            name={`items[${index}].amount${index}`}
+                            className="form-control"
+                            {...formik.getFieldProps(
+                              `items[${index}].amount${index}`
+                            )}
+                          />
+                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -360,8 +384,12 @@ const EstimateAdd = () => {
               <div className="col-md-6 col-12 mb-2 pt-5">
                 <lable className="form-lable">Customer Notes</lable>
                 <div className="mb-3">
-                  <input type="text" {...formik.getFieldProps("customerNotes")}
-                    name="customerNotes" className="form-control" />
+                  <input
+                    type="text"
+                    {...formik.getFieldProps("customerNotes")}
+                    name="customerNotes"
+                    className="form-control"
+                  />
                 </div>
               </div>
               <div className="card col-md-6 col-12 p-3 mb-4 card shadow border-2">
@@ -380,7 +408,8 @@ const EstimateAdd = () => {
                 <div className=" ms-2 d-flex justify-content-between align-items-center">
                   <lable className="form-lable">Adjustment</lable>
                   <div className="ms-3">
-                    <input {...formik.getFieldProps("adjustment")}
+                    <input
+                      {...formik.getFieldProps("adjustment")}
                       type="text"
                       name="adjustment"
                       className="form-control form-control-sm"
@@ -391,7 +420,8 @@ const EstimateAdd = () => {
                 <div className=" ms-2 d-flex justify-content-between align-items-center mt-2">
                   <lable className="form-lable">Total</lable>
                   <div className="ms-3">
-                    <input {...formik.getFieldProps("total")}
+                    <input
+                      {...formik.getFieldProps("total")}
                       type="text"
                       name="total"
                       className="form-control form-control-sm"
@@ -403,7 +433,8 @@ const EstimateAdd = () => {
               <div className="col-12">
                 <lable className="form-lable">Terms & Conditions</lable>
                 <div className="mb-3">
-                  <textarea {...formik.getFieldProps("termsConditions")}
+                  <textarea
+                    {...formik.getFieldProps("termsConditions")}
                     placeholder="Enter the terms and conditions of your business in your transaction"
                     type="text"
                     name="termsConditions"
