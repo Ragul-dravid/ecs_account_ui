@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import Logo from "../../../assets/Logo.png"
-import { MdOutlineDownloadForOffline } from "react-icons/md";
+import Logo from "../../../assets/AccountsLogo.png"
+import { IoCloudDownloadSharp } from "react-icons/io5";
 import { FaTelegramPlane } from "react-icons/fa";
 
 const BillView = () => {
@@ -22,16 +22,16 @@ const BillView = () => {
                     <span>Back</span>
                   </button>
                 </Link>
-                <button type="submit" className="btn btn-button rounded-pill p-1">
-                  <FaTelegramPlane size={25}/>
+                <button type="submit" className="btn btn-button rounded-pill p-2">
+                  <FaTelegramPlane size={18} />
                 </button>
-                <button type="submit" className="btn btn-button rounded-pill p-1">
-                  <MdOutlineDownloadForOffline size={25}/>
+                <button type="submit" className="btn btn-button rounded-pill p-2">
+                  <IoCloudDownloadSharp size={18} />
                 </button>
                 <Link to="/bills/view/recordpaymentmade">
-                <button type="submit" className="btn btn-button rounded">
-                  Record Payment
-                </button>
+                  <button type="submit" className="btn btn-button rounded">
+                    Record Payment
+                  </button>
                 </Link>
                 <button type="submit" className="btn btn-button rounded">
                   Clone
@@ -45,17 +45,17 @@ const BillView = () => {
         <div className="container-fluid mt-5">
           <div className="row mt-4 p-3">
             <div className="col-md-6 col-12 ">
-                <div className=" d-flex align-items-center">
-                    <img src={Logo} alt="" />
-                    <h2 className="text-info">Cloud ECS Infotech</h2>
-                </div>
+              <div className=" d-flex align-items-center">
+                <img src={Logo} alt="" width={130} />
+
+              </div>
               <div className="">
-              </div>   
+              </div>
               <p>Cloud ECS Infotech Pte Ltd</p>
               <p>Anna Salai,</p>
               <p>Chennai-600002,</p>
               <p>Tamil Nadu</p></div>
-              
+
             <div className="col-md-6 col-12 d-flex flex-column align-items-end pt-5">
               <h5>BILL</h5>
               <p>#BI-018</p>
@@ -110,7 +110,7 @@ const BillView = () => {
               <p>Full Stack Developer Training program</p>
             </div>
             <div className="">
-              <h3 style={{ background: "#1a516b" }} className="text-light p-2">
+              <h3 style={{ background: "#4066D5" }} className="text-light p-2">
                 Item Table
               </h3>
             </div>
@@ -158,27 +158,27 @@ const BillView = () => {
               </p>
             </div>
             <div className="col-md-6 col-12 card shadow border-2 h-40 d-flex justify-content-center gap-5 ">
-                  <div className="row text-center">
-                    <div className="col-6 ">
-                        <p>Sub Total</p>
-                    </div>
-                    <div className="col-6">: 3500</div>
-                  </div>
-                  <div className="row text-center">
-                    <div className="col-6">
-                        <p>Adjustment</p>
-                    </div>
-                    <div className="col-6">: 0.00</div>
-                  </div>
-                  <div className="row text-center">
-                    <div className="col-6">
-                        <p>Total (₹)</p>
-                    </div>
-                    <div className="col-6">: 3500</div>
-                  </div>
+              <div className="row text-center">
+                <div className="col-6 ">
+                  <p>Sub Total</p>
+                </div>
+                <div className="col-6">: 3500</div>
+              </div>
+              <div className="row text-center">
+                <div className="col-6">
+                  <p>Total Tax</p>
+                </div>
+                <div className="col-6">: 0.00</div>
+              </div>
+              <div className="row text-center">
+                <div className="col-6">
+                  <p>Total (₹)</p>
+                </div>
+                <div className="col-6">: 3500</div>
+              </div>
             </div>
             <div className="col-12 my-5">
-                <p className="fw-bolder">Authorized Signature ___________________</p>
+              <p className="fw-bolder">Authorized Signature ___________________</p>
             </div>
           </div>
         </div>

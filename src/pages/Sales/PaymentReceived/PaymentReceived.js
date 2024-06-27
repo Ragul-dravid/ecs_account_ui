@@ -3,7 +3,6 @@ import "datatables.net-dt";
 import "datatables.net-responsive-dt";
 import $ from "jquery";
 import { Link } from "react-router-dom";
-import { FaEye } from "react-icons/fa";
 import DeleteModel from "../../../components/common/DeleteModel";
 
 

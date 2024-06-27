@@ -1,27 +1,26 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import logo from "../../assets/Logo.png";
-
+import logo from "../../assets/AccountsLogo2.png";
 function Signup() {
   return (
     <div
       className="d-flex flex-column justify-content-center align-items-center"
-      style={{ backgroundColor: "#4066D5", minHeight: "150vh" }}
+      style={{ backgroundColor: "#fafcff", minHeight: "150vh" }}
     >
       <div className="d-flex justify-content-center  align-items-center my-3">
         <img
           src={logo}
           alt="LOGO"
           className="img-fluid"
-          width="50"
-          height="50"
+          width="80"
+          height="80"
         />
-        <span
+        {/* <span
           className="text-white fs-2 fw-bolder mx-3"
           style={{ textShadow: "1px 1px 2px black" }}
         >
           Accounts
-        </span>
+        </span> */}
       </div>
       <div
         className="card shadow-lg  rounded-2"
@@ -29,7 +28,7 @@ function Signup() {
           width: "50rem",
         }}
       >
-        <div className="card-body">
+        <div className="card-body shadow-lg">
           <h4 className="card-title text-center mb-5">Sign Up</h4>
           <div className="row mb-4">
             <div className="col-md-6 col-12">

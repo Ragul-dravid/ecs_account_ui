@@ -73,7 +73,7 @@ function Admin({ handleLogout }) {
         <div className="h-screen flex-grow-1 overflow-y-lg-auto">
           <main className="py-1 bg-surface-secondary">
             <Routes>
-              <Route path="/" element={<Home />} />
+              <Route path="/" element={<Dashboard />} />
               <Route path="/dashboard" element={<Dashboard />} />
 
               {/* {/ Bank /} */}

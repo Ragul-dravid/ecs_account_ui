@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import logo from "../../assets/Logo.png";
+import logo from "../../assets/AccountsLogo2.png";
 import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
 
 function Login({ onLogin }) {
@@ -17,19 +17,19 @@ function Login({ onLogin }) {
   return (
     <div
       className="d-flex flex-column justify-content-center align-items-center vh-100"
-      style={{ minHeight: "100vh", backgroundColor: "#4066D5" }}
+      style={{ minHeight: "100vh", backgroundColor: "#fafcff" }}
     >
       <div className="d-flex justify-content-center  align-items-center my-3">
         <img
           src={logo}
           alt="LOGO"
           className="img-fluid"
-          width="50"
-          height="50"
+          width="80"
+          height="80"
         />
-        <span className="text-white fs-2 fw-bolder mx-3" style={{textShadow:'1px 1px 2px black'}}> 
-         Accounts
-        </span>
+        {/* <span className="text-white fs-2 fw-bolder mx-3" style={{ textShadow: '1px 1px 2px black' }}>
+          Accounts
+        </span> */}
       </div>
       <div
         className="card shadow-lg  rounded-2 "
@@ -37,7 +37,7 @@ function Login({ onLogin }) {
           width: "25rem",
         }}
       >
-        <div className="card-body">
+        <div className="card-body shadow-lg">
           <h4 className="card-title text-center mb-5">Login</h4>
           <div className="mb-2">
             <label className="form-label fw-medium">Username</label>
@@ -73,7 +73,7 @@ function Login({ onLogin }) {
                   borderBottomRightRadius: "0px",
                 }}
                 name="password"
-                // {...formik.getFieldProps("password")}
+              // {...formik.getFieldProps("password")}
               />
               <span
                 className={`input-group-text iconInputBackground`}

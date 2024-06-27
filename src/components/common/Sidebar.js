@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
-import Logo from "../../assets/Logo.png";
+import Logo from "../../assets/AccountsLogo.png";
+import { RiBankLine } from "react-icons/ri";
 
 function Sidebar({ onLogout }) {
   const [leadMenuOpen, setLeadMenuOpen] = useState(false);
@@ -71,22 +72,21 @@ function Sidebar({ onLogout }) {
         </button>
         <NavLink
           style={{ background: "#fff" }}
-          className={`navbar-brand logo_ats py-lg-2 px-lg-6 m-0 d-flex align-items-center justify-content-center ${
-            leadMenuOpen || activeSubmenu ? "active" : ""
-          }`}
+          className={`navbar-brand logo_ats py-lg-2 px-lg-6 m-0 d-flex align-items-center justify-content-center ${leadMenuOpen || activeSubmenu ? "active" : ""
+            }`}
           to="/"
         >
           <img
             src={Logo}
             alt="logo"
-            style={{ width: "60px", height: "60px" }}
+            style={{ width: "130px"}}
           />
-          <span
+          {/* <span
             className="text-dark fs-3 fw-bolder mx-3"
-            // style={{ textShadow: "1px 1px 2px black" }}
+          // style={{ textShadow: "1px 1px 2px black" }}
           >
             Accounts
-          </span>
+          </span> */}
         </NavLink>
         <div className="collapse navbar-collapse" id="sidebarCollapse">
           <ul className="navbar-nav ">
@@ -111,9 +111,8 @@ function Sidebar({ onLogout }) {
             </li>
             <li className="nav-item">
               <div
-                className={`nav-link ${
-                  referMenuOpen || activeReferSubmenu ? "active" : ""
-                }`}
+                className={`nav-link ${referMenuOpen || activeReferSubmenu ? "active" : ""
+                  }`}
                 onClick={toggleReferMenu}
               >
                 <i class="bx bx-cart"></i>Sales
@@ -138,11 +137,10 @@ function Sidebar({ onLogout }) {
                     onClick={() => handleReferSubmenuClick("create")}
                   >
                     <li
-                      className={`nav-item ${
-                        activeReferSubmenu === "create"
+                      className={`nav-item ${activeReferSubmenu === "create"
                           ? "active-referSubmenu"
                           : ""
-                      }`}
+                        }`}
                     >
                       Customer
                     </li>
@@ -153,11 +151,10 @@ function Sidebar({ onLogout }) {
                     onClick={() => handleReferSubmenuClick("create")}
                   >
                     <li
-                      className={`nav-item ${
-                        activeReferSubmenu === "create"
+                      className={`nav-item ${activeReferSubmenu === "create"
                           ? "active-referSubmenu"
                           : ""
-                      }`}
+                        }`}
                     >
                       Estimates
                     </li>
@@ -168,11 +165,10 @@ function Sidebar({ onLogout }) {
                     onClick={() => handleReferSubmenuClick("create")}
                   >
                     <li
-                      className={`nav-item ${
-                        activeReferSubmenu === "create"
+                      className={`nav-item ${activeReferSubmenu === "create"
                           ? "active-referSubmenu"
                           : ""
-                      }`}
+                        }`}
                     >
                       Invoice
                     </li>
@@ -183,11 +179,10 @@ function Sidebar({ onLogout }) {
                     onClick={() => handleReferSubmenuClick("create")}
                   >
                     <li
-                      className={`nav-item ${
-                        activeReferSubmenu === "create"
+                      className={`nav-item ${activeReferSubmenu === "create"
                           ? "active-referSubmenu"
                           : ""
-                      }`}
+                        }`}
                     >
                       Payement Received
                     </li>
@@ -197,9 +192,8 @@ function Sidebar({ onLogout }) {
             </li>
             <li className="nav-item">
               <div
-                className={`nav-link ${
-                  studentMenuOpen || activeSubmenu ? "active" : ""
-                }`}
+                className={`nav-link ${studentMenuOpen || activeSubmenu ? "active" : ""
+                  }`}
                 onClick={toggleStudentMenu}
               >
                 <i class="bx bx-basket"></i> Purchases
@@ -224,9 +218,8 @@ function Sidebar({ onLogout }) {
                     onClick={() => handleSubmenuClick("create")}
                   >
                     <li
-                      className={`nav-item ${
-                        activeSubmenu === "create" ? "active-submenu" : ""
-                      }`}
+                      className={`nav-item ${activeSubmenu === "create" ? "active-submenu" : ""
+                        }`}
                     >
                       Vendor
                     </li>
@@ -237,9 +230,8 @@ function Sidebar({ onLogout }) {
                     onClick={() => handleSubmenuClick("create")}
                   >
                     <li
-                      className={`nav-item ${
-                        activeSubmenu === "create" ? "active-submenu" : ""
-                      }`}
+                      className={`nav-item ${activeSubmenu === "create" ? "active-submenu" : ""
+                        }`}
                     >
                       Bills
                     </li>
@@ -250,9 +242,8 @@ function Sidebar({ onLogout }) {
                     onClick={() => handleSubmenuClick("create")}
                   >
                     <li
-                      className={`nav-item ${
-                        activeSubmenu === "create" ? "active-submenu" : ""
-                      }`}
+                      className={`nav-item ${activeSubmenu === "create" ? "active-submenu" : ""
+                        }`}
                     >
                       Payments Made
                     </li>
@@ -283,19 +274,19 @@ function Sidebar({ onLogout }) {
           <div className="mt-auto"></div>
           <ul className="navbar-nav">
             <div className="mt-auto logutBtn">
-            <li className="py-2 px-4 nav-link nav-item" style={{cursor:"pointer"}}>
-              <button className="nav-link ps-4" to={"#"}>
-                <i className="bi bi-person-square"></i> Account
-              </button>
-              </li>
-              <li className="py-2 px-4 nav-link nav-item" style={{cursor:"pointer"}}>
-              <button
-                to={"#"}
-                className="nav-link ps-4"
-                onClick={handelLogOutClick}
-              >
-                <i className="bi bi-box-arrow-left"></i> Logout
-              </button>
+              {/* <li className="py-2 px-4 nav-link nav-item" style={{ cursor: "pointer" }}>
+                <button className="nav-link ps-4" to={"#"}>
+                  <i className="bi bi-person-square"></i> Account
+                </button>
+              </li> */}
+              <li className="py-2 px-4 nav-link nav-item" style={{ cursor: "pointer" }}>
+                <button
+                  to={"#"}
+                  className="nav-link ps-4"
+                  onClick={handelLogOutClick}
+                >
+                  <i className="bi bi-box-arrow-left"></i> Logout
+                </button>
               </li>
             </div>
           </ul>

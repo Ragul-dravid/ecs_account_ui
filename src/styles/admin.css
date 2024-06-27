@@ -9226,7 +9226,7 @@ fieldset:disabled .btn {
 }
 
 .navbar-vertical.navbar-expand-lg::-webkit-scrollbar {
-  width: 6px;
+  width: 0px;
 }
 
 .navbar-vertical.navbar-expand-lg::-webkit-scrollbar-track {

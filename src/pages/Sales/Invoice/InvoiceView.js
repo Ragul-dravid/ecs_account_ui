@@ -1,8 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { LuSend } from "react-icons/lu";
-import { MdOutlineFileDownload } from "react-icons/md";
-import Logo from "../../../assets/Logo.png";
+import { IoCloudDownloadSharp } from "react-icons/io5";
+import { FaTelegramPlane } from "react-icons/fa";
+import Logo from "../../../assets/AccountsLogo.png";
 function InvoiceView() {
   return (
     <div className="container-fluid minHeight">
@@ -16,17 +16,17 @@ function InvoiceView() {
                 </div>
               </div>
               <div className="col-auto">
-                <div className="justify-content-start">
+                <div className="hstack gap-2 justify-content-start">
                   <Link to="/invoice">
                     <button type="submit" className="btn btn-light btn-sm me-1">
                       <span>Back</span>
                     </button>
                   </Link>
-                  <button type="submit" className="btn btn-sm btn-primary me-1" style={{ borderRadius: "30px" }}>
-                    <LuSend />
+                  <button type="submit" className="btn btn-button rounded-pill p-2">
+                    <FaTelegramPlane size={18} />
                   </button>
-                  <button type="submit" className="btn btn-sm btn-primary me-1" style={{ borderRadius: "30px" }}>
-                    <MdOutlineFileDownload />
+                  <button type="submit" className="btn btn-button rounded-pill p-2">
+                    <IoCloudDownloadSharp size={18} />
                   </button>
                   <Link to="/recordpayment">
                     <button type="submit" className="btn btn-sm btn-primary me-1">
@@ -48,7 +48,7 @@ function InvoiceView() {
             <div className="col-md-6 col-12">
               <div className="d-flex justify-content-center flex-column align-items-start">
                 <div class="d-flex">
-                  <img src={Logo} alt=".." /> <p style={{ color: "#2196f3", fontSize: "25px" }} className="py-5">Cloud ECS InfoTech</p>
+                  <img src={Logo} alt=".." className="mt-3" width={130} />
                 </div>
                 <p className="fw-small mt-2">
                   Cloud ECS Infotech Pte Ltd<br></br>
@@ -124,7 +124,11 @@ function InvoiceView() {
           <div className="row mt-5 flex-nowrap">
             <div className="col-12">
               <div className="table-responsive table-bordered">
-                <div  style={{ backgroundColor: "#023047" }}><h3 className="p-3" style={{ color: "#ffffff" }}>Item Table</h3></div>
+                <div className="">
+                  <h3 style={{ background: "#4066D5" }} className="text-light p-2">
+                    Item Table
+                  </h3>
+                </div>
                 <table class="table table-light table-nowrap table table-bordered">
                   <thead className="thead-light">
                     <tr>
@@ -194,7 +198,8 @@ function InvoiceView() {
                 </div>
               </div>
               <div class="row mb-3">
-                <label class="col-sm-4 col-form-label">Adjustment</label>
+                <label class="col-sm-4 col-form-label">Total Tax</label>
+                <div class="col-sm-4"></div>
                 <div class="col-sm-4">
                   0.00
                 </div>
