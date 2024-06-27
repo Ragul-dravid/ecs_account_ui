@@ -5,6 +5,10 @@ import * as Yup from "yup";
 import { IoIosAdd } from "react-icons/io";
 function InvoiceAdd() {
     const [rows, setRows] = useState([{}]);
+    const AddRowContent = () => {
+        setRows((prevRows) => [...prevRows, { id: prevRows.length + 1 }]);
+    };
+
     const validationSchema = Yup.object({
         customerName: Yup.string().required("*Customer name is required"),
         invoice: Yup.string().required("*Invoice is required"),
@@ -47,7 +51,7 @@ function InvoiceAdd() {
     });
 
     return (
-        <div className="container-fluid minHeight m-0">
+        <div className="container-fluid p-2 minHeight m-0">
             <form onSubmit={formik.handleSubmit}>
                 <div
                     className="card shadow border-0 mb-2 top-header">
@@ -250,10 +254,10 @@ function InvoiceAdd() {
                                         )}
                                 </div>
                             </div>
-                            <div className="col-md-6 col-12 mb-3"></div>
-                            <div className="col-md-6 col-12 mb-3 d-flex align-items-end justify-content-end">
+
+                            <div className="col-12 mb-3 d-flex align-items-end justify-content-end">
                                 <label className="col-form-label">
-                                    Amount<span className="text-danger">*</span>
+                                    Amount<span className="text-danger">*</span>&nbsp;&nbsp;
                                 </label>
                                 <div className="overflow-x-auto">
                                     <select
@@ -271,195 +275,206 @@ function InvoiceAdd() {
                             </div>
 
 
-                            <div className="row mt-5 pt-5 flex-nowrap">
-                                <div className="col-12">
-                                    <div className="table-responsive table-bordered overflow-x-auto">
-                                        <div style={{ backgroundColor: "#023047" }} ><h3 className="p-3" style={{ color: "#ffffff" }}>Item Table</h3></div>
-                                        <table class="table table-light table-nowrap table table-bordered">
-                                            <thead className="thead-light">
-                                                <tr>
-                                                    <th>S.NO</th>
-                                                    <th>ITEM DETAILS</th>
-                                                    <th>QUANTITY</th>
-                                                    <th>RATE</th>
-                                                    <th>DISCOUNT</th>
-                                                    <th>TAX</th>
-                                                    <th>AMOUNT</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {rows.map((row) => {
-                                                    return (
-                                                        <tr>
-                                                            <td>
-                                                                {" "}
-                                                                <input
-                                                                    {...formik.getFieldProps("sno")}
-                                                                    className="form-control"
-                                                                    type="text"
-                                                                />
-                                                            </td>
-                                                            <td>
-                                                                {" "}
-                                                                <div className="overflow-x-auto">
-                                                                    <select
-                                                                        {...formik.getFieldProps("itemDetails")}
-                                                                        className="form-select" style={{ width: "100%" }}>
-                                                                        <option></option>
-                                                                        <option value="Apple">Apple</option>
-                                                                        <option value="Orange">Orange</option>
-                                                                    </select>
-                                                                </div>
-                                                            </td>
-                                                            <td>
-                                                                {" "}
-                                                                <input {...formik.getFieldProps('quantity')}
-                                                                    className="form-control"
-                                                                    type="text"
-                                                                />
-                                                            </td>
-                                                            <td>
-                                                                {" "}
-                                                                <input {...formik.getFieldProps('rate')}
-                                                                    className="form-control"
-                                                                    type="text"
-                                                                />
-                                                            </td>
-                                                            <td>
-                                                                {" "}
-                                                                <input {...formik.getFieldProps('discount')}
-                                                                    className="form-control"
-                                                                    type="text"
-                                                                />
-                                                            </td>
-                                                            <td>
-                                                                {" "}
-                                                                <div className="overflow-x-auto">
-                                                                    <select
-                                                                        {...formik.getFieldProps("tax")}
-                                                                        className="form-select" style={{ width: "100%" }}>
-                                                                        <option></option>
-                                                                        <option value="Commision">Commision</option>
-                                                                        <option value="Brokerage">Brokerage</option>
-                                                                    </select>
-                                                                </div>
-                                                            </td>
-                                                            <td>
-                                                                {" "}
-                                                                <input {...formik.getFieldProps('amount')}
-                                                                    className="form-control"
-                                                                    type="text"
-                                                                />
-                                                            </td>
-                                                        </tr>
-                                                    );
-                                                })}
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="row mt-5">
-                                <div className="col-12 text-start">
-                                    <button
-                                        type="button"
-                                        className="btn btn-sm btn-light me-2"
-                                        onClick={() => {
-                                            setRows((pr) => [...pr, {}]);
-                                        }}
+                            <div className="row">
+                                <div className="">
+                                    <h3
+                                        style={{ background: "#4066D5" }}
+                                        className="text-light p-2"
                                     >
-                                        <IoIosAdd /> Add Row
-                                    </button>
-                                    {rows.length > 1 && (
-                                        <button type="button" className="btn btn-sm btn-danger me-2"
-                                            onClick={() => setRows((pr) => pr.slice(0, -1))}>Delete</button>
-                                    )}
+                                        Item Table
+                                    </h3>
+                                </div>
+                                <div className="table-responsive">
+                                    <table class="table ">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">S.NO</th>
+                                                <th scope="col">ITEM DETAILS</th>
+                                                <th scope="col">QUANTITY</th>
+                                                <th scope="col">RATE</th>
+                                                <th scope="col">DISCOUNT</th>
+                                                <th scope="col">TAX</th>
+                                                <th scope="col">AMOUNT</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="table-group">
+                                            {rows.map((row, index) => (
+                                                <tr key={index}>
+                                                    <th scope="row">{index + 1}</th>
+                                                    <td>
+                                                        <select
+                                                            name={`items[${index}].itemDetails${index}`}
+                                                            {...formik.getFieldProps(
+                                                                `items[${index}].itemDetails${index}`
+                                                            )}
+                                                            className="form-select"
+                                                        >
+                                                            <option></option>
+                                                            <option value={"Apple"}>Apple</option>
+                                                            <option value={"Orange"}>Orange</option>
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <input
+                                                            type="text"
+                                                            name={`items[${index}].quantity${index}`}
+                                                            className="form-control"
+                                                            {...formik.getFieldProps(
+                                                                `items[${index}].quantity${index}`
+                                                            )}
+                                                        />
+                                                    </td>
+                                                    <td>
+                                                        <input
+                                                            type="text"
+                                                            name={`items[${index}].rate${index}`}
+                                                            className="form-control"
+                                                            {...formik.getFieldProps(
+                                                                `items[${index}].rate${index}`
+                                                            )}
+                                                        />
+                                                    </td>
+                                                    <td>
+                                                        <input
+                                                            type="text"
+                                                            name={`items[${index}].discount${index}`}
+                                                            className="form-control"
+                                                            {...formik.getFieldProps(
+                                                                `items[${index}].discount${index}`
+                                                            )}
+                                                        />
+                                                    </td>
+                                                    <td>
+                                                        <select
+                                                            name={`items[${index}].tax${index}`}
+                                                            {...formik.getFieldProps(
+                                                                `items[${index}].tax${index}`
+                                                            )}
+                                                            className="form-select"
+                                                        >
+                                                            <option></option>
+                                                            <option value="Commission">Commission</option>
+                                                            <option value="Brokerage">Brokerage</option>
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <input
+                                                            type="text"
+                                                            name={`items[${index}].amount${index}`}
+                                                            className="form-control"
+                                                            {...formik.getFieldProps(
+                                                                `items[${index}].amount${index}`
+                                                            )}
+                                                        />
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
-                            <div className="col-md-6 col-12 mb-3 mt-5">
-                                <lable className="form-lable">
-                                    Customer Notes<span className="text-danger">*</span>
-                                </lable>
-                                <div className="mb-3">
-                                    <input
-                                        type="text"
-                                        placeholder="Will be display on the Invoice"
-                                        className={`form-control  ${formik.touched.customerNotes && formik.errors.customerNotes
-                                            ? "is-invalid"
-                                            : ""
-                                            }`}
-                                        {...formik.getFieldProps("customerNotes")}
-                                    />
-                                    {formik.touched.customerNotes &&
-                                        formik.errors.customerNotes && (
-                                            <div className="invalid-feedback">
-                                                {formik.errors.customerNotes}
-                                            </div>
-                                        )}
-                                </div>
+                            <div>
+                            <button className="btn btn-button btn-sm my-4 mx-1" type="button" onClick={AddRowContent}>
+                                Add row
+                            </button>
+                            {rows.length > 1 && (
+                                <button
+                                    className="btn btn-sm my-4 mx-1 delete border-danger bg-white text-danger"
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        setRows((prevRows) => prevRows.slice(0, -1));
+                                    }}
+                                >
+                                    Delete
+                                </button>
+                            )}
                             </div>
-                            <div className="col-md-6 col-12 rounded" style={{ border: "1px solid lightgrey" }}>
-                                <div className="row mb-3 mt-2">
-                                    <label className="col-sm-4 col-form-label">
-                                        Sub Total<span className="text-danger">*</span>
-                                    </label>
-                                    <div className="col-sm-4"></div>
-                                    <div className="col-sm-4">
+                            <div className="row mt-5 pt-0">
+                                <div className="col-md-6 col-12 mb-3 pt-0">
+                                    <lable className="form-lable">
+                                        Customer Notes<span className="text-danger">*</span>
+                                    </lable>
+                                    <div className="mb-3">
                                         <input
                                             type="text"
-                                            className={`form-control ${formik.touched.subTotal && formik.errors.subTotal ? "is-invalid" : ""}`}
-                                            {...formik.getFieldProps("subTotal")}
+                                            placeholder="Will be display on the Invoice"
+                                            className={`form-control  ${formik.touched.customerNotes && formik.errors.customerNotes
+                                                ? "is-invalid"
+                                                : ""
+                                                }`}
+                                            {...formik.getFieldProps("customerNotes")}
                                         />
-                                        {formik.touched.subTotal && formik.errors.subTotal && (
-                                            <div className="invalid-feedback">{formik.errors.subTotal}</div>
-                                        )}
+                                        {formik.touched.customerNotes &&
+                                            formik.errors.customerNotes && (
+                                                <div className="invalid-feedback">
+                                                    {formik.errors.customerNotes}
+                                                </div>
+                                            )}
                                     </div>
                                 </div>
-                                <div className="row mb-3">
-                                    <label className="col-sm-4 col-form-label">
-                                        Total Tax<span className="text-danger">*</span>
-                                    </label>
-                                    <div className="col-sm-4"></div>
-                                    <div className="col-sm-4">
-                                        <input
-                                            type="text"
-                                            className={`form-control ${formik.touched.adjustment && formik.errors.adjustment ? "is-invalid" : ""}`}
-                                            {...formik.getFieldProps("adjustment")}
-                                        />
-                                        {formik.touched.adjustment && formik.errors.adjustment && (
-                                            <div className="invalid-feedback">{formik.errors.adjustment}</div>
-                                        )}
+                                <div className="col-md-6 col-12 mt-5 rounded" style={{ border: "1px solid lightgrey" }}>
+                                    <div className="row mb-3 mt-2">
+                                        <label className="col-sm-4 col-form-label">
+                                            Sub Total<span className="text-danger">*</span>
+                                        </label>
+                                        <div className="col-sm-4"></div>
+                                        <div className="col-sm-4">
+                                            <input
+                                                type="text"
+                                                className={`form-control ${formik.touched.subTotal && formik.errors.subTotal ? "is-invalid" : ""}`}
+                                                {...formik.getFieldProps("subTotal")}
+                                            />
+                                            {formik.touched.subTotal && formik.errors.subTotal && (
+                                                <div className="invalid-feedback">{formik.errors.subTotal}</div>
+                                            )}
+                                        </div>
+                                    </div>
+                                    <div className="row mb-3">
+                                        <label className="col-sm-4 col-form-label">
+                                            Total Tax<span className="text-danger">*</span>
+                                        </label>
+                                        <div className="col-sm-4"></div>
+                                        <div className="col-sm-4">
+                                            <input
+                                                type="text"
+                                                className={`form-control ${formik.touched.adjustment && formik.errors.adjustment ? "is-invalid" : ""}`}
+                                                {...formik.getFieldProps("adjustment")}
+                                            />
+                                            {formik.touched.adjustment && formik.errors.adjustment && (
+                                                <div className="invalid-feedback">{formik.errors.adjustment}</div>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    <hr />
+                                    <div className="row mb-3 mt-2">
+                                        <label className="col-sm-4 col-form-label">Total</label>
+                                        <div className="col-sm-4"></div>
+                                        <div className="col-sm-4">
+                                            <input type="text" className="form-control" />
+                                        </div>
                                     </div>
                                 </div>
 
-                                <hr />
-                                <div className="row mb-3 mt-2">
-                                    <label className="col-sm-4 col-form-label">Total</label>
-                                    <div className="col-sm-4"></div>
-                                    <div className="col-sm-4">
-                                        <input type="text" className="form-control" />
+                                <div className="col-md-6 col-12 mb-3">
+                                    <lable className="form-lable">
+                                        Terms & Conditions<span className="text-danger">*</span>
+                                    </lable>
+                                    <div className="mb-3">
+                                        <textarea
+                                            className={`form-control  ${formik.touched.termsAndconditions && formik.errors.termsAndconditions
+                                                ? "is-invalid"
+                                                : ""
+                                                }`}
+                                            {...formik.getFieldProps("termsAndconditions")}
+                                        />
+                                        {formik.touched.termsAndconditions &&
+                                            formik.errors.termsAndconditions && (
+                                                <div className="invalid-feedback">
+                                                    {formik.errors.termsAndconditions}
+                                                </div>
+                                            )}
                                     </div>
-                                </div>
-                            </div>
-
-                            <div className="col-md-6 col-12 mb-3">
-                                <lable className="form-lable">
-                                    Terms & Conditions<span className="text-danger">*</span>
-                                </lable>
-                                <div className="mb-3">
-                                    <textarea
-                                        className={`form-control  ${formik.touched.termsAndconditions && formik.errors.termsAndconditions
-                                            ? "is-invalid"
-                                            : ""
-                                            }`}
-                                        {...formik.getFieldProps("termsAndconditions")}
-                                    />
-                                    {formik.touched.termsAndconditions &&
-                                        formik.errors.termsAndconditions && (
-                                            <div className="invalid-feedback">
-                                                {formik.errors.termsAndconditions}
-                                            </div>
-                                        )}
                                 </div>
                             </div>
                         </div>

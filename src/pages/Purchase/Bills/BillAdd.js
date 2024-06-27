@@ -182,8 +182,8 @@ function BillsAdd() {
               </div>
             </div>
 
-            <div className="col-md-6 col-12 mb-3"></div>
-            <div className="col-md-6 col-12 mb-3 d-flex align-items-end justify-content-end" style={{ marginLeft: "39rem" }}>
+            
+            <div className="col-12 mb-3 d-flex align-items-end justify-content-end">
               <label className="col-form-label">
                 Amount<span className="text-danger">*</span>
               </label>
@@ -202,7 +202,7 @@ function BillsAdd() {
               )}
             </div>
             <div className="row">
-            <div className="">
+              <div className="">
               <h3 style={{ background: "#4066D5" }} className="text-light p-2">
                 Item Table
               </h3>
@@ -295,15 +295,15 @@ function BillsAdd() {
                 Delete
               </button>
             )}
-            <div className="row mt-5">
-              <div className="col-md-6 col-12 mb-2 pt-5">
+            <div className="row mt-5 pt-0">
+              <div className="col-md-6 col-12 mb-2 ">
                 <lable className="form-lable">Customer Notes</lable>
                 <div className="mb-3">
                   <input type="text" {...formik.getFieldProps("customerNotes")}
                     name="customerNotes" className="form-control" />
                 </div>
               </div>
-              <div className="card col-md-6 col-12 p-3 mb-4 card shadow border-2">
+              <div className="card col-md-6 col-12 p-3 mt-5 mb-4 card shadow border-2">
                 <div className=" my-4 ms-2 d-flex justify-content-between align-items-center">
                   <lable className="form-lable">Sub Total</lable>
                   <div className="ms-3">

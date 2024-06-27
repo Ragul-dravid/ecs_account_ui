@@ -2,11 +2,12 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { MdOutlineDownloadForOffline } from "react-icons/md";
 import { FaTelegramPlane } from "react-icons/fa";
+import Logo from "../../../assets/AccountsLogo.png";
 
 
 const PaymentMadeView = () => {
   return (
-    <div className="container-fluid minHeight">
+    <div className="container-fluid px-2 minHeight">
       <div className="card shadow border-0 mb-2 top-header">
         <div className="container-fluid py-4">
           <div className="row align-items-center">
@@ -37,18 +38,25 @@ const PaymentMadeView = () => {
       <div className="card shadow border-0 mb-2 minHeight">
         <div className="container-fluid mt-5">
           <div className="row mt-4 p-3">
-            <div className="col-md-6 col-12 ">
-                {/* <div className=" d-flex align-items-center">
-                    <img src={Logo} alt="" />
-                    <h2 className="text-info">Cloud ECS Infotech</h2>
-                </div> */}
-              <div className="">
-              </div>   
-              <p>Cloud ECS Infotech Pte Ltd</p>
-              <p>Anna Salai,</p>
-              <p>Chennai-600002,</p>
-              <p>Tamil Nadu</p></div>
-              
+          <div className="col-md-6 col-12">
+              <div className="d-flex justify-content-center flex-column align-items-start">
+                <div class="d-flex">
+                  <img src={Logo} alt=".." className="mt-3" width={130} />
+                </div>
+                <p className="fw-small mt-2">
+                  Cloud ECS Infotech Pte Ltd<br></br>
+                  Anna Salai<br></br>
+                  Chennai - 600002,<br></br>
+                  Tamil Nadu
+                </p>
+              </div>
+            </div>
+            <div className="col-md-6 col-12 d-flex justify-end flex-column align-items-end mt-2">
+              <h1>PAYMENT MADE</h1>
+              <h3>#PM-018</h3>
+              <span className="text-muted mt-4">Balance Due</span>
+              <h3>₹3000</h3>
+            </div>
             
           </div>
           <div className="row">
@@ -114,7 +122,7 @@ const PaymentMadeView = () => {
             <div className="table-responsive">
               <table class="table">
                 <thead>
-                  <tr className="background-color" >
+                  <tr  style={{ background: "#4066D5" }} >
                   
                     <th scope="col"  className="text-white">Bill Number</th>
                     <th scope="col" className="text-white">Bill Date</th>
