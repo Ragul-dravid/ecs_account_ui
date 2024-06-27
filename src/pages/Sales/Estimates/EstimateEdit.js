@@ -217,6 +217,7 @@ const EstimateEdit = () => {
               ))}
               <div className="row">
                 <div className="col-12 mb-4">
+                {rowss.length === 0 && (
                   <button
                     type="button"
                     onClick={() => {
@@ -225,15 +226,16 @@ const EstimateEdit = () => {
                     className="btn btn-border btn-sm btn-button"
                   >
                     <i className="bx bx-plus"></i> Add Title & Summary
-                  </button>{" "}
+                  </button>
+                  )}
                   &nbsp;&nbsp;
                   {rowss.length > 0 && (
                     <button
                       type="button"
                       onClick={() => setRowss((prev) => prev.slice(0, -1))}
-                      className="btn btn-outline-danger"
+                      className="btn btn-danger btn-sm"
                     >
-                      Delete
+                      Delete Title & Summary
                     </button>
                   )}
                 </div>
@@ -392,7 +394,7 @@ const EstimateEdit = () => {
                 </div>
 
                 <div className=" ms-2 d-flex justify-content-between align-items-center">
-                  <lable className="form-lable">Adjustment</lable>
+                  <lable className="form-lable">Total Tax</lable>
                   <div className="ms-3">
                     <input {...formik.getFieldProps("adjustment")}
                       type="text"
