@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 const CustomerView = () => {
   return (
-    <div className="container-fluid minHeight">
+    <div className="container-fluid px-2 minHeight">
       <div className="card shadow border-0 mb-2 top-header">
         <div className="container-fluid py-4">
           
