@@ -4,8 +4,9 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 
 function EditItems() {
-  const [isSalesChecked, setIsSalesChecked] = useState(false);
-  const [isPurchaseChecked, setIsPurchaseChecked] = useState(false);
+  const [isSalesChecked, setIsSalesChecked] = useState(true);
+  const [isPurchaseChecked, setIsPurchaseChecked] = useState(true);
+
   const validationSchema = Yup.object({
     code: Yup.string(),
     unit: Yup.string(),
@@ -38,22 +39,20 @@ function EditItems() {
 
   const handleSalesCheckboxChange = () => {
     setIsSalesChecked((prevState) => !prevState);
-    if (!isSalesChecked) {
+    if (isSalesChecked) {
       formik.setFieldValue("sellingprice", "");
       formik.setFieldValue("account", "");
       formik.setFieldValue("description", "");
-      setIsPurchaseChecked(false);
     }
   };
 
   const handlePurchaseCheckboxChange = () => {
     setIsPurchaseChecked((prevState) => !prevState);
-    if (!isPurchaseChecked) {
+    if (isPurchaseChecked) {
       formik.setFieldValue("sellingprice1", "");
       formik.setFieldValue("account1", "");
       formik.setFieldValue("vendor", "");
       formik.setFieldValue("description1", "");
-      setIsSalesChecked(false);
     }
   };
 
@@ -188,9 +187,8 @@ function EditItems() {
                 </div>
               </div>
               <div className="col-md-6 col-12 mb-2">
-                
-                  <label className="form-label pt-2 pe-2">Selling Price</label>
-                  <div className="input-group mb-3">
+                <label className="form-label pt-2 pe-2">Selling Price</label>
+                <div className="input-group mb-3">
                   <div className="input-group-prepend">
                     <span className="input-group-text" id="basic-addon1">
                       INR
@@ -204,7 +202,7 @@ function EditItems() {
                         : ""
                     }`}
                     {...formik.getFieldProps("sellingprice")}
-                    disabled={isSalesChecked}
+                    disabled={!isSalesChecked}
                   />
                   {formik.touched.sellingprice &&
                     formik.errors.sellingprice && (
@@ -215,9 +213,8 @@ function EditItems() {
                 </div>
               </div>
               <div className="col-md-6 col-12 mb-2">
-              
-                  <label className="form-label pt-2 pe-2">Selling Price</label>
-                  <div className="input-group mb-3">
+                <label className="form-label pt-2 pe-2">Selling Price</label>
+                <div className="input-group mb-3">
                   <div className="input-group-prepend">
                     <span className="input-group-text" id="basic-addon1">
                       INR
@@ -232,7 +229,7 @@ function EditItems() {
                         : ""
                     }`}
                     {...formik.getFieldProps("sellingprice1")}
-                    disabled={isPurchaseChecked}
+                    disabled={!isPurchaseChecked}
                   />
                   {formik.touched.sellingprice1 &&
                     formik.errors.sellingprice1 && (
@@ -256,7 +253,7 @@ function EditItems() {
                         : ""
                     }`}
                     {...formik.getFieldProps("account")}
-                    disabled={isSalesChecked}
+                    disabled={!isSalesChecked}
                   >
                     <option></option>
                     <option value="sales">Sales</option>
@@ -281,7 +278,7 @@ function EditItems() {
                         : ""
                     }`}
                     {...formik.getFieldProps("account1")}
-                    disabled={isPurchaseChecked}
+                    disabled={!isPurchaseChecked}
                   >
                     <option></option>
                     <option value="goods sold">Cost Of Goods Sold</option>
@@ -306,7 +303,7 @@ function EditItems() {
                         : ""
                     }`}
                     {...formik.getFieldProps("description")}
-                    disabled={isSalesChecked}
+                    disabled={!isSalesChecked}
                   />
                   {formik.touched.description && formik.errors.description && (
                     <div className="invalid-feedback">
@@ -327,7 +324,7 @@ function EditItems() {
                         : ""
                     }`}
                     {...formik.getFieldProps("vendor")}
-                    disabled={isPurchaseChecked}
+                    disabled={!isPurchaseChecked}
                   />
                   {formik.touched.vendor && formik.errors.vendor && (
                     <div className="invalid-feedback">
@@ -349,7 +346,7 @@ function EditItems() {
                         : ""
                     }`}
                     {...formik.getFieldProps("description1")}
-                    disabled={isPurchaseChecked}
+                    disabled={!isPurchaseChecked}
                   />
                   {formik.touched.description1 &&
                     formik.errors.description1 && (

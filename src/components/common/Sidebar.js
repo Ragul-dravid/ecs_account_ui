@@ -79,7 +79,7 @@ function Sidebar({ onLogout }) {
           <img
             src={Logo}
             alt="logo"
-            style={{ width: "130px"}}
+            style={{ width: "130px" }}
           />
           {/* <span
             className="text-dark fs-3 fw-bolder mx-3"
@@ -130,7 +130,7 @@ function Sidebar({ onLogout }) {
                 )}
               </div>
               {referMenuOpen && (
-                <ul className="submenu">
+                <ul className="submenu mx-1">
                   <NavLink
                     className="nav-link"
                     to="/customer"
@@ -138,11 +138,13 @@ function Sidebar({ onLogout }) {
                   >
                     <li
                       className={`nav-item ${activeReferSubmenu === "create"
-                          ? "active-referSubmenu"
-                          : ""
+                        ? "active-referSubmenu"
+                        : ""
                         }`}
                     >
-                      Customer
+                      <span className="mx-2">
+                        Customer
+                      </span>
                     </li>
                   </NavLink>
                   <NavLink
@@ -152,11 +154,13 @@ function Sidebar({ onLogout }) {
                   >
                     <li
                       className={`nav-item ${activeReferSubmenu === "create"
-                          ? "active-referSubmenu"
-                          : ""
+                        ? "active-referSubmenu"
+                        : ""
                         }`}
                     >
-                      Estimates
+                      <span className="mx-2">
+                        Estimates
+                      </span>
                     </li>
                   </NavLink>
                   <NavLink
@@ -166,11 +170,11 @@ function Sidebar({ onLogout }) {
                   >
                     <li
                       className={`nav-item ${activeReferSubmenu === "create"
-                          ? "active-referSubmenu"
-                          : ""
+                        ? "active-referSubmenu"
+                        : ""
                         }`}
                     >
-                      Invoice
+                      <span className="mx-2">Invoice</span>
                     </li>
                   </NavLink>
                   <NavLink
@@ -180,11 +184,13 @@ function Sidebar({ onLogout }) {
                   >
                     <li
                       className={`nav-item ${activeReferSubmenu === "create"
-                          ? "active-referSubmenu"
-                          : ""
+                        ? "active-referSubmenu"
+                        : ""
                         }`}
                     >
-                      Payement Received
+                      <span className="mx-2">
+                        Payement Received
+                      </span>
                     </li>
                   </NavLink>
                 </ul>
@@ -211,7 +217,7 @@ function Sidebar({ onLogout }) {
                 )}
               </div>
               {studentMenuOpen && (
-                <ul className="submenu">
+                <ul className="submenu mx-1">
                   <NavLink
                     className="nav-link"
                     to="/vendor"
@@ -221,7 +227,7 @@ function Sidebar({ onLogout }) {
                       className={`nav-item ${activeSubmenu === "create" ? "active-submenu" : ""
                         }`}
                     >
-                      Vendor
+                      <span className="mx-2">Vendor</span>
                     </li>
                   </NavLink>
                   <NavLink
@@ -233,7 +239,9 @@ function Sidebar({ onLogout }) {
                       className={`nav-item ${activeSubmenu === "create" ? "active-submenu" : ""
                         }`}
                     >
-                      Bills
+                      <span className="mx-2">
+                        Bills
+                      </span>
                     </li>
                   </NavLink>
                   <NavLink
@@ -245,7 +253,9 @@ function Sidebar({ onLogout }) {
                       className={`nav-item ${activeSubmenu === "create" ? "active-submenu" : ""
                         }`}
                     >
-                      Payments Made
+                      <span className="mx-2">
+                        Payments Made
+                      </span>
                     </li>
                   </NavLink>
                 </ul>
@@ -257,7 +267,7 @@ function Sidebar({ onLogout }) {
                 to="/chartofaccount"
                 onClick={closeDropdown}
               >
-                <i class="bx bx-briefcase-alt-2"></i> Chart of Accounts
+                <i class="bx bx-briefcase-alt-2"></i>Accounts
               </NavLink>
             </li>
             <li className="nav-item">

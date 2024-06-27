@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { LuSend } from "react-icons/lu";
-import { MdOutlineFileDownload } from "react-icons/md";
+import { IoCloudDownloadSharp } from "react-icons/io5";
+import { FaTelegramPlane } from "react-icons/fa";
 
 function PaymentReceivedView() {
     return (
@@ -16,17 +16,17 @@ function PaymentReceivedView() {
                                 </div>
                             </div>
                             <div className="col-auto">
-                                <div className="justify-content-start">
+                                <div className="hstack gap-2 justify-content-start">
                                     <Link to="/paymentReceived">
                                         <button type="submit" className="btn btn-light btn-sm me-1">
                                             <span>Back</span>
                                         </button>
                                     </Link>
-                                    <button type="submit" className="btn btn-sm btn-primary me-1" style={{ borderRadius: "30px" }}>
-                                        <LuSend />
+                                    <button type="submit" className="btn btn-button rounded-pill p-2">
+                                        <FaTelegramPlane size={18}/>
                                     </button>
-                                    <button type="submit" className="btn btn-sm btn-primary me-1" style={{ borderRadius: "30px" }}>
-                                        <MdOutlineFileDownload />
+                                    <button type="submit" className="btn btn-button rounded-pill p-2">
+                                        <IoCloudDownloadSharp size={18}/>
                                     </button>
                                 </div>
                             </div>
@@ -84,8 +84,8 @@ function PaymentReceivedView() {
                         </div>
                     </div>
                     <hr className="mt-5 mb-3"></hr>
-                    <div class="table-responsive-sm">
-                        <table class="table table-bordered ">
+                    <div class="table-responsive-sm pb-5">
+                        <table class="table table-bordered">
                             <thead style={{ backgroundColor: "#023047" }}>
                                 <tr>
                                     <th scope="col" style={{ color: "#ffffff" }}>Invoice Number</th>
