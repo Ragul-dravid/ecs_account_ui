@@ -120,7 +120,48 @@ function InvoiceEdit() {
                                         )}
                                 </div>
                             </div>
-                            <div className="col-md-6 col-12 mb-3"></div>
+                            <div className="col-md-6 col-12 mb-3">
+                                <lable className="form-lable">
+                                    Invoice Number<span className="text-danger">*</span>
+                                </lable>
+                                <div className="mb-3">
+                                    <input
+                                        type="text"
+                                        className={`form-control  ${formik.touched.invoice && formik.errors.invoice
+                                            ? "is-invalid"
+                                            : ""
+                                            }`}
+                                        {...formik.getFieldProps("invoice")}
+                                    />
+                                    {formik.touched.invoice &&
+                                        formik.errors.invoice && (
+                                            <div className="invalid-feedback">
+                                                {formik.errors.invoice}
+                                            </div>
+                                        )}
+                                </div>
+                            </div>
+                            <div className="col-md-6 col-12 mb-3">
+                                <lable className="form-lable">
+                                    Reference<span className="text-danger">*</span>
+                                </lable>
+                                <div className="mb-3">
+                                    <input
+                                        type="text"
+                                        className={`form-control  ${formik.touched.invoice && formik.errors.invoice
+                                            ? "is-invalid"
+                                            : ""
+                                            }`}
+                                        {...formik.getFieldProps("invoice")}
+                                    />
+                                    {formik.touched.invoice &&
+                                        formik.errors.invoice && (
+                                            <div className="invalid-feedback">
+                                                {formik.errors.invoice}
+                                            </div>
+                                        )}
+                                </div>
+                            </div>
 
                             <div className="col-md-6 col-12 mb-3">
                                 <lable className="form-lable">
@@ -143,30 +184,7 @@ function InvoiceEdit() {
                                         )}
                                 </div>
                             </div>
-                            <div className="col-md-6 col-12 mb-3">
-                                <lable className="form-lable">
-                                    Due Terms<span className="text-danger">*</span>
-                                </lable>
-                                <div className="mb-3">
-                                    <select
-                                        {...formik.getFieldProps("dueTerms")}
-                                        className={`form-select    ${formik.touched.dueTerms && formik.errors.dueTerms
-                                            ? "is-invalid"
-                                            : ""
-                                            }`}>
-                                        <option></option>
-                                        <option value="Net 15">Net 15</option>
-                                        <option value="Due On Receipt">Due On Receipt</option>
-                                        <option value="End of Month">End of Month</option>
-                                    </select>
-                                    {formik.touched.dueTerms &&
-                                        formik.errors.dueTerms && (
-                                            <div className="invalid-feedback">
-                                                {formik.errors.dueTerms}
-                                            </div>
-                                        )}
-                                </div>
-                            </div>
+
 
                             <div className="col-md-6 col-12 mb-3">
                                 <lable className="form-lable">
@@ -191,7 +209,7 @@ function InvoiceEdit() {
                             </div>
                             <div className="col-md-6 col-12 mb-3">
                                 <lable className="form-lable">
-                                   Invoice Number<span className="text-danger">*</span>
+                                    Invoice Number<span className="text-danger">*</span>
                                 </lable>
                                 <div className="mb-3">
                                     <input
@@ -232,6 +250,26 @@ function InvoiceEdit() {
                                         )}
                                 </div>
                             </div>
+                            <div className="col-md-6 col-12 mb-3"></div>
+                            <div className="col-md-6 col-12 mb-3 d-flex align-items-end justify-content-end">
+                                <label className="col-form-label">
+                                    Amount<span className="text-danger">*</span>
+                                </label>
+                                <div className="overflow-x-auto">
+                                    <select
+                                        {...formik.getFieldProps("tax")}
+                                        className="form-select" style={{ width: "100%" }}>
+                                        <option></option>
+                                        <option value="Commision">Tax Exclusive</option>
+                                        <option value="Brokerage">Tax Inclusive</option>
+                                        <option value="Brokerage">No Tax</option>
+                                    </select>
+                                </div>
+                                {formik.touched.taxOption && formik.errors.taxOption && (
+                                    <div className="invalid-feedback">{formik.errors.taxOption}</div>
+                                )}
+                            </div>
+
                             <div className="row mt-5 pt-5 flex-nowrap">
                                 <div className="col-12">
                                     <div className="table-responsive table-bordered">
@@ -328,8 +366,8 @@ function InvoiceEdit() {
                                         <IoIosAdd /> Add Row
                                     </button>
                                     {rows.length > 1 && (
-                                            <button type="button" className="btn btn-sm btn-danger me-2"
-                                                onClick={() => setRows((pr) => pr.slice(0, -1))}>Delete</button>
+                                        <button type="button" className="btn btn-sm btn-danger me-2"
+                                            onClick={() => setRows((pr) => pr.slice(0, -1))}>Delete</button>
                                     )}
                                 </div>
                             </div>
@@ -377,11 +415,11 @@ function InvoiceEdit() {
                                     </div>
                                 </div>
                                 <div class="row mb-3">
-                                    <label class="col-sm-4 col-form-label">Adjustment<span className="text-danger">*</span></label>
+                                    <label class="col-sm-4 col-form-label">Total Tax<span className="text-danger">*</span></label>
                                     <div class="col-sm-4">
                                     </div>
                                     <div class="col-sm-4 ">
-                                    <input
+                                        <input
                                             type="text"
                                             className={`form-control  ${formik.touched.adjustment && formik.errors.adjustment
                                                 ? "is-invalid"

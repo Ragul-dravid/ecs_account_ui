@@ -86,14 +86,14 @@ function BillsEdit() {
           {/* User Information */}
 
           <div className="container mb-5">
-            <div className="row py-4">
+          <div className="row py-4">
               <div className="col-md-6 col-12 mb-2">
                 <lable className="form-lable">
                   Vendor Name
                 </lable>
                 <select
-                  name="vendorName"
-                  {...formik.getFieldProps("vendorName")}
+                  name="dueTerms"
+                  {...formik.getFieldProps("dueTerms")}
                   className={`form-select    ${formik.touched.dptName && formik.errors.dptName
                     ? "is-invalid"
                     : ""
@@ -104,7 +104,11 @@ function BillsEdit() {
                   <option value="Antony">Antony</option>
 
                 </select>
-
+                {formik.touched.dptName && formik.errors.dptName && (
+                  <div className="invalid-feedback">
+                    {formik.errors.dptName}
+                  </div>
+                )}
               </div>
               <div className="col-md-6 col-12 mb-2">
                 <lable className="form-lable">
@@ -114,15 +118,15 @@ function BillsEdit() {
                   <input
                     type="text"
                     name="bill"
-                    className="form-control "
-                    {...formik.getFieldProps("bill")}
+                    className="form-control"
                   />
+
                 </div>
               </div>
 
               <div className="col-md-6 col-12 mb-2">
                 <lable className="form-lable">
-                  Due Terms
+                  Reference
                 </lable>
                 <select
                   name="dueTerms"
@@ -145,6 +149,19 @@ function BillsEdit() {
               </div>
               <div className="col-md-6 col-12 mb-2">
                 <lable className="form-lable">
+                  Permit Number
+                </lable>
+                <div className="mb-3">
+                  <input
+                    type="text"
+                    name="orderNumber"
+                    className="form-control"
+                  />
+
+                </div>
+              </div>
+              <div className="col-md-6 col-12 mb-2">
+                <lable className="form-lable">
                   Bill Date
                 </lable>
                 <div className="mb-3">
@@ -152,7 +169,6 @@ function BillsEdit() {
                     type="date"
                     name="billDate"
                     className="form-control"
-                    {...formik.getFieldProps("billDate")}
                   />
                 </div>
               </div>
@@ -166,25 +182,11 @@ function BillsEdit() {
                     type="date"
                     name="dueDate"
                     className="form-control"
-                    {...formik.getFieldProps("dueDate")}
                   />
 
                 </div>
               </div>
-              <div className="col-md-6 col-12 mb-2">
-                <lable className="form-lable">
-                  Order Number
-                </lable>
-                <div className="mb-3">
-                  <input
-                    type="text"
-                    name="orderNumber"
-                    className="form-control "
-                    {...formik.getFieldProps("orderNumber")}
-                  />
 
-                </div>
-              </div>
 
               <div className="col-md-6 col-12 mb-2">
                 <lable className="form-lable">
@@ -195,14 +197,37 @@ function BillsEdit() {
                     type="text"
                     name="subject"
                     className="form-control"
-                    {...formik.getFieldProps("subject")}
                   />
 
                 </div>
               </div>
             </div>
+            <div className="col-md-6 col-12 mb-3"></div>
+            <div className="col-md-6 col-12 mb-3 d-flex align-items-end justify-content-end" style={{ marginLeft: "39rem" }}>
+              <label className="col-form-label">
+                Amount<span className="text-danger">*</span>
+              </label>
+              <div className="overflow-x-auto">
+                <select
+                  {...formik.getFieldProps("tax")}
+                  className="form-select" style={{ width: "100%" }}>
+                  <option></option>
+                  <option value="Commision">Tax Exclusive</option>
+                  <option value="Brokerage">Tax Inclusive</option>
+                  <option value="Brokerage">No Tax</option>
+                </select>
+              </div>
+              {formik.touched.taxOption && formik.errors.taxOption && (
+                <div className="invalid-feedback">{formik.errors.taxOption}</div>
+              )}
+            </div>
+
             <div className="row">
-              <div className="background-color">Item Table</div>
+            <div className="">
+              <h3 style={{ background: "#4066D5" }} className="text-light p-2">
+                Item Table
+              </h3>
+            </div>
               <div className="table-responsive">
                 <table class="table ">
                   <thead>
@@ -217,7 +242,7 @@ function BillsEdit() {
                     </tr>
                   </thead>
                   <tbody className="table-group">
-                  {rows.map((row, index) => (
+                    {rows.map((row, index) => (
                       <tr key={index}>
                         <th scope="row">{index + 1}</th>
                         <td>
@@ -266,11 +291,11 @@ function BillsEdit() {
                           </select>
                         </td>
                         <td><input
-                            type="text"
-                            name={`items[${index}].amount${index}`}
-                            className="form-control"
-                            {...formik.getFieldProps(`items[${index}].amount${index}`  )}
-                          /></td>
+                          type="text"
+                          name={`items[${index}].amount${index}`}
+                          className="form-control"
+                          {...formik.getFieldProps(`items[${index}].amount${index}`)}
+                        /></td>
                       </tr>
                     ))}
                   </tbody>

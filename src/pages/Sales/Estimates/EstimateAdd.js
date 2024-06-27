@@ -4,7 +4,11 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 
 const EstimateAdd = () => {
-  const [rows, setRows] = useState([{ id: 1 }]); // Initialize rows with one row having an id
+  // const [rows, setRows] = useState([]);
+  const [title, setTitle] = useState('');
+  const [summary, setSummary] = useState('');
+  const [rows, setRows] = useState([{ id: 1 }]);
+  const [rowss, setRowss] = useState([]); // Initialize rows with one row having an id
   const AddRowContent = () => {
     setRows((prevRows) => [...prevRows, { id: prevRows.length + 1 }]);
   };
@@ -22,7 +26,7 @@ const EstimateAdd = () => {
       subTotal: "",
       adjustment: "",
       total: "",
-      termsConditions:"",
+      termsConditions: "",
       items: rows.map((row, index) => ({
         [`itemDetails${index}`]: "", // Initialize each itemDetails field with an empty string
         [`quantity${index}`]: "",     // Initialize each quantity field with an empty string
@@ -30,8 +34,8 @@ const EstimateAdd = () => {
         [`discount${index}`]: "",     // Initialize each discount field with an empty string
         [`tax${index}`]: "",          // Initialize each tax field with an empty string
         [`amount${index}`]: "",       // Initialize each amount field with an empty string
-                                   // Initialize each amount field with an empty string
-      })) 
+        // Initialize each amount field with an empty string
+      }))
     },
     // validationSchema: validationSchema,
     onSubmit: async (values) => {
@@ -55,15 +59,15 @@ const EstimateAdd = () => {
                     <span>Back</span>
                   </button>
                 </Link>
-                
-                  <button
-                    type="submit"
-                    className="btn btn-button btn-sm"
-                    onClick={formik.handleSubmit}
-                  >
-                    Save
-                  </button>
-                
+
+                <button
+                  type="submit"
+                  className="btn btn-button btn-sm"
+                  onClick={formik.handleSubmit}
+                >
+                  Save
+                </button>
+
               </div>
             </div>
           </div>
@@ -97,17 +101,7 @@ const EstimateAdd = () => {
                   />
                 </div>
               </div>
-              <div className="col-md-6 col-12 mb-2">
-              <lable className="form-lable">Title</lable>
-              <div className="mb-3">
-                  <input
-                    type="text"
-                    name="estimateNumber"
-                    className="form-control"
-                    {...formik.getFieldProps("estimateNumber")}
-                  />
-                </div>
-              </div>
+
               <div className="col-md-6 col-12 mb-2">
                 <lable className="form-lable">Reference</lable>
                 <input
@@ -152,6 +146,17 @@ const EstimateAdd = () => {
                 </div>
               </div>
               <div className="col-md-6 col-12 mb-2">
+                <lable className="form-lable">Project</lable>
+                <div className="mb-3">
+                  <input
+                    type="text"
+                    name="estimateNumber"
+                    className="form-control"
+                    {...formik.getFieldProps("estimateNumber")}
+                  />
+                </div>
+              </div>
+              <div className="col-md-6 col-12 mb-2">
                 <lable className="form-lable">Subject</lable>
                 <div className="mb-3">
                   <input
@@ -163,8 +168,102 @@ const EstimateAdd = () => {
                 </div>
               </div>
             </div>
+            <div className="border-0 mb-5">
+              {rowss.map((row, index) => (
+                <div className="border-0 mb-5" key={index}>
+                  <div className="border-0 my-2">
+                    <div className="container py-3">
+                      <div className="row mt-3">
+                        <div className="col-12">
+                          <div className="text-start mt-4">
+                            <label htmlFor="" className="mb-1 fw-medium">
+                              <small>Title</small>&nbsp;
+                            </label>
+                            <br />
+                            <input
+                              className="form-control mb-2"
+                              type="text"
+                              placeholder="Title"
+                              value={row.title || ''}
+                              onChange={(e) => {
+                                const newRows = [...rowss];
+                                newRows[index].title = e.target.value;
+                                setRowss(newRows);
+                              }}
+                            />
+                          </div>
+                          <div className="text-start mt-4">
+                            <label htmlFor="" className="mb-1 fw-medium">
+                              <small>Summary</small>&nbsp;
+                            </label>
+                            <br />
+                            <input
+                              className="form-control mb-4"
+                              type="text"
+                              placeholder="Summary"
+                              value={row.summary || ''}
+                              onChange={(e) => {
+                                const newRows = [...rowss];
+                                newRows[index].summary = e.target.value;
+                                setRowss(newRows);
+                              }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+              <div className="row">
+                <div className="col-12 mb-4">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setRowss((prev) => [...prev, { title: '', summary: '' }]); // Add a new row with empty title and summary
+                    }}
+                    className="btn btn-border btn-sm btn-button"
+                  >
+                    <i className="bx bx-plus"></i> Add Title & Summary
+                  </button>{" "}
+                  &nbsp;&nbsp;
+                  {rowss.length > 0 && (
+                    <button
+                      type="button"
+                      onClick={() => setRowss((prev) => prev.slice(0, -1))}
+                      className="btn btn-outline-danger"
+                    >
+                      Delete
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+            <div className="col-md-6 col-12 mb-3"></div>
+                            <div className="col-md-6 col-12 mb-3 d-flex align-items-end justify-content-end" style={{marginLeft:"39rem"}}>
+                                <label className="col-form-label">
+                                    Amount<span className="text-danger">*</span>
+                                </label>
+                                <div className="overflow-x-auto">
+                                    <select
+                                        {...formik.getFieldProps("tax")}
+                                        className="form-select" style={{ width: "100%" }}>
+                                        <option></option>
+                                        <option value="Commision">Tax Exclusive</option>
+                                        <option value="Brokerage">Tax Inclusive</option>
+                                        <option value="Brokerage">No Tax</option>
+                                    </select>
+                                </div>
+                                {formik.touched.taxOption && formik.errors.taxOption && (
+                                    <div className="invalid-feedback">{formik.errors.taxOption}</div>
+                                )}
+                            </div>
             <div className="row">
-              <div className="background-color">Item Table</div>
+            <div className="">
+              <h3 style={{ background: "#4066D5" }} className="text-light p-2">
+                Item Table
+              </h3>
+            </div>
               <div className="table-responsive">
                 <table class="table ">
                   <thead>
@@ -179,7 +278,7 @@ const EstimateAdd = () => {
                     </tr>
                   </thead>
                   <tbody className="table-group">
-                  {rows.map((row, index) => (
+                    {rows.map((row, index) => (
                       <tr key={index}>
                         <th scope="row">{index + 1}</th>
                         <td>
@@ -228,11 +327,11 @@ const EstimateAdd = () => {
                           </select>
                         </td>
                         <td><input
-                            type="text"
-                            name={`items[${index}].amount${index}`}
-                            className="form-control"
-                            {...formik.getFieldProps(`items[${index}].amount${index}`  )}
-                          /></td>
+                          type="text"
+                          name={`items[${index}].amount${index}`}
+                          className="form-control"
+                          {...formik.getFieldProps(`items[${index}].amount${index}`)}
+                        /></td>
                       </tr>
                     ))}
                   </tbody>
@@ -262,7 +361,7 @@ const EstimateAdd = () => {
                 <lable className="form-lable">Customer Notes</lable>
                 <div className="mb-3">
                   <input type="text" {...formik.getFieldProps("customerNotes")}
-                  name="customerNotes" className="form-control" />
+                    name="customerNotes" className="form-control" />
                 </div>
               </div>
               <div className="card col-md-6 col-12 p-3 mb-4 card shadow border-2">

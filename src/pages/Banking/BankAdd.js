@@ -75,15 +75,38 @@ function BankAdd() {
             <div className="row py-4">
               <div className="col-md-6 col-12 mb-2">
                 <lable className="form-lable">
-                  Select Account Type<span className="text-danger">*</span>
+                  Account Name<span className="text-danger">*</span>
+                </lable>
+                <div className="mb-3">
+                  <input
+                    type="text"
+                    name="accountName"
+                    className={`form-control  ${formik.touched.accountName && formik.errors.accountName
+                      ? "is-invalid"
+                      : ""
+                      }`}
+                    {...formik.getFieldProps("accountName")}
+                  />
+                  {formik.touched.accountName &&
+                    formik.errors.accountName && (
+                      <div className="invalid-feedback">
+                        {formik.errors.accountName}
+                      </div>
+                    )}
+                </div>
+              </div>
+
+              <div className="col-md-6 col-12 mb-2">
+                <lable className="form-lable">
+                  Bank Type<span className="text-danger">*</span>
                 </lable>
                 <div className="mb-3">
                   <select
                     name="selectaccounttype"
                     {...formik.getFieldProps("selectaccounttype")}
                     className={`form-select    ${formik.touched.selectaccounttype && formik.errors.selectaccounttype
-                        ? "is-invalid"
-                        : ""
+                      ? "is-invalid"
+                      : ""
                       }`}>
                     <option selected>None</option>
                     <option value="Bank">Bank</option>
@@ -99,96 +122,25 @@ function BankAdd() {
                     )}
                 </div>
               </div>
-              <div className="col-md-6 col-12 mb-2">
-                <lable className="form-lable">
-                  Account Name<span className="text-danger">*</span>
-                </lable>
-                <div className="mb-3">
-                  <input
-                    type="text"
-                    name="accountName"
-                    className={`form-control  ${formik.touched.accountName && formik.errors.accountName
-                        ? "is-invalid"
-                        : ""
-                      }`}
-                    {...formik.getFieldProps("accountName")}
-                  />
-                  {formik.touched.accountName &&
-                    formik.errors.accountName && (
-                      <div className="invalid-feedback">
-                        {formik.errors.accountName}
-                      </div>
-                    )}
-                </div>
-              </div>
 
               <div className="col-md-6 col-12 mb-2">
                 <lable className="form-lable">
                   Currency<span className="text-danger">*</span>
                 </lable>
                 <div className="mb-3">
-                  <select
-                    name="currency"
-                    {...formik.getFieldProps("currency")}
-                    className={`form-select    ${formik.touched.currency && formik.errors.currency
-                        ? "is-invalid"
-                        : ""
-                      }`}>
-                    <option selected>None</option>
-                    <option value="INR">INR</option>
-                    <option value="USD">USD</option>
-                    <option value="EUR">EUR</option>
-                    <option value="UAD">UAD</option>
-                  </select>
+                <input
+                    type="text"
+                    name="bankName"
+                    className={`form-control  ${formik.touched.bankName && formik.errors.bankName
+                      ? "is-invalid"
+                      : ""
+                      }`}
+                    {...formik.getFieldProps("bankName")}
+                  />
                   {formik.touched.currency &&
                     formik.errors.currency && (
                       <div className="invalid-feedback">
                         {formik.errors.currency}
-                      </div>
-                    )}
-                </div>
-              </div>
-              <div className="col-md-6 col-12 mb-2">
-                <lable className="form-lable">
-                  Account Number<span className="text-danger">*</span>
-                </lable>
-                <div className="mb-3">
-                  <input
-                    type="text"
-                    name="accountNumber"
-                    className={`form-control  ${formik.touched.accountNumber && formik.errors.accountNumber
-                        ? "is-invalid"
-                        : ""
-                      }`}
-                    {...formik.getFieldProps("accountNumber")}
-                  />
-                  {formik.touched.accountNumber &&
-                    formik.errors.accountNumber && (
-                      <div className="invalid-feedback">
-                        {formik.errors.accountNumber}
-                      </div>
-                    )}
-                </div>
-              </div>
-
-              <div className="col-md-6 col-12 mb-2">
-                <lable className="form-lable">
-                  IFSC<span className="text-danger">*</span>
-                </lable>
-                <div className="mb-3">
-                  <input
-                    type="text"
-                    name="ifsc"
-                    className={`form-control  ${formik.touched.ifsc && formik.errors.ifsc
-                        ? "is-invalid"
-                        : ""
-                      }`}
-                    {...formik.getFieldProps("ifsc")}
-                  />
-                  {formik.touched.ifsc &&
-                    formik.errors.ifsc && (
-                      <div className="invalid-feedback">
-                        {formik.errors.ifsc}
                       </div>
                     )}
                 </div>
@@ -202,8 +154,8 @@ function BankAdd() {
                     type="text"
                     name="bankName"
                     className={`form-control  ${formik.touched.bankName && formik.errors.bankName
-                        ? "is-invalid"
-                        : ""
+                      ? "is-invalid"
+                      : ""
                       }`}
                     {...formik.getFieldProps("bankName")}
                   />
@@ -215,6 +167,52 @@ function BankAdd() {
                     )}
                 </div>
               </div>
+              <div className="col-md-6 col-12 mb-2">
+                <lable className="form-lable">
+                  Account Number<span className="text-danger">*</span>
+                </lable>
+                <div className="mb-3">
+                  <input
+                    type="text"
+                    name="accountNumber"
+                    className={`form-control  ${formik.touched.accountNumber && formik.errors.accountNumber
+                      ? "is-invalid"
+                      : ""
+                      }`}
+                    {...formik.getFieldProps("accountNumber")}
+                  />
+                  {formik.touched.accountNumber &&
+                    formik.errors.accountNumber && (
+                      <div className="invalid-feedback">
+                        {formik.errors.accountNumber}
+                      </div>
+                    )}
+                </div>
+              </div>
+             
+              <div className="col-md-6 col-12 mb-2">
+                <lable className="form-lable">
+                  IFSC<span className="text-danger">*</span>
+                </lable>
+                <div className="mb-3">
+                  <input
+                    type="text"
+                    name="ifsc"
+                    className={`form-control  ${formik.touched.ifsc && formik.errors.ifsc
+                      ? "is-invalid"
+                      : ""
+                      }`}
+                    {...formik.getFieldProps("ifsc")}
+                  />
+                  {formik.touched.ifsc &&
+                    formik.errors.ifsc && (
+                      <div className="invalid-feedback">
+                        {formik.errors.ifsc}
+                      </div>
+                    )}
+                </div>
+              </div>
+
 
               {/* <div className="col-md-6 col-12 mb-2">
                 <lable className="form-lable">

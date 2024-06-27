@@ -21,7 +21,7 @@ function BillsAdd() {
       orderNumber: "",
       subject: ""
     },
-     validationSchema: validationSchema,
+    validationSchema: validationSchema,
     onSubmit: async (values) => {
       console.log("Bill Datas:", values);
     }
@@ -46,11 +46,11 @@ function BillsAdd() {
                   </button>
 
                 </Link>
-                
-                  <button type="submit" className="btn btn-button btn-sm">
-                    Save
-                  </button>
-                
+
+                <button type="submit" className="btn btn-button btn-sm">
+                  Save
+                </button>
+
               </div>
             </div>
           </div>
@@ -105,7 +105,7 @@ function BillsAdd() {
 
               <div className="col-md-6 col-12 mb-2">
                 <lable className="form-lable">
-                  Due Terms
+                  Reference
                 </lable>
                 <select
                   name="dueTerms"
@@ -125,6 +125,19 @@ function BillsAdd() {
                     {formik.errors.dptName}
                   </div>
                 )}
+              </div>
+              <div className="col-md-6 col-12 mb-2">
+                <lable className="form-lable">
+                  Permit Number
+                </lable>
+                <div className="mb-3">
+                  <input
+                    type="text"
+                    name="orderNumber"
+                    className="form-control"
+                  />
+
+                </div>
               </div>
               <div className="col-md-6 col-12 mb-2">
                 <lable className="form-lable">
@@ -152,19 +165,7 @@ function BillsAdd() {
 
                 </div>
               </div>
-              <div className="col-md-6 col-12 mb-2">
-                <lable className="form-lable">
-                  Order Number
-                </lable>
-                <div className="mb-3">
-                  <input
-                    type="text"
-                    name="orderNumber"
-                    className="form-control"
-                  />
 
-                </div>
-              </div>
 
               <div className="col-md-6 col-12 mb-2">
                 <lable className="form-lable">
@@ -180,8 +181,32 @@ function BillsAdd() {
                 </div>
               </div>
             </div>
+
+            <div className="col-md-6 col-12 mb-3"></div>
+            <div className="col-md-6 col-12 mb-3 d-flex align-items-end justify-content-end" style={{ marginLeft: "39rem" }}>
+              <label className="col-form-label">
+                Amount<span className="text-danger">*</span>
+              </label>
+              <div className="overflow-x-auto">
+                <select
+                  {...formik.getFieldProps("tax")}
+                  className="form-select" style={{ width: "100%" }}>
+                  <option></option>
+                  <option value="Commision">Tax Exclusive</option>
+                  <option value="Brokerage">Tax Inclusive</option>
+                  <option value="Brokerage">No Tax</option>
+                </select>
+              </div>
+              {formik.touched.taxOption && formik.errors.taxOption && (
+                <div className="invalid-feedback">{formik.errors.taxOption}</div>
+              )}
+            </div>
             <div className="row">
-              <div className="background-color">Item Table</div>
+            <div className="">
+              <h3 style={{ background: "#4066D5" }} className="text-light p-2">
+                Item Table
+              </h3>
+            </div>
               <div className="table-responsive">
                 <table class="table ">
                   <thead>
@@ -196,7 +221,7 @@ function BillsAdd() {
                     </tr>
                   </thead>
                   <tbody className="table-group">
-                  {rows.map((row, index) => (
+                    {rows.map((row, index) => (
                       <tr key={index}>
                         <th scope="row">{index + 1}</th>
                         <td>
@@ -245,11 +270,11 @@ function BillsAdd() {
                           </select>
                         </td>
                         <td><input
-                            type="text"
-                            name={`items[${index}].amount${index}`}
-                            className="form-control"
-                            {...formik.getFieldProps(`items[${index}].amount${index}`  )}
-                          /></td>
+                          type="text"
+                          name={`items[${index}].amount${index}`}
+                          className="form-control"
+                          {...formik.getFieldProps(`items[${index}].amount${index}`)}
+                        /></td>
                       </tr>
                     ))}
                   </tbody>
@@ -260,22 +285,22 @@ function BillsAdd() {
               Add row
             </button>
             {rows.length > 1 && (
-               <button
-               className="btn btn-sm my-4 mx-1 delete border-danger bg-white text-danger"
-               onClick={(e) => {
-                 e.preventDefault();
-                 setRows((prevRows) => prevRows.slice(0, -1));
-               }}
-             >
-               Delete
-             </button>
+              <button
+                className="btn btn-sm my-4 mx-1 delete border-danger bg-white text-danger"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setRows((prevRows) => prevRows.slice(0, -1));
+                }}
+              >
+                Delete
+              </button>
             )}
-           <div className="row mt-5">
+            <div className="row mt-5">
               <div className="col-md-6 col-12 mb-2 pt-5">
                 <lable className="form-lable">Customer Notes</lable>
                 <div className="mb-3">
                   <input type="text" {...formik.getFieldProps("customerNotes")}
-                  name="customerNotes" className="form-control" />
+                    name="customerNotes" className="form-control" />
                 </div>
               </div>
               <div className="card col-md-6 col-12 p-3 mb-4 card shadow border-2">
@@ -292,7 +317,7 @@ function BillsAdd() {
                 </div>
 
                 <div className=" ms-2 d-flex justify-content-between align-items-center">
-                  <lable className="form-lable">Adjustment</lable>
+                  <lable className="form-lable">Total Tax</lable>
                   <div className="ms-3">
                     <input {...formik.getFieldProps("adjustment")}
                       type="text"
