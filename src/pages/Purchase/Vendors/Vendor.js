@@ -90,7 +90,7 @@ const Vendor = () => {
                 </th>
                 {/* <th scope="col">EMPLOYEE ID</th> */}
                 <th scope="col">NAME</th>
-                <th scope="col" >COMPANY NAME</th>
+                <th scope="col" >CONTACT NAME</th>
                 <th scope="col">EMAIL</th>
                 <th scope="col">PHONE</th>
                 <th scope="col" className="text-center ">

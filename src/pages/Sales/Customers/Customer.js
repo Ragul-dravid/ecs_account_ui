@@ -73,7 +73,7 @@ const Customers = () => {
                   NAME
                 </th>
                 <th scope="col" className="text-center">
-                  COMPANY NAME
+                  CONTACT NAME
                 </th>
                 <th scope="col" className="text-center">
                   EMAIL
