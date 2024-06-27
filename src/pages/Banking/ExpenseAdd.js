@@ -343,28 +343,19 @@ function ExpenseAdd() {
                 </div>
               </div>
 
-              <div className="col-md-6 col-12 mb-2">
-                <lable className="form-lable">
-                  Notes<span className="text-danger">*</span>
-                </lable>
-                <div className="mb-3">
-                  <input
-                    type="text"
-                    name="notes"
-                    className={`form-control  ${formik.touched.notes && formik.errors.notes
-                      ? "is-invalid"
-                      : ""
-                      }`}
-                    {...formik.getFieldProps("notes")}
-                  />
-                  {formik.touched.notes &&
-                    formik.errors.notes && (
-                      <div className="invalid-feedback">
-                        {formik.errors.notes}
-                      </div>
-                    )}
-                </div>
+              <div className="col-12">
+              <label for="exampleFormControlInput1" className="form-label">
+                Notes
+              </label>
+              <div class="input-group mb-3">
+                <textarea
+                  class="form-control"
+                  {...formik.getFieldProps("invoiceNotes")}
+                  id="exampleFormControlTextarea1"
+                  rows="5"
+                ></textarea>
               </div>
+            </div>
 
             </div>
           </div>

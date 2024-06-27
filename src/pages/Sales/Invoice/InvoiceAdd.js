@@ -120,7 +120,48 @@ function InvoiceAdd() {
                                         )}
                                 </div>
                             </div>
-                            <div className="col-md-6 col-12 mb-3"></div>
+                            <div className="col-md-6 col-12 mb-3">
+                                <lable className="form-lable">
+                                    Invoice Number<span className="text-danger">*</span>
+                                </lable>
+                                <div className="mb-3">
+                                    <input
+                                        type="text"
+                                        className={`form-control  ${formik.touched.invoice && formik.errors.invoice
+                                            ? "is-invalid"
+                                            : ""
+                                            }`}
+                                        {...formik.getFieldProps("invoice")}
+                                    />
+                                    {formik.touched.invoice &&
+                                        formik.errors.invoice && (
+                                            <div className="invalid-feedback">
+                                                {formik.errors.invoice}
+                                            </div>
+                                        )}
+                                </div>
+                            </div>
+                            <div className="col-md-6 col-12 mb-3">
+                                <lable className="form-lable">
+                                    Reference<span className="text-danger">*</span>
+                                </lable>
+                                <div className="mb-3">
+                                    <input
+                                        type="text"
+                                        className={`form-control  ${formik.touched.invoice && formik.errors.invoice
+                                            ? "is-invalid"
+                                            : ""
+                                            }`}
+                                        {...formik.getFieldProps("invoice")}
+                                    />
+                                    {formik.touched.invoice &&
+                                        formik.errors.invoice && (
+                                            <div className="invalid-feedback">
+                                                {formik.errors.invoice}
+                                            </div>
+                                        )}
+                                </div>
+                            </div>
 
                             <div className="col-md-6 col-12 mb-3">
                                 <lable className="form-lable">
@@ -143,30 +184,7 @@ function InvoiceAdd() {
                                         )}
                                 </div>
                             </div>
-                            <div className="col-md-6 col-12 mb-3">
-                                <lable className="form-lable">
-                                    Due Terms<span className="text-danger">*</span>
-                                </lable>
-                                <div className="mb-3">
-                                    <select
-                                        {...formik.getFieldProps("dueTerms")}
-                                        className={`form-select    ${formik.touched.dueTerms && formik.errors.dueTerms
-                                            ? "is-invalid"
-                                            : ""
-                                            }`}>
-                                        <option></option>
-                                        <option value="Net 15">Net 15</option>
-                                        <option value="Due On Receipt">Due On Receipt</option>
-                                        <option value="End of Month">End of Month</option>
-                                    </select>
-                                    {formik.touched.dueTerms &&
-                                        formik.errors.dueTerms && (
-                                            <div className="invalid-feedback">
-                                                {formik.errors.dueTerms}
-                                            </div>
-                                        )}
-                                </div>
-                            </div>
+
 
                             <div className="col-md-6 col-12 mb-3">
                                 <lable className="form-lable">
@@ -232,10 +250,31 @@ function InvoiceAdd() {
                                         )}
                                 </div>
                             </div>
+                            <div className="col-md-6 col-12 mb-3"></div>
+                            <div className="col-md-6 col-12 mb-3 d-flex align-items-end justify-content-end">
+                                <label className="col-form-label">
+                                    Amount<span className="text-danger">*</span>
+                                </label>
+                                <div className="overflow-x-auto">
+                                    <select
+                                        {...formik.getFieldProps("tax")}
+                                        className="form-select" style={{ width: "100%" }}>
+                                        <option></option>
+                                        <option value="Commision">Tax Exclusive</option>
+                                        <option value="Brokerage">Tax Inclusive</option>
+                                        <option value="Brokerage">No Tax</option>
+                                    </select>
+                                </div>
+                                {formik.touched.taxOption && formik.errors.taxOption && (
+                                    <div className="invalid-feedback">{formik.errors.taxOption}</div>
+                                )}
+                            </div>
+
+
                             <div className="row mt-5 pt-5 flex-nowrap">
                                 <div className="col-12">
                                     <div className="table-responsive table-bordered overflow-x-auto">
-                                        <div  style={{ backgroundColor: "#023047" }} ><h3 className="p-3" style={{ color: "#ffffff" }}>Item Table</h3></div>
+                                        <div style={{ backgroundColor: "#023047" }} ><h3 className="p-3" style={{ color: "#ffffff" }}>Item Table</h3></div>
                                         <table class="table table-light table-nowrap table table-bordered">
                                             <thead className="thead-light">
                                                 <tr>
@@ -262,14 +301,14 @@ function InvoiceAdd() {
                                                             </td>
                                                             <td>
                                                                 {" "}
-                                                                <div  className="overflow-x-auto">
-                                                                <select
-                                                                    {...formik.getFieldProps("itemDetails")}
-                                                                    className="form-select" style={{ width: "100%" }}>
-                                                                    <option></option>
-                                                                    <option value="Apple">Apple</option>
-                                                                    <option value="Orange">Orange</option>
-                                                                </select>
+                                                                <div className="overflow-x-auto">
+                                                                    <select
+                                                                        {...formik.getFieldProps("itemDetails")}
+                                                                        className="form-select" style={{ width: "100%" }}>
+                                                                        <option></option>
+                                                                        <option value="Apple">Apple</option>
+                                                                        <option value="Orange">Orange</option>
+                                                                    </select>
                                                                 </div>
                                                             </td>
                                                             <td>
@@ -295,14 +334,14 @@ function InvoiceAdd() {
                                                             </td>
                                                             <td>
                                                                 {" "}
-                                                                <div  className="overflow-x-auto">
-                                                                <select
-                                                                    {...formik.getFieldProps("tax")}
-                                                                    className="form-select" style={{ width: "100%" }}>
-                                                                    <option></option>
-                                                                    <option value="Commision">Commision</option>
-                                                                    <option value="Brokerage">Brokerage</option>
-                                                                </select>
+                                                                <div className="overflow-x-auto">
+                                                                    <select
+                                                                        {...formik.getFieldProps("tax")}
+                                                                        className="form-select" style={{ width: "100%" }}>
+                                                                        <option></option>
+                                                                        <option value="Commision">Commision</option>
+                                                                        <option value="Brokerage">Brokerage</option>
+                                                                    </select>
                                                                 </div>
                                                             </td>
                                                             <td>
@@ -332,8 +371,8 @@ function InvoiceAdd() {
                                         <IoIosAdd /> Add Row
                                     </button>
                                     {rows.length > 1 && (
-                                            <button type="button" className="btn btn-sm btn-danger me-2"
-                                                onClick={() => setRows((pr) => pr.slice(0, -1))}>Delete</button>
+                                        <button type="button" className="btn btn-sm btn-danger me-2"
+                                            onClick={() => setRows((pr) => pr.slice(0, -1))}>Delete</button>
                                     )}
                                 </div>
                             </div>
@@ -360,56 +399,49 @@ function InvoiceAdd() {
                                 </div>
                             </div>
                             <div className="col-md-6 col-12 rounded" style={{ border: "1px solid lightgrey" }}>
-                                <div class="row mb-3 mt-2">
-                                    <label class="col-sm-4 col-form-label">Sub Total<span className="text-danger">*</span></label>
-                                    <div class="col-sm-4"></div>
-                                    <div class="col-sm-4 ">
+                                <div className="row mb-3 mt-2">
+                                    <label className="col-sm-4 col-form-label">
+                                        Sub Total<span className="text-danger">*</span>
+                                    </label>
+                                    <div className="col-sm-4"></div>
+                                    <div className="col-sm-4">
                                         <input
                                             type="text"
-                                            className={`form-control  ${formik.touched.subTotal && formik.errors.subTotal
-                                                ? "is-invalid"
-                                                : ""
-                                                }`}
+                                            className={`form-control ${formik.touched.subTotal && formik.errors.subTotal ? "is-invalid" : ""}`}
                                             {...formik.getFieldProps("subTotal")}
                                         />
-                                        {formik.touched.subTotal &&
-                                            formik.errors.subTotal && (
-                                                <div className="invalid-feedback">
-                                                    {formik.errors.subTotal}
-                                                </div>
-                                            )}
+                                        {formik.touched.subTotal && formik.errors.subTotal && (
+                                            <div className="invalid-feedback">{formik.errors.subTotal}</div>
+                                        )}
                                     </div>
                                 </div>
-                                <div class="row mb-3">
-                                    <label class="col-sm-4 col-form-label">Adjustment<span className="text-danger">*</span></label>
-                                    <div class="col-sm-4">
-                                    </div>
-                                    <div class="col-sm-4">
-                                    <input
+                                <div className="row mb-3">
+                                    <label className="col-sm-4 col-form-label">
+                                        Total Tax<span className="text-danger">*</span>
+                                    </label>
+                                    <div className="col-sm-4"></div>
+                                    <div className="col-sm-4">
+                                        <input
                                             type="text"
-                                            className={`form-control  ${formik.touched.adjustment && formik.errors.adjustment
-                                                ? "is-invalid"
-                                                : ""
-                                                }`}
+                                            className={`form-control ${formik.touched.adjustment && formik.errors.adjustment ? "is-invalid" : ""}`}
                                             {...formik.getFieldProps("adjustment")}
                                         />
-                                        {formik.touched.adjustment &&
-                                            formik.errors.adjustment && (
-                                                <div className="invalid-feedback">
-                                                    {formik.errors.adjustment}
-                                                </div>
-                                            )}
+                                        {formik.touched.adjustment && formik.errors.adjustment && (
+                                            <div className="invalid-feedback">{formik.errors.adjustment}</div>
+                                        )}
                                     </div>
                                 </div>
-                                <hr></hr>
-                                <div class="row mb-3 mt-2">
-                                    <label class="col-sm-4 col-form-label">Total</label>
-                                    <div class="col-sm-4"></div>
-                                    <div class="col-sm-4 ">
-                                        <input type="text" class="form-control " />
+
+                                <hr />
+                                <div className="row mb-3 mt-2">
+                                    <label className="col-sm-4 col-form-label">Total</label>
+                                    <div className="col-sm-4"></div>
+                                    <div className="col-sm-4">
+                                        <input type="text" className="form-control" />
                                     </div>
                                 </div>
                             </div>
+
                             <div className="col-md-6 col-12 mb-3">
                                 <lable className="form-lable">
                                     Terms & Conditions<span className="text-danger">*</span>

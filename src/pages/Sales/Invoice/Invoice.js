@@ -94,14 +94,14 @@ const Invoice = () => {
             <tbody>
               {datas.map((data, index) => (
                 <tr key={index}>
-                  <td className="text-center">{index + 1}</td>
-                  <td className="text-center">{data.date}</td>
-                  <td className="text-center">{data.invoiceNumber}</td>
-                  <td className="text-center">{data.orderNumber}</td>
-                  <td className="text-center">{data.customerName}</td>
-                  <td className="text-center">{data.balanceDue}</td>
-                  <td className="text-center">{data.amount}</td>
-                  <td className="text-center">
+                  <td className="text-start">{index + 1}</td>
+                  <td className="text-start">{data.date}</td>
+                  <td className="text-start">{data.invoiceNumber}</td>
+                  <td className="text-start">{data.orderNumber}</td>
+                  <td className="text-start">{data.customerName}</td>
+                  <td className="text-start">{data.balanceDue}</td>
+                  <td className="text-start">{data.amount}</td>
+                  <td className="text-start">
                     {data.status === "PAID" ? (
                       <span className="badge badge-lg badge-dot">
                       <i className="bg-success"></i>Paid
