@@ -38,7 +38,7 @@ function BankAdd() {
 
   return (
     <form onSubmit={formik.handleSubmit}>
-      <div className="container-fluid minHeight m-0">
+      <div className="container-fluid p-2 minHeight m-0">
         <div
           className="card shadow border-0 mb-2 top-header">
           <div className="container-fluid py-4">

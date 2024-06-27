@@ -6,7 +6,7 @@ import { FaTelegramPlane } from "react-icons/fa";
 
 const EstimateView = () => {
   return (
-    <div className="container-fluid minHeight">
+    <div className="container-fluid px-2 minHeight">
       <div className="card shadow border-0 mb-2 top-header">
         <div className="container-fluid py-4">
           <div className="row align-items-center">

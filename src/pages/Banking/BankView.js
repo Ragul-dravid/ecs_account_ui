@@ -122,12 +122,12 @@ const BankView = () => {
                   <td className="text-center">
                     <div>
                       <Link to="expense/view">
-                        <button className="btn btn-sm ps-0 shadow-none border-none">
+                        <button className="btn btn-light btn-sm  shadow-none border-none">
                           View
                         </button>
                       </Link>
-                      <Link to="expense/edit">
-                        <button className="btn btn-sm shadow-none border-none">
+                      <Link to="expense/edit"  className="px-2">
+                        <button className="btn btn-light btn-sm  shadow-none border-none">
                           Edit
                         </button>
                       </Link>
