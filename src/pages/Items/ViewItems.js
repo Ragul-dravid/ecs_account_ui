@@ -1,7 +1,26 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 
 function ViewItems() {
+  const { id } = useParams();
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    const getItemData = async () => {
+      try {
+        const response = await axios.get(
+          `http://13.213.208.92:7083/ecsacc/api/getMstrItemsById/${id}`
+        );
+        setData(response.data);
+      } catch (error) {
+        toast.error("Error fetch data: ", error);
+      }
+    };
+    getItemData();
+  }, [id]);
+
   return (
     <div className="container-fluid px-2 minHeight">
       <div className="card shadow border-0 mb-2 top-header">
@@ -37,7 +56,7 @@ function ViewItems() {
                   </p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: 12345</p>
+                  <p className="text-muted text-sm">: {data.itemCode || ""}</p>
                 </div>
               </div>
             </div>
@@ -49,7 +68,7 @@ function ViewItems() {
                   </p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: Tea</p>
+                  <p className="text-muted text-sm">: {data.itemName || ""}</p>
                 </div>
               </div>
             </div>
@@ -61,7 +80,7 @@ function ViewItems() {
                   </p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: PC </p>
+                  <p className="text-muted text-sm">: {data.unit || ""} </p>
                 </div>
               </div>
             </div>
@@ -76,7 +95,7 @@ function ViewItems() {
                   </p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: 30</p>
+                  <p className="text-muted text-sm">: {data.salesPrice || ""}</p>
                 </div>
               </div>
             </div>
@@ -88,7 +107,7 @@ function ViewItems() {
                   </p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: Good</p>
+                  <p className="text-muted text-sm">: {data.salesDesc || ""}</p>
                 </div>
               </div>
             </div>
@@ -100,7 +119,7 @@ function ViewItems() {
                   </p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: 25</p>
+                  <p className="text-muted text-sm">: {data.salesAcc || ""}</p>
                 </div>
               </div>
             </div>
@@ -114,7 +133,7 @@ function ViewItems() {
                   </p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: 30</p>
+                  <p className="text-muted text-sm">: {data.costPrice || ""}</p>
                 </div>
               </div>
             </div>
@@ -126,7 +145,7 @@ function ViewItems() {
                   </p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: Good</p>
+                  <p className="text-muted text-sm">: {data.purchaseDesc || ""}</p>
                 </div>
               </div>
             </div>
@@ -134,11 +153,11 @@ function ViewItems() {
               <div className="row mb-3">
                 <div className="col-6 d-flex justify-content-start align-items-center">
                   <p className="text-sm">
-                    <b>Perchace Account</b>
+                    <b>Purchase Account</b>
                   </p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: 25</p>
+                  <p className="text-muted text-sm">: {data.purchaseAcc || ""}</p>
                 </div>
               </div>
             </div>
@@ -150,7 +169,7 @@ function ViewItems() {
                   </p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: 25</p>
+                  <p className="text-muted text-sm">: {data.preferredVendor || ""}</p>
                 </div>
               </div>
             </div>

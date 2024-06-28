@@ -103,9 +103,9 @@ function Admin({ handleLogout }) {
 
               {/* {/ Items /} */}
               <Route path="/items" element={<Items />} />
-              <Route path="/items/additems" element={<AddItems />} />
-              <Route path="/items/edititems" element={<EditItems />} />
-              <Route path="/items/viewitems" element={<ViewItems />} />
+              <Route path="/items/add" element={<AddItems />} />
+              <Route path="/items/edit/id" element={<EditItems />} />
+              <Route path="/items/view/id" element={<ViewItems />} />
 
               {/* {/ ChatOfAccount /} */}
               <Route path="/chartofaccount" element={<ChartOfAccount />} />
