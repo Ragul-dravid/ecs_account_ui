@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useFormik } from "formik";
-import * as Yup from "yup";
 import { MdDeleteSweep } from "react-icons/md";
 import toast from "react-hot-toast";
 import api from "../../../config/URL";
@@ -9,7 +8,7 @@ import api from "../../../config/URL";
 const EstimateEdit = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [rows, setRows] = useState([{ id: 1 }]);
   const [rowss, setRowss] = useState([]);
   const AddRowContent = () => {
@@ -47,7 +46,7 @@ const EstimateEdit = () => {
     },
     // validationSchema: validationSchema,
     onSubmit: async (values) => {
-      console.log("User Datas:", values);
+      setLoading(true);
       try {
         const response = await api.put(`/updateTxnQuotes/${id}`,values, {
           headers: {
@@ -61,9 +60,12 @@ const EstimateEdit = () => {
         }
       }
       catch (e) {
-        toast.error("Error fetching data: ", e);
+        toast.error("Error fetching data: ", e?.response?.data?.message);
+
       }
-      setLoading(true);
+      finally{
+        setLoading(false);
+      }
     }
     
   });
@@ -102,13 +104,14 @@ const EstimateEdit = () => {
                   </button>
                 </Link>
 
-                <button
-                  type="submit"
-                  className="btn btn-button btn-sm"
-                  onClick={formik.handleSubmit}
-                >
-                  Update
-                </button>
+                <button type="submit" className="btn btn-sm btn-button" disabled={loading}>
+                    {loading ? (
+                      <span className="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                    ) : (
+                      <span></span>
+                    )}
+                    &nbsp;<span>Update</span>
+                  </button>
 
               </div>
             </div>

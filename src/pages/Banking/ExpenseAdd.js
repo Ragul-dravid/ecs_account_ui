@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -7,8 +7,7 @@ import toast from "react-hot-toast";
 
 function ExpenseAdd() {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(true);
-
+  
   const validationSchema = Yup.object({
     expenseAcc: Yup.string().required("*Expense Account is required"),
     date: Yup.date().required("* Date is required"),
@@ -57,7 +56,7 @@ function ExpenseAdd() {
       catch (e) {
         toast.error("Error fetching data: ", e);
       }
-      setLoading(true);
+     
     }
   
   

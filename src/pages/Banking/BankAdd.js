@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -7,7 +7,7 @@ import api from "../../config/URL";
 
 function BankAdd() {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const validationSchema = Yup.object({
     selectaccounttype: Yup.string().required("*Select Account Type is required"),
@@ -27,34 +27,29 @@ function BankAdd() {
       currency: "",
       ifsc: "",
       selectaccounttype: "",
-      // description: ""
     },
 
     validationSchema: validationSchema,
     onSubmit: async (values) => {
-      console.log("Bank Datas:", values);
-         try {
-          const response = await api.post("/createTxnBank",values, {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          })
-          if (response.status === 201) {
-            toast.success("Banking created successfully")
-            navigate("/bank");
-            
-          }
+      setLoading(true);
+      try {
+        const response = await api.post("/createTxnBank", values, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        if (response.status === 201) {
+          toast.success("Banking created successfully")
+          navigate("/bank");
         }
-        catch (e) {
-          toast.error("Error fetching data: ", e);
-        }
-        setLoading(true);
       }
-    
-    
+      catch (e) {
+        toast.error("Error fetching data: ", e?.response?.data?.message);
+      } finally {
+        setLoading(false)
+      }
+    }
   });
-  
- 
 
   return (
     <form onSubmit={formik.handleSubmit}>
@@ -75,8 +70,13 @@ function BankAdd() {
                       <span>Back</span>
                     </button>
                   </Link>
-                  <button type="submit" className="btn btn-button">
-                    <span>Save</span>
+                  <button type="submit" className="btn btn-sm btn-button" disabled={loading}>
+                    {loading ? (
+                      <span className="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                    ) : (
+                      <span></span>
+                    )}
+                    &nbsp;<span>Save</span>
                   </button>
                 </div>
               </div>
@@ -148,7 +148,7 @@ function BankAdd() {
                   Currency<span className="text-danger">*</span>
                 </lable>
                 <div className="mb-3">
-                <input
+                  <input
                     type="text"
                     name="currency"
                     className={`form-control  ${formik.touched.currency && formik.errors.currency
@@ -209,7 +209,7 @@ function BankAdd() {
                     )}
                 </div>
               </div>
-             
+
               <div className="col-md-6 col-12 mb-2">
                 <lable className="form-lable">
                   IFSC<span className="text-danger">*</span>

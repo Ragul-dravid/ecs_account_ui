@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import api from "../../config/URL";
@@ -8,7 +8,7 @@ import toast from "react-hot-toast";
 function BankEdit() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const validationSchema = Yup.object({
     selectaccounttype: Yup.string().required("*Select Account Type is required"),
@@ -32,7 +32,7 @@ function BankEdit() {
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
-      console.log("Bank Datas:", values);
+      setLoading(true)
       try {
         const response = await api.put(`/updateTxnBank/${id}`,values, {
           headers: {
@@ -46,9 +46,12 @@ function BankEdit() {
         }
       }
       catch (e) {
-        toast.error("Error fetching data: ", e);
+        toast.error("Error fetching data: ", e?.response?.data?.message);
+
       }
-      setLoading(true);
+      finally {
+        setLoading(false)
+      }
     }
     
   });
@@ -86,8 +89,13 @@ function BankEdit() {
                       <span>Back</span>
                     </button>
                   </Link>
-                  <button type="submit" className="btn btn-button">
-                    <span>Save</span>
+                  <button type="submit" className="btn btn-sm btn-button" disabled={loading}>
+                    {loading ? (
+                      <span className="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                    ) : (
+                      <span></span>
+                    )}
+                    &nbsp;<span>Save</span>
                   </button>
                 </div>
               </div>

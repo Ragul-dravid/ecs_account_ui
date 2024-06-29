@@ -4,12 +4,12 @@ import "datatables.net-dt";
 import "datatables.net-responsive-dt";
 import $ from "jquery";
 import { Link } from "react-router-dom";
-import { FaEye, FaEdit } from "react-icons/fa";
+
 import DeleteModel from "../../components/common/DeleteModel";
-import { Toast } from "react-bootstrap";
+
 import api from "../../config/URL";
 import toast from "react-hot-toast";
-import axios from "axios";
+
 
 
 const Bank = () => {
@@ -39,7 +39,8 @@ const Bank = () => {
       }
     }
     catch (e) {
-      toast.error("Error fetching data: ", e);
+      toast.error("Error fetching data: ", e?.response?.data?.message);
+
     }
   }
   const initializeDataTable = () => {
@@ -86,8 +87,8 @@ const Bank = () => {
             <div className="col-auto">
               <div className="hstack gap-2 justify-content-end">
                 <Link to="/bank/add">
-                  <button type="submit" className="btn btn-sm btn-button">
-                    <span>Add New Users</span>
+                <button type="submit" className="btn btn-sm btn-button">
+                    <span>Add +</span>
                   </button>
                 </Link>
               </div>

@@ -3,7 +3,7 @@ import "datatables.net-dt";
 import "datatables.net-responsive-dt";
 import $ from "jquery";
 import { Link } from "react-router-dom";
-import { FaEye, FaEdit, FaPlus } from "react-icons/fa";
+import { FaPlus } from "react-icons/fa";
 import DeleteModel from "../../../components/common/DeleteModel";
 import api from "../../../config/URL";
 import toast from "react-hot-toast";
@@ -15,7 +15,7 @@ const Estimates = () => {
   const tableRef = useRef(null);
   const getData = async () => {
     console.log("gbnm")
-    
+
     try {
       const response = await api.get("/getAllTxnQuotes");
       if (response.status === 200) {
@@ -24,7 +24,8 @@ const Estimates = () => {
       }
     }
     catch (e) {
-      toast.error("Error fetching data: ", e);
+      toast.error("Error fetching data: ", e?.response?.data?.message);
+
     }
   }
   const initializeDataTable = () => {
@@ -102,8 +103,14 @@ const Estimates = () => {
                 <tr key={index}>
                   <td className="text-center">{index + 1}</td>
                   <td className="text-center">{data.customerName}</td>
-                  <td className="text-center">{data.issueDate}</td>
-                  <td className="text-center">{data.expiryDate}</td>
+                  <td className="text-center">
+                    {new Date(data.issueDate).toLocaleDateString('en-GB')}
+                  </td>
+                  <td className="text-center">
+                    {new Date(data.expiryDate).toLocaleDateString('en-GB')}
+                  </td>
+
+
                   <td className="text-center">{data.quoteNumber}</td>
                   <td className="text-center">{data.reference}</td>
                   <td className="text-center">

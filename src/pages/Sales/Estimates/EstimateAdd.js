@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
-import * as Yup from "yup";
+
 import { MdDeleteSweep } from "react-icons/md";
 import api from "../../../config/URL";
 import toast from "react-hot-toast";
 
 const EstimateAdd = () => {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   // // const [rows, setRows] = useState([]);
   // const [title, setTitle] = useState('');
   // const [summary, setSummary] = useState('');
@@ -48,8 +48,7 @@ const EstimateAdd = () => {
     },
     // validationSchema: validationSchema,
     onSubmit: async (values) => {
-      console.log("User Datas:", values);
-
+      setLoading(true);
       try {
         const response = await api.post("/createTxnQuotes",values, {
           headers: {
@@ -63,9 +62,11 @@ const EstimateAdd = () => {
         }
       }
       catch (e) {
-        toast.error("Error fetching data: ", e);
-      }
-      setLoading(true);
+        toast.error("Error fetching data: ", e?.response?.data?.message);
+
+      }finally{
+      setLoading(false);
+    }
     }
   
     
@@ -88,13 +89,14 @@ const EstimateAdd = () => {
                   </button>
                 </Link>
 
-                <button
-                  type="submit"
-                  className="btn btn-button btn-sm"
-                  onClick={formik.handleSubmit}
-                >
-                  Save
-                </button>
+                <button type="submit" className="btn btn-sm btn-button" disabled={loading}>
+                    {loading ? (
+                      <span className="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                    ) : (
+                      <span></span>
+                    )}
+                    &nbsp;<span>Save</span>
+                  </button>
               </div>
             </div>
           </div>
