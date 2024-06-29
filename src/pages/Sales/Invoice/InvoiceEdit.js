@@ -8,7 +8,7 @@ import toast from "react-hot-toast";
 function InvoiceEdit() {
     const navigate = useNavigate();
     const { id } = useParams();
-    const [loadIndicator, setLoadIndicator] = useState(false);
+    const [loading, setLoadIndicator] = useState(false);
     const [rows, setRows] = useState([{}]);
     const AddRowContent = () => {
         setRows((prevRows) => [...prevRows, { id: prevRows.length + 1 }]);
@@ -50,8 +50,8 @@ function InvoiceEdit() {
                 } else {
                     toast.error(response.data.message);
                 }
-            } catch (error) {
-                toast.error(error);
+            } catch (e) {
+                toast.error("Error fetching data: ", e?.response?.data?.message);
             } finally {
                 setLoadIndicator(false);
             }
@@ -62,13 +62,13 @@ function InvoiceEdit() {
             try {
                 const response = await api.get(`/getTxnInvoiceById/${id}`);
                 formik.setValues(response.data);
-            } catch (error) {
-                toast.error("Error fetching data:", error);
+            } catch (e) {
+                toast.error("Error fetching data: ", e?.response?.data?.message);
             }
         };
 
         getData();
-    }, []);
+    }, [formik, id]);
 
 
     return (
@@ -90,18 +90,13 @@ function InvoiceEdit() {
                                             <span>Back</span>
                                         </button>
                                     </Link>
-                                    <button
-                                        type="submit"
-                                        className="btn btn-button"
-                                        disabled={loadIndicator}
-                                    >
-                                        {loadIndicator && (
-                                            <span
-                                                className="spinner-border spinner-border-sm me-2"
-                                                aria-hidden="true"
-                                            ></span>
+                                    <button type="submit" className="btn btn-sm btn-button" disabled={loading}>
+                                        {loading ? (
+                                            <span className="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                                        ) : (
+                                            <span></span>
                                         )}
-                                        Save
+                                        &nbsp;<span>Update</span>
                                     </button>
                                 </div>
                             </div>

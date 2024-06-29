@@ -15,8 +15,8 @@ function InvoiceView() {
       try{
       const response = await api.get(`/getTxnInvoiceById/${id}`);
       setData(response.data);
-      }catch(error){
-        toast.error("Error Fetching Data ", error)
+      }catch(e){
+        toast.error("Error fetching data: ", e?.response?.data?.message);
       }
     };
     getData();
