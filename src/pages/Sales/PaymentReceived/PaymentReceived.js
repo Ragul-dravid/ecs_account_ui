@@ -1,53 +1,74 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "datatables.net-dt";
 import "datatables.net-responsive-dt";
 import $ from "jquery";
 import { Link } from "react-router-dom";
 import DeleteModel from "../../../components/common/DeleteModel";
+import api from "../../../config/URL";
+import toast from "react-hot-toast";
 
 
 const PaymentReceived = () => {
   const tableRef = useRef(null);
 
-  const datas = [
-    {
-      id: 1,
-      date: "01-03-2004",
-      paymentNumber: "B1-018",
-      referenceNumber: "500",
-      customerNumber: "Harish",
-      invoiceNumber: "$5350",
-      amount: "$0.00",
-      mode: "Cash"
-    },
-    {
-      id: 2,
-      date: "19-02-2024",
-      paymentNumber: "B1-006",
-      referenceNumber: "860",
-      customerNumber: "Mani",
-      invoiceNumber: "$5050",
-      amount: "$0.00",
-      mode: "Card"
-    },
-    {
-      id: 3,
-      date: "15-02-2024",
-      paymentNumber: "B1-002",
-      referenceNumber: "100",
-      customerNumber: "Sangeetha",
-      invoiceNumber: "$5009",
-      amount: "$0.00",
-      mode: "Bank"
-    },
-  ];
+  const [datas, setDatas] = useState();
+  const [loading, setLoading] = useState(true);
+
+
+  const refreshData = async () => {
+    destroyDataTable();
+    setLoading(true);
+    try {
+      const response = await api.get("/getAllTxnPaymentsReceived");
+      setDatas(response.data);
+      initializeDataTable(); // Reinitialize DataTable after successful data update
+    } catch (error) {
+      console.error("Error refreshing data:", error);
+    }
+    setLoading(false);
+  };
+  const getPaymentData = async () => {
+
+    try {
+      const response = await api.get("/getAllTxnPaymentsReceived");
+      if (response.status === 200) {
+        setDatas(response.data)
+        setLoading(false);
+      }
+    }
+    catch (e) {
+      toast.error("Error fetching data: ", e);
+    }
+  }
+  const initializeDataTable = () => {
+    if ($.fn.DataTable.isDataTable(tableRef.current)) {
+      // DataTable already initialized, no need to initialize again
+      return;
+    }
+    $(tableRef.current).DataTable({
+      responsive: true,
+    });
+  };
+
+  const destroyDataTable = () => {
+    const table = $(tableRef.current).DataTable();
+    if (table && $.fn.DataTable.isDataTable(tableRef.current)) {
+      table.destroy();
+    }
+  };
+  useEffect(() => {
+    if (!loading) {
+      initializeDataTable();
+    }
+    return () => {
+      destroyDataTable();
+    };
+  }, [loading]);
+
+
 
   useEffect(() => {
-    const table = $(tableRef.current).DataTable();
-
-    return () => {
-      table.destroy();
-    };
+    getPaymentData();
   }, []);
 
   return (
@@ -71,10 +92,10 @@ const PaymentReceived = () => {
                 <th scope="col" style={{ whiteSpace: "nowrap" }}>
                   S.NO
                 </th>
-                <th scope="col" className="text-center">DATE</th>
+                <th scope="col" className="text-center">PAYMENT DATE</th>
                 <th scope="col" className="text-center">PAYMENT NUMBER</th>
                 <th scope="col" className="text-center">REFERENCE NUMBER</th>
-                <th scope="col" className="text-center">CUSTOMER NUMBER</th>
+                <th scope="col" className="text-center">CUSTOMER NAME</th>
                 <th scope="col" className="text-center">INVOICE NUMBER</th>
                 <th scope="col" className="text-center">AMOUNT</th>
                 <th scope="col" className="text-center">MODE</th>
@@ -84,24 +105,27 @@ const PaymentReceived = () => {
               </tr>
             </thead>
             <tbody>
-              {datas.map((data, index) => (
+              {datas?.map((data, index) => (
                 <tr key={index}>
                   <td className="text-center">{index + 1}</td>
-                  <td className="text-center">{data.date}</td>
+                  <td className="text-center">
+                    {({ data }) => <>{data.paymentDate.substring(0, 10)}</>}
+                  </td>
+
                   <td className="text-center">{data.paymentNumber}</td>
-                  <td className="text-center">{data.referenceNumber}</td>
-                  <td className="text-center">{data.customerNumber}</td>
+                  <td className="text-center">{data.reference}</td>
+                  <td className="text-center">{data.customerName}</td>
                   <td className="text-center">{data.invoiceNumber}</td>
                   <td className="text-center">{data.amount}</td>
                   <td className="text-center">{data.mode}</td>
                   <td className="text-center">
-                  <div>
-                      <Link to="/paymentReceived/view" className="px-2">
+                    <div>
+                      <Link to={`/paymentReceived/view/${data.id}`} className="px-2">
                         <button className="btn btn-light btn-sm  shadow-none border-none">
                           View
                         </button>
                       </Link>
-                      <DeleteModel/>
+                      <DeleteModel path={`/deleteTxnPaymentsReceived/${data.id}`} onSuccess={refreshData} />
                     </div>
                   </td>
                 </tr>

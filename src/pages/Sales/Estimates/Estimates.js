@@ -1,47 +1,61 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "datatables.net-dt";
 import "datatables.net-responsive-dt";
 import $ from "jquery";
 import { Link } from "react-router-dom";
 import { FaEye, FaEdit, FaPlus } from "react-icons/fa";
 import DeleteModel from "../../../components/common/DeleteModel";
+import api from "../../../config/URL";
+import toast from "react-hot-toast";
 
 
 const Estimates = () => {
+  const [datas, setDatas] = useState();
+  const [loading, setLoading] = useState(true);
   const tableRef = useRef(null);
-  const datas = [
-    {
-      id: 1,
-      date: "2020-03-03",
-      estimateNumber: "EST-018",
-      referenceNumber: "500",
-      customerName: "Harish",
-      amount: "$5350"
-    },
-    {
-      id: 2,
-      date: "2020-03-03",
-      estimateNumber: "EST-018",
-      referenceNumber: "500",
-      customerName: "Antony",
-      amount: "$5350"
-    },
-    {
-      id: 3,
-      date: "2020-03-03",
-      estimateNumber: "EST-018",
-      referenceNumber: "500",
-      customerName: "keerthi",
-      amount: "$5350"
-    },
+  const getData = async () => {
+    console.log("gbnm")
+    
+    try {
+      const response = await api.get("/getAllTxnQuotes");
+      if (response.status === 200) {
+        setDatas(response.data)
+        setLoading(false);
+      }
+    }
+    catch (e) {
+      toast.error("Error fetching data: ", e);
+    }
+  }
+  const initializeDataTable = () => {
+    if ($.fn.DataTable.isDataTable(tableRef.current)) {
+      // DataTable already initialized, no need to initialize again
+      return;
+    }
+    $(tableRef.current).DataTable({
+      responsive: true,
+    });
+  };
 
-  ];
-  useEffect(() => {
+  const destroyDataTable = () => {
     const table = $(tableRef.current).DataTable();
-
-    return () => {
+    if (table && $.fn.DataTable.isDataTable(tableRef.current)) {
       table.destroy();
+    }
+  };
+  useEffect(() => {
+    if (!loading) {
+      initializeDataTable();
+    }
+    return () => {
+      destroyDataTable();
     };
+  }, [loading]);
+
+
+
+  useEffect(() => {
+    getData();
   }, []);
   return (
     <div className="container-fluid px-2 minHeight">
@@ -73,33 +87,33 @@ const Estimates = () => {
                 <th scope="col" style={{ whiteSpace: "nowrap" }}>
                   S.NO
                 </th>
-                <th scope="col" className="text-center">DATE</th>
-                <th scope="col" className="text-center">ESTIMATE NUMBER</th>
-                <th scope="col" className="text-center">REFERENCE NUMBER</th>
                 <th scope="col" className="text-center">CUSTOMER NAME</th>
-                <th scope="col" className="text-center">AMOUNT</th>
+                <th scope="col" className="text-center">ESTIMATE DATE</th>
+                <th scope="col" className="text-center">EXPIRY DATE</th>
+                <th scope="col" className="text-center">QUOTE NUMBER</th>
+                <th scope="col" className="text-center">REFERENCE</th>
                 <th scope="col" className="text-center">
                   ACTION
                 </th>
               </tr>
             </thead>
             <tbody>
-              {datas.map((data, index) => (
+              {datas?.map((data, index) => (
                 <tr key={index}>
                   <td className="text-center">{index + 1}</td>
-                  <td className="text-center">{data.date}</td>
-                  <td className="text-center">{data.estimateNumber}</td>
-                  <td className="text-center">{data.referenceNumber}</td>
                   <td className="text-center">{data.customerName}</td>
-                  <td className="text-center">{data.amount}</td>
+                  <td className="text-center">{data.issueDate}</td>
+                  <td className="text-center">{data.expiryDate}</td>
+                  <td className="text-center">{data.quoteNumber}</td>
+                  <td className="text-center">{data.reference}</td>
                   <td className="text-center">
                     <div className="gap-2">
-                      <Link to="/estimates/view">
+                      <Link to={`/estimates/view/${data.id}`}>
                         <button className="btn btn-light btn-sm  shadow-none border-none">
                           View
                         </button>
                       </Link>
-                      <Link to="/estimates/edit" className="px-2">
+                      <Link to={`/estimates/edit/${data.id}`} className="px-2">
                         <button className="btn btn-light  btn-sm shadow-none border-none">
                           Edit
                         </button>

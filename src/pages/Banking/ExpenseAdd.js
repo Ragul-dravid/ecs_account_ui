@@ -1,9 +1,14 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import api from "../../config/URL";
+import toast from "react-hot-toast";
 
 function ExpenseAdd() {
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
+
   const validationSchema = Yup.object({
     expenseAcc: Yup.string().required("*Expense Account is required"),
     date: Yup.date().required("* Date is required"),
@@ -11,12 +16,9 @@ function ExpenseAdd() {
     invoice: Yup.string().required("*Invoice is required"),
     customerName: Yup.string().required("*Customer Name is required"),
     vendor: Yup.string().required("*vendorendor is required"),
-    // GSTlegalname: Yup.string().required("* GST legal Name is required"),
-    // GSTnumber: Yup.string().required("*GST Number is required"),
-    // tax: Yup.string().required("*Tax is required"),
-    // GSTaddress: Yup.string().required("* GST Address is required"),
+    paidThrough: Yup.string().required("* Paid Through is required"),
     attachment: Yup.string().required("*GST Number is required"),
-    notes: Yup.string().required("*Notes is required"),
+    // notes: Yup.string().required("*Notes is required"),
     // empEmail: Yup.string()
     // .matches(
     //   /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
@@ -33,18 +35,34 @@ function ExpenseAdd() {
       invoice: "",
       customerName: "",
       vendor: "",
-      // GSTlegalname: "",
-      // GSTnumber: "",
-      // tax: "",
-      // GSTaddress: "",
+      paidThrough: "",
       attachment: "",
       notes: ""
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       console.log("Bank Datas:", values);
-    },
-  });
+      try {
+        const response = await api.post("/createTxnExpenses",values, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        if (response.status === 201) {
+          toast.success("Banking created successfully")
+          navigate("/bank");
+          
+        }
+      }
+      catch (e) {
+        toast.error("Error fetching data: ", e);
+      }
+      setLoading(true);
+    }
+  
+  
+});
+   
 
   return (
     <form onSubmit={formik.handleSubmit}>
@@ -297,28 +315,28 @@ function ExpenseAdd() {
                 </div>
               </div> */}
 
-              {/* <div className="col-md-6 col-12 mb-2">
+              <div className="col-md-6 col-12 mb-2">
                 <lable className="form-lable">
-                  GST address<span className="text-danger">*</span>
+                  Paid Through<span className="text-danger">*</span>
                 </lable>
                 <div className="mb-3">
                   <input
                     type="text"
-                    name="GSTaddress"
-                    className={`form-control  ${formik.touched.GSTaddress && formik.errors.GSTaddress
+                    name="paidThrough"
+                    className={`form-control  ${formik.touched.paidThrough && formik.errors.paidThrough
                       ? "is-invalid"
                       : ""
                       }`}
-                    {...formik.getFieldProps("GSTaddress")}
+                    {...formik.getFieldProps("paidThrough")}
                   />
-                  {formik.touched.GSTaddress &&
-                    formik.errors.GSTaddress && (
+                  {formik.touched.paidThrough &&
+                    formik.errors.paidThrough && (
                       <div className="invalid-feedback">
-                        {formik.errors.GSTaddress}
+                        {formik.errors.paidThrough}
                       </div>
                     )}
                 </div>
-              </div> */}
+              </div>
 
               <div className="col-md-6 col-12 mb-2">
                 <lable className="form-lable">

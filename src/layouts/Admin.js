@@ -62,12 +62,13 @@ import InvoiceView from "../pages/Sales/Invoice/InvoiceView";
 import RecordPayment from "../pages/Sales/Invoice/RecordPayment";
 import PaymentReceived from "../pages/Sales/PaymentReceived/PaymentReceived";
 import PaymentReceivedView from "../pages/Sales/PaymentReceived/PaymentReceivedView";
-
+import { Toaster } from "react-hot-toast";
 import Report from "../pages/Report";
 
 function Admin({ handleLogout }) {
   return (
     <BrowserRouter>
+        <Toaster />
       <div className="d-flex flex-column flex-lg-row h-lg-full bg-surface-secondary">
         <Sidebar onLogout={handleLogout} />
         <div className="h-screen flex-grow-1 overflow-y-lg-auto">
@@ -79,33 +80,32 @@ function Admin({ handleLogout }) {
               {/* {/ Bank /} */}
               <Route path="/bank" element={<Bank />} />
               <Route path="/bank/add" element={<BankAdd />} />
-              <Route path="/bank/edit" element={<BankEdit />} />
-              <Route path="/bank/view" element={<BankView />} />
+              <Route path="/bank/edit/:id" element={<BankEdit />} />
+              <Route path="/bank/view/:id" element={<BankView />} />
 
-              <Route path="/bank/view/expense" element={<ExpenseAdd />} />
-              <Route path="/bank/view/income" element={<IncomeAdd />} />
-              <Route path="/bank/view/expense/edit" element={<ExpenseEdit />} />
-              <Route path="/income/edit" element={<IncomeEdit />} />
-              <Route path="/bank/view/expense/view" element={<ExpenseView />} />
-              <Route path="/income/view" element={<IncomeView />} />
+              <Route path="/bank/view/expense/" element={<ExpenseAdd />} />
+              <Route path="/bank/view/income/" element={<IncomeAdd />} />
+              <Route path="/bank/view/expense/edit/:id" element={<ExpenseEdit />} />
+              <Route path="/income/edit/:id" element={<IncomeEdit />} />
+              <Route path="/bank/view/expense/view/:id" element={<ExpenseView />} />
+              <Route path="/income/view/:id" element={<IncomeView />} />
 
-              {/* {/ Sales /} */}
               {/* {/ Customer /} */}
               <Route path="/customer" element={<Customers />} />
               <Route path="/customer/add" element={<CustomerAdd />} />
-              <Route path="/customer/edit" element={<CustomerEdit />} />
-              <Route path="/customer/view" element={<CustomerView />} />
+              <Route path="/customer/edit/:id" element={<CustomerEdit />} />
+              <Route path="/customer/view/:id" element={<CustomerView />} />
               {/* {/ Estimates /} */}
               <Route path="/estimates" element={<Estimates />} />
               <Route path="/estimates/add" element={<EstimateAdd />} />
-              <Route path="/estimates/edit" element={<EstimateEdit />} />
-              <Route path="/estimates/view" element={<EstimateView />} />
+              <Route path="/estimates/edit/:id" element={<EstimateEdit />} />
+              <Route path="/estimates/view/:id" element={<EstimateView />} />
 
               {/* {/ Items /} */}
               <Route path="/items" element={<Items />} />
               <Route path="/items/add" element={<AddItems />} />
-              <Route path="/items/edit/id" element={<EditItems />} />
-              <Route path="/items/view/id" element={<ViewItems />} />
+              <Route path="/items/edit/:id" element={<EditItems />} />
+              <Route path="/items/view/:id" element={<ViewItems />} />
 
               {/* {/ ChatOfAccount /} */}
               <Route path="/chartofaccount" element={<ChartOfAccount />} />
@@ -134,8 +134,8 @@ function Admin({ handleLogout }) {
               {/* {/ vendor /} */}
               <Route path="/vendor" element={<Vendor />} />
               <Route path="/vendor/add" element={<VendorAdd />} />
-              <Route path="/vendor/edit" element={<VendorEdit />} />
-              <Route path="/vendor/view" element={<VendorView />} />
+              <Route path="/vendor/edit/:id" element={<VendorEdit />} />
+              <Route path="/vendor/view/:id" element={<VendorView />} />
 
               {/* {/ payment /} */}
               <Route path="/paymentmade" element={<Paymentmade />} />
@@ -148,13 +148,13 @@ function Admin({ handleLogout }) {
               {/* {/ Invoice /} */}
               <Route path="/invoice" element={<Invoice/>}/>
               <Route path="/invoice/add" element={<InvoiceAdd/>}/>
-              <Route path="/invoice/edit" element={<InvoiceEdit/>}/>
-              <Route path="/invoice/view" element={<InvoiceView/>}/>
+              <Route path="/invoice/edit/:id" element={<InvoiceEdit/>}/>
+              <Route path="/invoice/view/:id" element={<InvoiceView/>}/>
               <Route path="/recordpayment" element={<RecordPayment/>}/>
 
               {/* {/ Payment Received /} */}
               <Route path="/paymentReceived" element={<PaymentReceived/>}/>
-              <Route path="/paymentReceived/view" element={<PaymentReceivedView/>}/>
+              <Route path="/paymentReceived/view/:id" element={<PaymentReceivedView/>}/>
 
               {/* {/ Department /} */}
               <Route path="/department" element={<Department />} />

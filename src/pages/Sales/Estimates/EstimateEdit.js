@@ -1,9 +1,15 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { MdDeleteSweep } from "react-icons/md";
+import toast from "react-hot-toast";
+import api from "../../../config/URL";
 
 const EstimateEdit = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
   const [rows, setRows] = useState([{ id: 1 }]);
   const [rowss, setRowss] = useState([]);
   const AddRowContent = () => {
@@ -12,35 +18,71 @@ const EstimateEdit = () => {
 
   const formik = useFormik({
     initialValues: {
-      customerName: "Harish",
-      orderNumber: "9830",
-      reference: "Chandru",
-      estimateNumber: "67390189801",
-      estimateDate: "2002-02-02",
-      expriyDate: "2002-03-03",
+      customerName: "",
+      issueDate: "",
+      expiryDate: "",
+      quoteNumber: "",
+      reference: "",
+      title: "",
       subject: "",
+      summery: "",
+      project: "",
       customerNotes: "",
-      subTotal: "2330.00",
-      adjustment: "500.00",
-      total: "2830",
-      termsConditions: "",
-      items: rows.map((row, index) => ({
-        [`itemDetails${0}`]: "Apple", // Initialize each itemDetails field with an empty string
-        [`quantity${0}`]: "ff",     // Initialize each quantity field with an empty string
-        [`rate${0}`]: "ff",         // Initialize each rate field with an empty string
-        [`discount${0}`]: "ff",     // Initialize each discount field with an empty string
-        [`tax${0}`]: "Commission",          // Initialize each tax field with an empty string
-        [`amount${0}`]: "ff",       // Initialize each amount field with an empty string
-        // Initialize each amount field with an empty string
-      }))
+      subTotal: "",
+      adjustment: "",
+      tax: "",
+      total: "",
+      file: "",
+      terms: "",
+      // items: rows.map((row, index) => ({
+      //   [`itemDetails${0}`]: "Apple", // Initialize each itemDetails field with an empty string
+      //   [`quantity${0}`]: "ff",     // Initialize each quantity field with an empty string
+      //   [`rate${0}`]: "ff",         // Initialize each rate field with an empty string
+      //   [`discount${0}`]: "ff",     // Initialize each discount field with an empty string
+      //   [`tax${0}`]: "Commission",          // Initialize each tax field with an empty string
+      //   [`amount${0}`]: "ff",       // Initialize each amount field with an empty string
+      //   // Initialize each amount field with an empty string
+      // }))
 
     },
     // validationSchema: validationSchema,
     onSubmit: async (values) => {
       console.log("User Datas:", values);
-    },
-
+      try {
+        const response = await api.put(`/updateTxnQuotes/${id}`,values, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        if (response.status === 201) {
+          toast.success("Estimated created successfully")
+          navigate("/estimates");
+          
+        }
+      }
+      catch (e) {
+        toast.error("Error fetching data: ", e);
+      }
+      setLoading(true);
+    }
+    
   });
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const response = await api.get(`/getTxnQuotesById/${id}`);
+        formik.setValues(response.data);
+      } catch (error) {
+        toast.error("Error Fetch Data ", error);
+      }
+    };
+
+    getData();
+    
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+    
+  
 
   return (
     <div className="container-fluid p-2 minHeight m-0">
@@ -95,8 +137,8 @@ const EstimateEdit = () => {
                 <div className="mb-3">
                   <input
                     type="text"
-                    name="orderNumber"
-                    {...formik.getFieldProps("orderNumber")}
+                    name="quoteNumber"
+                    {...formik.getFieldProps("quoteNumber")}
                     className="form-control"
                   />
                 </div>
@@ -127,9 +169,9 @@ const EstimateEdit = () => {
                 <div className="mb-3">
                   <input
                     type="date"
-                    name="estimateDate"
+                    name="issueDate"
                     className="form-control"
-                    {...formik.getFieldProps("estimateDate")}
+                    {...formik.getFieldProps("issueDate")}
                   />
                 </div>
               </div>
@@ -150,9 +192,9 @@ const EstimateEdit = () => {
                 <div className="mb-3">
                   <input
                     type="text"
-                    name="estimateNumber"
+                    name="project"
                     className="form-control"
-                    {...formik.getFieldProps("estimateNumber")}
+                    {...formik.getFieldProps("project")}
                   />
                 </div>
               </div>
@@ -200,11 +242,11 @@ const EstimateEdit = () => {
                             <input
                               className="form-control mb-4"
                               type="text"
-                              placeholder="Summary"
-                              value={row.summary || ''}
+                              placeholder="summery"
+                              value={row.summery || ''}
                               onChange={(e) => {
                                 const newRows = [...rowss];
-                                newRows[index].summary = e.target.value;
+                                newRows[index].summery = e.target.value;
                                 setRowss(newRows);
                               }}
                             />
@@ -221,7 +263,7 @@ const EstimateEdit = () => {
                   <button
                     type="button"
                     onClick={() => {
-                      setRowss((prev) => [...prev, { title: '', summary: '' }]); // Add a new row with empty title and summary
+                      setRowss((prev) => [...prev, { title: '', summery: '' }]); // Add a new row with empty title and summary
                     }}
                     className="btn btn-border btn-sm btn-button"
                   >
@@ -235,7 +277,7 @@ const EstimateEdit = () => {
                       onClick={() => setRowss((prev) => prev.slice(0, -1))}
                       className="btn btn-danger btn-sm"
                     >
-                      Delete Title & Summary
+                      <MdDeleteSweep className="mb-1 mx-1"/> Delete Title & Summary
                     </button>
                   )}
                 </div>
@@ -251,9 +293,9 @@ const EstimateEdit = () => {
                   {...formik.getFieldProps("tax")}
                   className="form-select" style={{ width: "100%" }}>
                   <option></option>
-                  <option value="Commision">Tax Exclusive</option>
-                  <option value="Brokerage">Tax Inclusive</option>
-                  <option value="Brokerage">No Tax</option>
+                  <option value="TAX_EXCLUSIVE">Tax Exclusive</option>
+                  <option value="TAX_INCLUSIVE">Tax Inclusive</option>
+                  <option value="NO_TAX">No Tax</option>
                 </select>
               </div>
               {formik.touched.taxOption && formik.errors.taxOption && (
@@ -419,10 +461,10 @@ const EstimateEdit = () => {
               <div className="col-12">
                 <lable className="form-lable">Terms & Conditions</lable>
                 <div className="mb-3">
-                  <textarea {...formik.getFieldProps("termsConditions")}
+                  <textarea {...formik.getFieldProps("terms")}
                     placeholder="Enter the terms and conditions of your business in your transaction"
                     type="text"
-                    name="termsConditions"
+                    name="terms"
                     className="form-control "
                     style={{ width: "65%", height: "5rem" }}
                   />

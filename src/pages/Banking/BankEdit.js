@@ -1,9 +1,15 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import api from "../../config/URL";
+import toast from "react-hot-toast";
 
 function BankEdit() {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
+
   const validationSchema = Yup.object({
     selectaccounttype: Yup.string().required("*Select Account Type is required"),
     accountName: Yup.string().required("*Account Name is required"),
@@ -11,30 +17,55 @@ function BankEdit() {
     accountNumber: Yup.string().required("*Account Number is required"),
     ifsc: Yup.string().required("*IFSC code is required"),
     bankName: Yup.string().required("*Bank Name is required"),
-    // description: Yup.string().required("*Description is required"),
-    // empEmail: Yup.string()
-    // .matches(
-    //   /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-    //   "*Enter a valid email address"
-    // )
-    // .required("*Email is required"),
+   
   });
 
   const formik = useFormik({
     initialValues: {
-      selectaccounttype: "Bank",
-      accountName: "Harishragavendhar",
-      currency: "EUR",
-      accountNumber: "6385921329",
-      ifsc: "IDIB0000E032",
-      bankName: "INDIAN BANK",
-      // description: "Nothing"
+      selectaccounttype: "",
+      accountName: "",
+      currency: "",
+      accountNumber: "",
+      ifsc: "",
+      bankName: "",
+      
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       console.log("Bank Datas:", values);
-    },
+      try {
+        const response = await api.put(`/updateTxnBank/${id}`,values, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        if (response.status === 201) {
+          toast.success("Banking created successfully")
+          navigate("/bank");
+          
+        }
+      }
+      catch (e) {
+        toast.error("Error fetching data: ", e);
+      }
+      setLoading(true);
+    }
+    
   });
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const response = await api.get(`/getTxnBankById/${id}`);
+        formik.setValues(response.data);
+      } catch (error) {
+        toast.error("Error Fetch Data ", error);
+      }
+    };
+
+    getData();
+    
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <form onSubmit={formik.handleSubmit}>
@@ -45,7 +76,7 @@ function BankEdit() {
             <div className="row align-items-center">
               <div className="col">
                 <div className="d-flex align-items-center gap-4">
-                  <h1 className="h4 ls-tight headingColor">Add Bank</h1>
+                  <h1 className="h4 ls-tight headingColor">Edit Bank</h1>
                 </div>
               </div>
               <div className="col-auto">
@@ -130,12 +161,12 @@ function BankEdit() {
                 <div className="mb-3">
                 <input
                     type="text"
-                    name="bankName"
-                    className={`form-control  ${formik.touched.bankName && formik.errors.bankName
+                    name="currency"
+                    className={`form-control  ${formik.touched.currency && formik.errors.currency
                       ? "is-invalid"
                       : ""
                       }`}
-                    {...formik.getFieldProps("bankName")}
+                    {...formik.getFieldProps("currency")}
                   />
                   {formik.touched.currency &&
                     formik.errors.currency && (
@@ -212,30 +243,6 @@ function BankEdit() {
                     )}
                 </div>
               </div>
-
-
-              {/* <div className="col-md-6 col-12 mb-2">
-                <lable className="form-lable">
-                  Description<span className="text-danger">*</span>
-                </lable>
-                <div className="mb-3">
-                  <input
-                    type="text"
-                    name="description"
-                    className={`form-control  ${formik.touched.description && formik.errors.description
-                        ? "is-invalid"
-                        : ""
-                      }`}
-                    {...formik.getFieldProps("description")}
-                  />
-                  {formik.touched.description &&
-                    formik.errors.description && (
-                      <div className="invalid-feedback">
-                        {formik.errors.description}
-                      </div>
-                    )}
-                </div>
-              </div> */}
             </div>
           </div>
         </div>

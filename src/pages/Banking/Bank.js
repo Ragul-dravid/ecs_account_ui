@@ -1,54 +1,76 @@
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "datatables.net-dt";
 import "datatables.net-responsive-dt";
 import $ from "jquery";
 import { Link } from "react-router-dom";
 import { FaEye, FaEdit } from "react-icons/fa";
 import DeleteModel from "../../components/common/DeleteModel";
+import { Toast } from "react-bootstrap";
+import api from "../../config/URL";
+import toast from "react-hot-toast";
+import axios from "axios";
 
 
 const Bank = () => {
   const tableRef = useRef(null);
+  const [datas, setDatas] = useState();
+  const [loading, setLoading] = useState(true);
 
-  const datas = [
-    {
-      id: 1,
-      accounttype: "Bank",
-      accountName: "Ragul",
-      runningbalance: " ₹-1,24,51,483.00",
+  const refreshData = async () => {
+    destroyDataTable();
+    setLoading(true);
+    try {
+      const response = await api.get("/getAllTxnBank");
+      setDatas(response.data);
+      initializeDataTable(); // Reinitialize DataTable after successful data update
+    } catch (error) {
+      console.error("Error refreshing data:", error);
+    }
+    setLoading(false);
+  };
+  const getData = async () => {
+  
+    try {
+      const response = await api.get("/getAllTxnBank");
+      if (response.status === 200) {
+        setDatas(response.data)
+        setLoading(false);
+      }
+    }
+    catch (e) {
+      toast.error("Error fetching data: ", e);
+    }
+  }
+  const initializeDataTable = () => {
+    if ($.fn.DataTable.isDataTable(tableRef.current)) {
+      // DataTable already initialized, no need to initialize again
+      return;
+    }
+    $(tableRef.current).DataTable({
+      responsive: true,
+    });
+  };
 
-    },
-    {
-      id: 2,
-      accounttype: "Credit Card",
-      accountName: "Chandru",
-      runningbalance: " ₹+1,24,35,483.00",
+  const destroyDataTable = () => {
+    const table = $(tableRef.current).DataTable();
+    if (table && $.fn.DataTable.isDataTable(tableRef.current)) {
+      table.destroy();
+    }
+  };
+  useEffect(() => {
+    if (!loading) {
+      initializeDataTable();
+    }
+    return () => {
+      destroyDataTable();
+    };
+  }, [loading]);
 
-    },
-    {
-      id: 3,
-      accounttype: "Pretty Cash",
-      accountName: "Surya",
-      runningbalance: " ₹-1,24,35,483.00",
 
-    },
-    {
-      id: 4,
-      accounttype: "undeposited Fund",
-      accountName: "Antony",
-      runningbalance: " ₹-1,24,66,483.00",
-
-    },
-
-  ];
 
   useEffect(() => {
-    const table = $(tableRef.current).DataTable();
-
-    return () => {
-      table.destroy();
-    };
+    getData();
   }, []);
 
   return (
@@ -81,9 +103,10 @@ const Bank = () => {
                 <th scope="col" style={{ whiteSpace: "nowrap" }}>
                   S.NO
                 </th>
-                <th scope="col" className="text-center">ACCOUNT TYPE</th>
-                <th scope="col" className="text-center">ACCOUNT NAME</th>
-                <th scope="col" className="text-center">RUNNING BALANCE</th>
+                <th scope="col" className="text-center">ACCOUNT NUMBER</th>
+                <th scope="col" className="text-center">BANK NAME</th>
+                <th scope="col" className="text-center">BANK TYPE</th>
+                <th scope="col" className="text-center">CURRENCY</th>
                 {/* <th scope="col">DEPARTMENT NAME</th>
                 <th scope="col">WORK LOCATION</th> */}
                 <th scope="col" className="text-center">
@@ -92,25 +115,27 @@ const Bank = () => {
               </tr>
             </thead>
             <tbody>
-              {datas.map((data, index) => (
+              {datas?.map((data, index) => (
                 <tr key={index}>
                   <td className="text-center">{index + 1}</td>
-                  <td className="text-center">{data.accounttype}</td>
-                  <td className="text-center">{data.accountName}</td>
-                  <td className="text-center">{data.runningbalance}</td>
+                  <td className="text-center">{data.accountNumber}</td>
+                  <td className="text-center">{data.bankName}</td>
+                  <td className="text-center">{data.bankType}</td>
+                  <td className="text-center">{data.currency}</td>
                   <td className="text-center">
                     <div className="gap-2">
-                      <Link to="/bank/view">
+                      <Link to={`/bank/view/${data.id}`} >
                         <button className="btn btn-light btn-sm  shadow-none border-none">
                           View
                         </button>
                       </Link>
-                      <Link to="/bank/edit" className="px-2">
+                      <Link to={`/bank/edit/${data.id}`} className="px-2">
                         <button className="btn btn-light  btn-sm shadow-none border-none">
                           Edit
                         </button>
                       </Link>
-                      <DeleteModel />
+                      <DeleteModel  
+                      path={`/deleteTxnBank/${data.id}`} onSuccess={refreshData}/>
                     </div>
                   </td>
                 </tr>

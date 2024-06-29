@@ -1,9 +1,26 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
 import { IoCloudDownloadSharp } from "react-icons/io5";
 import { FaTelegramPlane } from "react-icons/fa";
+import api from "../../../config/URL";
+import toast from "react-hot-toast";
 
 function PaymentReceivedView() {
+
+    const { id } = useParams();
+    const [data, setData] = useState([]);
+  
+    useEffect(() => {
+      const getData = async () => {
+        try {
+          const response = await api.get(`/getTxnPaymentsReceivedById/${id}`);
+          setData(response.data);
+        } catch (error) {
+          toast.error("Error Fetching Data", error);
+        }
+      };
+      getData();
+    }, [id]);
     return (
         <div className="container-fluid px-2 minHeight">
             <div className="card shadow border-0 mb-2 top-header">
@@ -57,8 +74,8 @@ function PaymentReceivedView() {
                     </div>
                     <div className="row mt-5">
                         <div className="col-md-3 col-12">
-                            <p className="mb-5">Payment Date</p>
-                            <p className="mb-5">Reference Number</p>
+                            <p className="mb-5">{data.paymentDate}</p>
+                            <p className="mb-5">{data.reference}</p>
                             <p>Payment Mode</p>
                         </div>
                         <div className="col-md-5 col-12">
@@ -77,7 +94,7 @@ function PaymentReceivedView() {
                     <div className="row mt-5">
                         <div className="col-md-6 col-12">
                             <p className="mb-3">Bill To</p>
-                            <p>Manikandan</p>
+                            <p>{data.customerName}</p>
                         </div>
                         <div className="col-md-6 col-12 text-center">
                             Authorized Signature  __________________________
