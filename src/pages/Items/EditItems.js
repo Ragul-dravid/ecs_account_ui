@@ -8,7 +8,7 @@ import toast from "react-hot-toast";
 function EditItems() {
   const { id } = useParams();
   const [data, setData] = useState([]);
-  const [loadIndicator, setLoadIndicator] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [isSalesChecked, setIsSalesChecked] = useState(true);
   const [isPurchaseChecked, setIsPurchaseChecked] = useState(true);
   const navigate = useNavigate();
@@ -33,19 +33,19 @@ function EditItems() {
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
-      setLoadIndicator(true);
+      setLoading(true);
       try {
         const response = await api.put(`updateMstrItems/${id}`, values);
         if (response.status === 200) {
           toast.success(response.data.message);
           navigate("/items");
         } else {
-          toast.error(response.data.message);
+          toast.error(response?.data?.message);
         }
       } catch (error) {
-        toast.error(error);
+        toast.error("Error fetching data: ", error?.response?.data?.message);
       } finally {
-        setLoadIndicator(false);
+        setLoading(false);
       }
     },
   });
@@ -57,7 +57,7 @@ function EditItems() {
         formik.setValues(response.data);
         console.log("Fetched Data:", response.data);
       } catch (error) {
-        toast.error("Error fetch data: ", error);
+        toast.error("Error fetching data: ", error?.response?.data?.message);
       }
     };
     getData();
@@ -100,8 +100,13 @@ function EditItems() {
                       <span>Back</span>
                     </button>
                   </Link>
-                  <button type="submit" className="btn btn-sm btn-button">
-                    Update
+                  <button type="submit" className="btn btn-button" disabled={loading}>
+                    {loading ? (
+                      <span className="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                    ) : (
+                      <span></span>
+                    )}
+                    &nbsp;<span>Update</span>
                   </button>
                 </div>
               </div>

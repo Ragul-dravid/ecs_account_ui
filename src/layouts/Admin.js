@@ -1,6 +1,5 @@
 import React from "react";
 import Sidebar from "../components/common/Sidebar";
-import Home from "../pages/Home";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Dashboard from "../pages/Dashboard";
 import Footer from "../components/common/Footer";
@@ -68,7 +67,7 @@ import Report from "../pages/Report";
 function Admin({ handleLogout }) {
   return (
     <BrowserRouter>
-        <Toaster />
+      <Toaster />
       <div className="d-flex flex-column flex-lg-row h-lg-full bg-surface-secondary">
         <Sidebar onLogout={handleLogout} />
         <div className="h-screen flex-grow-1 overflow-y-lg-auto">
@@ -85,9 +84,15 @@ function Admin({ handleLogout }) {
 
               <Route path="/bank/view/expense/" element={<ExpenseAdd />} />
               <Route path="/bank/view/income/" element={<IncomeAdd />} />
-              <Route path="/bank/view/expense/edit/:id" element={<ExpenseEdit />} />
+              <Route
+                path="/bank/view/expense/edit/:id"
+                element={<ExpenseEdit />}
+              />
               <Route path="/income/edit/:id" element={<IncomeEdit />} />
-              <Route path="/bank/view/expense/view/:id" element={<ExpenseView />} />
+              <Route
+                path="/bank/view/expense/view/:id"
+                element={<ExpenseView />}
+              />
               <Route path="/income/view/:id" element={<IncomeView />} />
 
               {/* {/ Customer /} */}
@@ -127,7 +132,10 @@ function Admin({ handleLogout }) {
               <Route path="/bills/add" element={<BillsAdd />} />
               <Route path="/bills/edit" element={<BillsEdit />} />
               <Route path="/bills/view" element={<BillView />} />
-              <Route path="/bills/view/recordpaymentmade" element={<RecordPaymentMade />} />
+              <Route
+                path="/bills/view/recordpaymentmade"
+                element={<RecordPaymentMade />}
+              />
               {/* <Route path="/bills/edit" element={<BillsEdit />} />
                 <Route path="/bills/view" element={<BillsView />} />  */}
 
@@ -146,15 +154,18 @@ function Admin({ handleLogout }) {
               <Route path="/paymentmade/view" element={<PaymentMadeView />} />
 
               {/* {/ Invoice /} */}
-              <Route path="/invoice" element={<Invoice/>}/>
-              <Route path="/invoice/add" element={<InvoiceAdd/>}/>
-              <Route path="/invoice/edit/:id" element={<InvoiceEdit/>}/>
-              <Route path="/invoice/view/:id" element={<InvoiceView/>}/>
-              <Route path="/recordpayment" element={<RecordPayment/>}/>
+              <Route path="/invoice" element={<Invoice />} />
+              <Route path="/invoice/add" element={<InvoiceAdd />} />
+              <Route path="/invoice/edit/:id" element={<InvoiceEdit />} />
+              <Route path="/invoice/view/:id" element={<InvoiceView />} />
+              <Route path="/recordpayment" element={<RecordPayment />} />
 
               {/* {/ Payment Received /} */}
-              <Route path="/paymentReceived" element={<PaymentReceived/>}/>
-              <Route path="/paymentReceived/view/:id" element={<PaymentReceivedView/>}/>
+              <Route path="/paymentReceived" element={<PaymentReceived />} />
+              <Route
+                path="/paymentReceived/view/:id"
+                element={<PaymentReceivedView />}
+              />
 
               {/* {/ Department /} */}
               <Route path="/department" element={<Department />} />

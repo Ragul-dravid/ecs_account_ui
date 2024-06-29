@@ -44,7 +44,7 @@ const Items = () => {
       setDatas(response.data);
       initializeDataTable(); 
     } catch (error) {
-      console.error("Error refreshing data:", error);
+      toast.error("Error refreshing data:", error?.response?.data?.message);
     } finally {
       setLoading(false);
     }
@@ -58,7 +58,7 @@ const Items = () => {
         );
         setDatas(resposnse.data);
       } catch (error) {
-        toast.error("Error fetching data: ", error);
+        toast.error("Error fetching data: ", error?.response?.data?.message);
       } finally {
         setLoading(false);
       }
