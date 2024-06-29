@@ -1,17 +1,18 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { toast } from "react-toastify";
+import api from "../../config/URL";
+import toast from "react-hot-toast";
 
 function ViewItems() {
+  // const { id } = useParams();
   const { id } = useParams();
   const [data, setData] = useState([]);
 
   useEffect(() => {
     const getItemData = async () => {
       try {
-        const response = await axios.get(
-          `http://13.213.208.92:7083/ecsacc/api/getMstrItemsById/${id}`
+        const response = await api.get(
+          `getMstrItemsById/${id}`
         );
         setData(response.data);
       } catch (error) {
