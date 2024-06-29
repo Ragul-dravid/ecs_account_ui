@@ -12,10 +12,10 @@ function BankEdit() {
 
   const validationSchema = Yup.object({
     selectaccounttype: Yup.string().required("*Select Account Type is required"),
-    accountName: Yup.string().required("*Account Name is required"),
+    // accountName: Yup.string().required("*Account Name is required"),
     currency: Yup.string().required("*Currency is required"),
     accountNumber: Yup.string().required("*Account Number is required"),
-    ifsc: Yup.string().required("*IFSC code is required"),
+    // ifsc: Yup.string().required("*IFSC code is required"),
     bankName: Yup.string().required("*Bank Name is required"),
    
   });
@@ -39,7 +39,7 @@ function BankEdit() {
             "Content-Type": "application/json",
           },
         })
-        if (response.status === 201) {
+        if (response.status === 200) {
           toast.success("Banking created successfully")
           navigate("/bank");
           
@@ -95,7 +95,7 @@ function BankEdit() {
                     ) : (
                       <span></span>
                     )}
-                    &nbsp;<span>Save</span>
+                    &nbsp;<span>Update</span>
                   </button>
                 </div>
               </div>

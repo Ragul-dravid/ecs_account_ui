@@ -90,7 +90,7 @@ const EstimateView = () => {
                   </p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: {data.issueDate}</p>
+                  <p className="text-muted text-sm">:  {new Date(data.issueDate).toLocaleDateString('en-GB')}</p>
                 </div>
               </div>
               <div className="row my-3">
@@ -110,7 +110,7 @@ const EstimateView = () => {
                   </p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: {data.expiryDate}</p>
+                  <p className="text-muted text-sm">:  {new Date(data.expiryDate).toLocaleDateString('en-GB')}</p>
                 </div>
               </div>
             </div>

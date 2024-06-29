@@ -61,7 +61,7 @@ function EditItems() {
       }
     };
     getData();
-  }, [formik, id]);
+  }, [id]);
 
   const handleSalesCheckboxChange = () => {
     setIsSalesChecked((prevState) => !prevState);
@@ -100,7 +100,7 @@ function EditItems() {
                       <span>Back</span>
                     </button>
                   </Link>
-                  <button type="submit" className="btn btn-button" disabled={loading}>
+                  <button type="submit" className="btn btn-sm btn-button" disabled={loading}>
                     {loading ? (
                       <span className="spinner-border spinner-border-sm" aria-hidden="true"></span>
                     ) : (

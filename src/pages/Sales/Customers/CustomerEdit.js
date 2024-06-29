@@ -94,7 +94,7 @@ const CustomerEdit = () => {
     };
 
     getData();
-  }, [formik,id]);
+  }, []);
 
   return (
     <div className="container-fluid p-2 minHeight m-0">

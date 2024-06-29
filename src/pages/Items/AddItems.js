@@ -90,7 +90,7 @@ function AddItems() {
                   </Link>
                   <button
                     type="submit"
-                    className="btn btn-button"
+                    className="btn btn-sm btn-button"
                     disabled={loading}
                   >
                     {loading ? (

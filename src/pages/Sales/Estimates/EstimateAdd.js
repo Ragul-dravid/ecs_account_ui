@@ -89,7 +89,7 @@ const EstimateAdd = () => {
                   </button>
                 </Link>
 
-                <button type="submit" className="btn btn-sm btn-button" disabled={loading}>
+                <button type="submit" onClick={formik.handleSubmit}className="btn btn-sm btn-button" disabled={loading}>
                     {loading ? (
                       <span className="spinner-border spinner-border-sm" aria-hidden="true"></span>
                     ) : (
