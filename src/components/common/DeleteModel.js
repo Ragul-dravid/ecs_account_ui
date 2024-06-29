@@ -2,7 +2,8 @@ import axios from "axios";
 import React, { useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 import { MdDelete } from "react-icons/md";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
+import api from "../../config/URL";
 
 const DeleteModel = ({ onSuccess, path }) => {
   const [show, setShow] = useState(false);
@@ -11,15 +12,15 @@ const DeleteModel = ({ onSuccess, path }) => {
 
   const handelDelete = async () => {
     try {
-      const response = await axios.delete(path);
+      const response = await api.delete(path);
       if (response.status === 201) {
-        handleClose();
         onSuccess();
         toast.success(response.data.message);
+        handleClose();
       } else if (response.status === 200) {
         onSuccess();
-        handleClose();
         toast.success(response.data.message);
+        handleClose();
       } else {
         toast.error(response.data.message);
       }

@@ -4,12 +4,12 @@ import "datatables.net-responsive-dt";
 import $ from "jquery";
 import { Link } from "react-router-dom";
 import DeleteModel from "../../components/common/DeleteModel";
-import axios from "axios";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
+import api from "../../config/URL";
 
 const Items = () => {
   const tableRef = useRef(null);
-  const [data, setData] = useState([]);
+  const [datas, setDatas] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -26,9 +26,7 @@ const Items = () => {
       // DataTable already initialized, no need to initialize again
       return;
     }
-    $(tableRef.current).DataTable({
-      responsive: true,
-    });
+    $(tableRef.current).DataTable();
   };
 
   const destroyDataTable = () => {
@@ -42,24 +40,27 @@ const Items = () => {
     destroyDataTable();
     setLoading(true);
     try {
-      const response = await axios.get("http://13.213.208.92:7083/ecsacc/api/getAllMstrItems");
-      setData(response.data);
-      initializeDataTable(); // Reinitialize DataTable after successful data update
+      const response = await api.get("getAllMstrItems");
+      setDatas(response.data);
+      initializeDataTable(); 
     } catch (error) {
       console.error("Error refreshing data:", error);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   useEffect(() => {
     const getItemData = async () => {
       try {
-        const resposnse = await axios.get(
-          "http://13.213.208.92:7083/ecsacc/api/getAllMstrItems"
+        const resposnse = await api.get(
+          "getAllMstrItems"
         );
-        setData(resposnse.data);
+        setDatas(resposnse.data);
       } catch (error) {
         toast.error("Error fetching data: ", error);
+      } finally {
+        setLoading(false);
       }
     };
     getItemData();
@@ -87,6 +88,9 @@ const Items = () => {
           </div>
         </div>
         <hr className="removeHrMargin"></hr>
+        {loading ? (
+          <div class="loader">Loading</div>
+        ) : (
         <div className="table-responsive p-2 minHeight">
           <table ref={tableRef} className="display table">
             <thead className="thead-light">
@@ -112,7 +116,7 @@ const Items = () => {
               </tr>
             </thead>
             <tbody>
-              {data.map((data, index) => (
+              {datas.map((data, index) => (
                 <tr key={index}>
                   <td className="text-center">{index + 1}</td>
                   <td className="text-center">{data.ItemCode}</td>
@@ -132,8 +136,8 @@ const Items = () => {
                         </button>
                       </Link>
                       <DeleteModel
-                        onSucces={refreshData}
-                        path={`http://13.213.208.92:7083/ecsacc/api/deleteMstrItem/${data.id}`}
+                        onSuccess={refreshData}
+                        path={`deleteMstrItem/${data.id}`}
                         style={{ display: "inline-block" }}
                       />
                     </div>
@@ -143,7 +147,7 @@ const Items = () => {
             </tbody>
           </table>
         </div>
-
+        )}
         <div className="card-footer border-0 py-5"></div>
       </div>
     </div>

@@ -1,9 +1,14 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import toast from "react-hot-toast";
+import api from "../../config/URL";
 
 function BankAdd() {
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
+
   const validationSchema = Yup.object({
     selectaccounttype: Yup.string().required("*Select Account Type is required"),
     accountName: Yup.string().required("*Account Name is required"),
@@ -11,30 +16,45 @@ function BankAdd() {
     accountNumber: Yup.string().required("*Account Number is required"),
     ifsc: Yup.string().required("*IFSC code is required"),
     bankName: Yup.string().required("*Bank Name is required"),
-    // description: Yup.string().required("*Description is required"),
-    // empEmail: Yup.string()
-    // .matches(
-    //   /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-    //   "*Enter a valid email address"
-    // )
-    // .required("*Email is required"),
+
   });
 
   const formik = useFormik({
     initialValues: {
-      selectaccounttype: "",
       accountName: "",
-      currency: "",
       accountNumber: "",
-      ifsc: "",
       bankName: "",
+      currency: "",
+      ifsc: "",
+      selectaccounttype: "",
       // description: ""
     },
+
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       console.log("Bank Datas:", values);
-    },
+         try {
+          const response = await api.post("/createTxnBank",values, {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          })
+          if (response.status === 201) {
+            toast.success("Banking created successfully")
+            navigate("/bank");
+            
+          }
+        }
+        catch (e) {
+          toast.error("Error fetching data: ", e);
+        }
+        setLoading(true);
+      }
+    
+    
   });
+  
+ 
 
   return (
     <form onSubmit={formik.handleSubmit}>
@@ -130,12 +150,12 @@ function BankAdd() {
                 <div className="mb-3">
                 <input
                     type="text"
-                    name="bankName"
-                    className={`form-control  ${formik.touched.bankName && formik.errors.bankName
+                    name="currency"
+                    className={`form-control  ${formik.touched.currency && formik.errors.currency
                       ? "is-invalid"
                       : ""
                       }`}
-                    {...formik.getFieldProps("bankName")}
+                    {...formik.getFieldProps("currency")}
                   />
                   {formik.touched.currency &&
                     formik.errors.currency && (
@@ -212,30 +232,6 @@ function BankAdd() {
                     )}
                 </div>
               </div>
-
-
-              {/* <div className="col-md-6 col-12 mb-2">
-                <lable className="form-lable">
-                  Description<span className="text-danger">*</span>
-                </lable>
-                <div className="mb-3">
-                  <input
-                    type="text"
-                    name="description"
-                    className={`form-control  ${formik.touched.description && formik.errors.description
-                        ? "is-invalid"
-                        : ""
-                      }`}
-                    {...formik.getFieldProps("description")}
-                  />
-                  {formik.touched.description &&
-                    formik.errors.description && (
-                      <div className="invalid-feedback">
-                        {formik.errors.description}
-                      </div>
-                    )}
-                </div>
-              </div> */}
             </div>
           </div>
         </div>

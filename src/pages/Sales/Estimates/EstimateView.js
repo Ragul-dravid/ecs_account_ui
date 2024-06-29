@@ -1,10 +1,27 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
 import Logo from "../../../assets/AccountsLogo.png"
 import { IoCloudDownloadSharp } from "react-icons/io5";
 import { FaTelegramPlane } from "react-icons/fa";
+import api from "../../../config/URL";
+import toast from "react-hot-toast";
 
 const EstimateView = () => {
+
+  const { id } = useParams();
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const response = await api.get(`/getTxnQuotesById/${id}`);
+        setData(response.data);
+      } catch (error) {
+        toast.error("Error Fetching Data", error);
+      }
+    };
+    getData();
+  }, [id]);
   return (
     <div className="container-fluid px-2 minHeight">
       <div className="card shadow border-0 mb-2 top-header">
@@ -60,7 +77,7 @@ const EstimateView = () => {
               <h3>Bill To</h3>
             </div>
             <div className="col-md-6 col-12">
-              <p className="text-info">ANTONY</p>
+              <p className="text-info">{data.customerName}</p>
               <p>Purasaiwalkam,</p>
               <p>Chennai-600002</p>
               <p>Tamil Nadu</p>
@@ -73,7 +90,7 @@ const EstimateView = () => {
                   </p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: 10.10.2023</p>
+                  <p className="text-muted text-sm">: {data.issueDate}</p>
                 </div>
               </div>
               <div className="row my-3">
@@ -83,7 +100,7 @@ const EstimateView = () => {
                   </p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: RI_231</p>
+                  <p className="text-muted text-sm">: {data.reference}</p>
                 </div>
               </div>
               <div className="row my-3">
@@ -93,7 +110,7 @@ const EstimateView = () => {
                   </p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: 10.10.2023</p>
+                  <p className="text-muted text-sm">: {data.expiryDate}</p>
                 </div>
               </div>
             </div>
@@ -141,14 +158,10 @@ const EstimateView = () => {
               <p className="my-3">Thanks for your business.</p>
               <h5 className="fw-bolder my-2">Terms & Conditions</h5>
               <p className="my-3">
-                1. Payment Terms: Payment is due upon receipt of the invoice
-                unless otherwise agreed upon in writing. Late payments may be
-                subject to a late fee of [X]% per month
+                {data.terms}
               </p>
               <p className="my-3">
-                2. Payment Methods: We accept payment by [list acceptable payment
-                methods, e.g., cash, check, credit card, bank transfer, etc.].
-                Payments should be made in [currency].
+               {data.terms}
               </p>
             </div>
             <div className="col-md-6 col-12 card shadow border-2 h-40 d-flex justify-content-center gap-5 ">
@@ -156,7 +169,7 @@ const EstimateView = () => {
                 <div className="col-6 ">
                   <p>Sub Total</p>
                 </div>
-                <div className="col-6">: 3500</div>
+                <div className="col-6">: {data.subTotal}</div>
               </div>
               <div className="row text-center">
                 <div className="col-6">
@@ -168,7 +181,7 @@ const EstimateView = () => {
                 <div className="col-6">
                   <p>Total (₹)</p>
                 </div>
-                <div className="col-6">: 3500</div>
+                <div className="col-6">: {data.total}</div>
               </div>
             </div>
             <div className="col-12 my-5">

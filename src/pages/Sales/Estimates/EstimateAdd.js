@@ -1,9 +1,14 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { MdDeleteSweep } from "react-icons/md";
+import api from "../../../config/URL";
+import toast from "react-hot-toast";
 
 const EstimateAdd = () => {
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
   // // const [rows, setRows] = useState([]);
   // const [title, setTitle] = useState('');
   // const [summary, setSummary] = useState('');
@@ -16,31 +21,54 @@ const EstimateAdd = () => {
   const formik = useFormik({
     initialValues: {
       customerName: "",
-      orderNumber: "",
+      issueDate: "",
+      expiryDate: "",
+      quoteNumber: "",
       reference: "",
-      estimateNumber: "",
-      estimateDate: "",
-      expriyDate: "",
+      title: "",
       subject: "",
+      summery: "",
+      project: "",
       customerNotes: "",
       subTotal: "",
       adjustment: "",
+      tax: "",
       total: "",
-      termsConditions: "",
-      items: rows.map((row, index) => ({
-        [`itemDetails${index}`]: "", // Initialize each itemDetails field with an empty string
-        [`quantity${index}`]: "",     // Initialize each quantity field with an empty string
-        [`rate${index}`]: "",         // Initialize each rate field with an empty string
-        [`discount${index}`]: "",     // Initialize each discount field with an empty string
-        [`tax${index}`]: "",          // Initialize each tax field with an empty string
-        [`amount${index}`]: "",       // Initialize each amount field with an empty string
+      file: "",
+      terms: "",
+      // items: rows.map((row, index) => ({
+      //   [`itemDetails${index}`]: "", // Initialize each itemDetails field with an empty string
+      //   [`quantity${index}`]: "",     // Initialize each quantity field with an empty string
+      //   [`rate${index}`]: "",         // Initialize each rate field with an empty string
+      //   [`discount${index}`]: "",     // Initialize each discount field with an empty string
+      //   [`tax${index}`]: "",          // Initialize each tax field with an empty string
+      //   [`amount${index}`]: "",       // Initialize each amount field with an empty string
         // Initialize each amount field with an empty string
-      }))
+      // }))
     },
     // validationSchema: validationSchema,
     onSubmit: async (values) => {
       console.log("User Datas:", values);
-    },
+
+      try {
+        const response = await api.post("/createTxnQuotes",values, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        if (response.status === 201) {
+          toast.success("Estimate created successfully")
+          navigate("/estimates");
+          
+        }
+      }
+      catch (e) {
+        toast.error("Error fetching data: ", e);
+      }
+      setLoading(true);
+    }
+  
+    
   });
   return (
     <div className="container-fluid p-2 minHeight m-0">
@@ -94,8 +122,8 @@ const EstimateAdd = () => {
                 <div className="mb-3">
                   <input
                     type="text"
-                    name="orderNumber"
-                    {...formik.getFieldProps("orderNumber")}
+                    name="quoteNumber"
+                    {...formik.getFieldProps("quoteNumber")}
                     className="form-control"
                   />
                 </div>
@@ -126,9 +154,9 @@ const EstimateAdd = () => {
                 <div className="mb-3">
                   <input
                     type="date"
-                    name="estimateDate"
+                    name="issueDate"
                     className="form-control"
-                    {...formik.getFieldProps("estimateDate")}
+                    {...formik.getFieldProps("issueDate")}
                   />
                 </div>
               </div>
@@ -138,9 +166,9 @@ const EstimateAdd = () => {
                 <div className="mb-3">
                   <input
                     type="date"
-                    name="expriyDate"
+                    name="expiryDate"
                     className="form-control"
-                    {...formik.getFieldProps("expriyDate")}
+                    {...formik.getFieldProps("expiryDate")}
                   />
                 </div>
               </div>
@@ -149,9 +177,9 @@ const EstimateAdd = () => {
                 <div className="mb-3">
                   <input
                     type="text"
-                    name="estimateNumber"
+                    name="project"
                     className="form-control"
-                    {...formik.getFieldProps("estimateNumber")}
+                    {...formik.getFieldProps("project")}
                   />
                 </div>
               </div>
@@ -199,11 +227,11 @@ const EstimateAdd = () => {
                             <input
                               className="form-control mb-4"
                               type="text"
-                              placeholder="Summary"
-                              value={row.summary || ""}
+                              placeholder="summery"
+                              value={row.summery || ""}
                               onChange={(e) => {
                                 const newRows = [...rowss];
-                                newRows[index].summary = e.target.value;
+                                newRows[index].summery = e.target.value;
                                 setRowss(newRows);
                               }}
                             />
@@ -222,7 +250,7 @@ const EstimateAdd = () => {
                       onClick={() => {
                         setRowss((prev) => [
                           ...prev,
-                          { title: "", summary: "" },
+                          { title: "", summery: "" },
                         ]); // Add a new row with empty title and summary
                       }}
                       className="btn btn-border btn-sm btn-button"
@@ -236,7 +264,7 @@ const EstimateAdd = () => {
                       onClick={() => setRowss((prev) => prev.slice(0, -1))}
                       className="btn btn-danger btn-sm "
                     >
-                      Delete Title & Summary
+                      <MdDeleteSweep className="mb-1 mx-1"/>Delete Title & Summary
                     </button>
                   )}
                 </div>
@@ -253,14 +281,14 @@ const EstimateAdd = () => {
                   style={{ width: "100%" }}
                 >
                   <option></option>
-                  <option value="Commision">Tax Exclusive</option>
-                  <option value="Brokerage">Tax Inclusive</option>
-                  <option value="Brokerage">No Tax</option>
+                  <option value="TAX_EXCLUSIVE">Tax Exclusive</option>
+                  <option value="TAX_INCLUSIVE">Tax Inclusive</option>
+                  <option value="NO_TAX">No Tax</option>
                 </select>
               </div>
-              {formik.touched.taxOption && formik.errors.taxOption && (
+              {formik.touched.tax && formik.errors.tax && (
                 <div className="invalid-feedback">
-                  {formik.errors.taxOption}
+                  {formik.errors.tax}
                 </div>
               )}
             </div>
@@ -430,10 +458,10 @@ const EstimateAdd = () => {
                 <lable className="form-lable">Terms & Conditions</lable>
                 <div className="mb-3">
                   <textarea
-                    {...formik.getFieldProps("termsConditions")}
+                    {...formik.getFieldProps("terms")}
                     placeholder="Enter the terms and conditions of your business in your transaction"
                     type="text"
-                    name="termsConditions"
+                    name="terms"
                     className="form-control "
                     style={{ width: "65%", height: "5rem" }}
                   />

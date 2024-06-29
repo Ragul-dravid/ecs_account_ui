@@ -1,91 +1,113 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import api from "../../config/URL";
+import toast from "react-hot-toast";
 
 function EditItems() {
+  const { id } = useParams();
+  const [data, setData] = useState([]);
+  const [loadIndicator, setLoadIndicator] = useState(false);
   const [isSalesChecked, setIsSalesChecked] = useState(true);
   const [isPurchaseChecked, setIsPurchaseChecked] = useState(true);
+  const navigate = useNavigate();
 
   const validationSchema = Yup.object({
-    code: Yup.string(),
-    unit: Yup.string(),
-    name: Yup.string(),
-    sellingprice: Yup.string(),
-    sellingprice1: Yup.string(),
-    account: Yup.string(),
-    account1: Yup.string(),
-    description: Yup.string(),
-    description1: Yup.string(),
+    itemCode: Yup.string().required("*Code is required"),
+    itemName: Yup.string().required("*Name is required"),
   });
 
   const formik = useFormik({
     initialValues: {
-      code: "1234",
-      unit: "box",
-      name: "sakthivel",
-      sellingprice: "2000",
-      sellingprice1: "2000",
-      account: "sales",
-      account1: "travelexpence",
-      description: "feed back",
-      description1: "feed back",
+      itemCode: "",
+      unit: "",
+      itemName: "",
+      costPrice: "",
+      salesPrice: "",
+      salesAcc: "",
+      purchaseAcc: "",
+      purchaseDesc: "",
+      salesDesc: "",
+      preferredVendor: "",
     },
     validationSchema: validationSchema,
-    onSubmit: (values) => {
-      console.log("additems:", values);
+    onSubmit: async (values) => {
+      setLoadIndicator(true);
+      try {
+        const response = await api.put(`updateMstrItems/${id}`, values);
+        if (response.status === 200) {
+          toast.success(response.data.message);
+          navigate("/items");
+        } else {
+          toast.error(response.data.message);
+        }
+      } catch (error) {
+        toast.error(error);
+      } finally {
+        setLoadIndicator(false);
+      }
     },
   });
 
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const response = await api.get(`getMstrItemsById/${id}`);
+        formik.setValues(response.data);
+        console.log("Fetched Data:", response.data);
+      } catch (error) {
+        toast.error("Error fetch data: ", error);
+      }
+    };
+    getData();
+  }, [id]);
+
   const handleSalesCheckboxChange = () => {
     setIsSalesChecked((prevState) => !prevState);
-    if (isSalesChecked) {
-      formik.setFieldValue("sellingprice", "");
-      formik.setFieldValue("account", "");
-      formik.setFieldValue("description", "");
-    }
+    // if (isSalesChecked) {
+    //   formik.setFieldValue("sellingprice", "");
+    //   formik.setFieldValue("account", "");
+    //   formik.setFieldValue("description", "");
+    // }
   };
 
   const handlePurchaseCheckboxChange = () => {
     setIsPurchaseChecked((prevState) => !prevState);
-    if (isPurchaseChecked) {
-      formik.setFieldValue("sellingprice1", "");
-      formik.setFieldValue("account1", "");
-      formik.setFieldValue("vendor", "");
-      formik.setFieldValue("description1", "");
-    }
+    // if (isPurchaseChecked) {
+    //   formik.setFieldValue("sellingprice1", "");
+    //   formik.setFieldValue("account1", "");
+    //   formik.setFieldValue("vendor", "");
+    //   formik.setFieldValue("description1", "");
+    // }
   };
 
   return (
     <div className="container-fluid p-2 minHeight m-0">
-      <div className="card shadow border-0 mb-2 top-header">
-        <div className="container-fluid py-4">
-          <div className="row align-items-center">
-            <div className="col">
-              <div className="d-flex align-items-center gap-4">
-                <h1 className="h4 ls-tight headingColor">Edit Items</h1>
+      <form onSubmit={formik.handleSubmit}>
+        <div className="card shadow border-0 mb-2 top-header">
+          <div className="container-fluid py-4">
+            <div className="row align-items-center">
+              <div className="col">
+                <div className="d-flex align-items-center gap-4">
+                  <h1 className="h4 ls-tight headingColor">Edit Items</h1>
+                </div>
               </div>
-            </div>
-            <div className="col-auto">
-              <div className="hstack gap-2 justify-content-end">
-                <Link to="/items">
-                  <button type="button" className="btn btn-sm btn-light">
-                    <span>Back</span>
+              <div className="col-auto">
+                <div className="hstack gap-2 justify-content-end">
+                  <Link to="/items">
+                    <button type="button" className="btn btn-sm btn-light">
+                      <span>Back</span>
+                    </button>
+                  </Link>
+                  <button type="submit" className="btn btn-sm btn-button">
+                    Update
                   </button>
-                </Link>
-                <button
-                  type="submit"
-                  className="btn btn-sm btn-button"
-                  onClick={formik.handleSubmit}
-                >
-                  Update
-                </button>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-      <form>
         <div className="card shadow border-0 my-2">
           <div className="container mb-5">
             <div className="row py-4">
@@ -96,16 +118,18 @@ function EditItems() {
                 <div className="mb-3">
                   <input
                     type="text"
-                    name="code"
+                    name="itemCode"
                     className={`form-control ${
-                      formik.touched.code && formik.errors.code
+                      formik.touched.itemCode && formik.errors.itemCode
                         ? "is-invalid"
                         : ""
                     }`}
-                    {...formik.getFieldProps("code")}
+                    {...formik.getFieldProps("itemCode")}
                   />
-                  {formik.touched.code && formik.errors.code && (
-                    <div className="invalid-feedback">{formik.errors.code}</div>
+                  {formik.touched.itemCode && formik.errors.itemCode && (
+                    <div className="invalid-feedback">
+                      {formik.errors.itemCode}
+                    </div>
                   )}
                 </div>
               </div>
@@ -116,16 +140,18 @@ function EditItems() {
                 <div className="mb-3">
                   <input
                     type="text"
-                    name="name"
+                    name="itemName"
                     className={`form-control ${
-                      formik.touched.name && formik.errors.name
+                      formik.touched.itemName && formik.errors.itemName
                         ? "is-invalid"
                         : ""
                     }`}
-                    {...formik.getFieldProps("name")}
+                    {...formik.getFieldProps("itemName")}
                   />
-                  {formik.touched.name && formik.errors.name && (
-                    <div className="invalid-feedback">{formik.errors.name}</div>
+                  {formik.touched.itemName && formik.errors.itemName && (
+                    <div className="invalid-feedback">
+                      {formik.errors.itemName}
+                    </div>
                   )}
                 </div>
               </div>
@@ -142,9 +168,14 @@ function EditItems() {
                     {...formik.getFieldProps("unit")}
                   >
                     <option value=""></option>
-                    <option value="box">Box</option>
-                    <option value="grams">Grams</option>
-                    <option value="kilograms">Kilograms</option>
+                    <option value="BOX">Box</option>
+                    <option value="GRAMS">Grams</option>
+                    <option value="KILOGRAMS">Kilograms</option>
+                    <option value="METERS">Meters</option>
+                    <option value="TABLETS">Tablets</option>
+                    <option value="UNITS">Units</option>
+                    <option value="PIECES">Pieces</option>
+                    <option value="PAIRS">Pairs</option>
                   </select>
                   {formik.touched.unit && formik.errors.unit && (
                     <div className="invalid-feedback">{formik.errors.unit}</div>
@@ -197,23 +228,22 @@ function EditItems() {
                   <input
                     type="text"
                     className={`form-control ${
-                      formik.touched.sellingprice && formik.errors.sellingprice
+                      formik.touched.salesPrice && formik.errors.salesPrice
                         ? "is-invalid"
                         : ""
                     }`}
-                    {...formik.getFieldProps("sellingprice")}
+                    {...formik.getFieldProps("salesPrice")}
                     disabled={!isSalesChecked}
                   />
-                  {formik.touched.sellingprice &&
-                    formik.errors.sellingprice && (
-                      <div className="invalid-feedback">
-                        {formik.errors.sellingprice}
-                      </div>
-                    )}
+                  {formik.touched.salesPrice && formik.errors.salesPrice && (
+                    <div className="invalid-feedback">
+                      {formik.errors.salesPrice}
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="col-md-6 col-12 mb-2">
-                <label className="form-label pt-2 pe-2">Selling Price</label>
+                <label className="form-label pt-2 pe-2">Purchase Price</label>
                 <div className="input-group mb-3">
                   <div className="input-group-prepend">
                     <span className="input-group-text" id="basic-addon1">
@@ -223,20 +253,18 @@ function EditItems() {
                   <input
                     type="text"
                     className={`form-control ${
-                      formik.touched.sellingprice1 &&
-                      formik.errors.sellingprice1
+                      formik.touched.costPrice && formik.errors.costPrice
                         ? "is-invalid"
                         : ""
                     }`}
-                    {...formik.getFieldProps("sellingprice1")}
+                    {...formik.getFieldProps("costPrice")}
                     disabled={!isPurchaseChecked}
                   />
-                  {formik.touched.sellingprice1 &&
-                    formik.errors.sellingprice1 && (
-                      <div className="invalid-feedback">
-                        {formik.errors.sellingprice1}
-                      </div>
-                    )}
+                  {formik.touched.costPrice && formik.errors.costPrice && (
+                    <div className="invalid-feedback">
+                      {formik.errors.costPrice}
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="col-md-6 col-12 mb-2">
@@ -246,22 +274,22 @@ function EditItems() {
                   </label>
                   <select
                     type="text"
-                    name="account"
+                    name="salesAcc"
                     className={`form-select  ${
-                      formik.touched.account && formik.errors.account
+                      formik.touched.salesAcc && formik.errors.salesAcc
                         ? "is-invalid"
                         : ""
                     }`}
-                    {...formik.getFieldProps("account")}
+                    {...formik.getFieldProps("salesAcc")}
                     disabled={!isSalesChecked}
                   >
                     <option></option>
                     <option value="sales">Sales</option>
                     <option value="general income">General Income</option>
                   </select>
-                  {formik.touched.account && formik.errors.account && (
+                  {formik.touched.salesAcc && formik.errors.salesAcc && (
                     <div className="invalid-feedback">
-                      {formik.errors.account}
+                      {formik.errors.salesAcc}
                     </div>
                   )}
                 </div>
@@ -271,22 +299,22 @@ function EditItems() {
                   <label className="form-label pt-2 pe-2">Account</label>
                   <select
                     type="text"
-                    name="account1"
+                    name="purchaseAcc"
                     className={`form-select  ${
-                      formik.touched.account1 && formik.errors.account1
+                      formik.touched.purchaseAcc && formik.errors.purchaseAcc
                         ? "is-invalid"
                         : ""
                     }`}
-                    {...formik.getFieldProps("account1")}
+                    {...formik.getFieldProps("purchaseAcc")}
                     disabled={!isPurchaseChecked}
                   >
                     <option></option>
                     <option value="goods sold">Cost Of Goods Sold</option>
                     <option value="travel expense">Travel Expense</option>
                   </select>
-                  {formik.touched.account1 && formik.errors.account1 && (
+                  {formik.touched.purchaseAcc && formik.errors.purchaseAcc && (
                     <div className="invalid-feedback">
-                      {formik.errors.account1}
+                      {formik.errors.purchaseAcc}
                     </div>
                   )}
                 </div>
@@ -296,18 +324,19 @@ function EditItems() {
                   <label className="form-label pt-2 pe-2">Description</label>
                   <textarea
                     type="text"
-                    name="description"
+                    name="salesDesc"
+                    rows="4"
                     className={`form-control ${
-                      formik.touched.description && formik.errors.description
+                      formik.touched.salesDesc && formik.errors.salesDesc
                         ? "is-invalid"
                         : ""
                     }`}
-                    {...formik.getFieldProps("description")}
+                    {...formik.getFieldProps("salesDesc")}
                     disabled={!isSalesChecked}
                   />
-                  {formik.touched.description && formik.errors.description && (
+                  {formik.touched.salesDesc && formik.errors.salesDesc && (
                     <div className="invalid-feedback">
-                      {formik.errors.description}
+                      {formik.errors.salesDesc}
                     </div>
                   )}
                 </div>
@@ -317,20 +346,22 @@ function EditItems() {
                   <label className="form-label pt-2 pe-2">Vendor</label>
                   <input
                     type="text"
-                    name="vendor"
+                    name="preferredVendor"
                     className={`form-control ${
-                      formik.touched.vendor && formik.errors.vendor
+                      formik.touched.preferredVendor &&
+                      formik.errors.preferredVendor
                         ? "is-invalid"
                         : ""
                     }`}
-                    {...formik.getFieldProps("vendor")}
+                    {...formik.getFieldProps("preferredVendor")}
                     disabled={!isPurchaseChecked}
                   />
-                  {formik.touched.vendor && formik.errors.vendor && (
-                    <div className="invalid-feedback">
-                      {formik.errors.vendor}
-                    </div>
-                  )}
+                  {formik.touched.preferredVendor &&
+                    formik.errors.preferredVendor && (
+                      <div className="invalid-feedback">
+                        {formik.errors.preferredVendor}
+                      </div>
+                    )}
                 </div>
               </div>
               <div className="col-md-6 col-12 mb-2"></div>
@@ -339,19 +370,20 @@ function EditItems() {
                   <label className="form-label pt-2 pe-2">Description</label>
                   <textarea
                     type="text"
-                    name="description1"
+                    name="purchaseDesc"
+                    rows="4"
                     className={`form-control ${
-                      formik.touched.description1 && formik.errors.description1
+                      formik.touched.purchaseDesc && formik.errors.purchaseDesc
                         ? "is-invalid"
                         : ""
                     }`}
-                    {...formik.getFieldProps("description1")}
+                    {...formik.getFieldProps("purchaseDesc")}
                     disabled={!isPurchaseChecked}
                   />
-                  {formik.touched.description1 &&
-                    formik.errors.description1 && (
+                  {formik.touched.purchaseDesc &&
+                    formik.errors.purchaseDesc && (
                       <div className="invalid-feedback">
-                        {formik.errors.description1}
+                        {formik.errors.purchaseDesc}
                       </div>
                     )}
                 </div>
