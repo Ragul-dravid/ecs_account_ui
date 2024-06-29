@@ -7,7 +7,7 @@ import toast from "react-hot-toast";
 
 function EditItems() {
   const { id } = useParams();
-  const [data, setData] = useState([]);
+  // const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isSalesChecked, setIsSalesChecked] = useState(true);
   const [isPurchaseChecked, setIsPurchaseChecked] = useState(true);
@@ -61,7 +61,7 @@ function EditItems() {
       }
     };
     getData();
-  }, [id]);
+  }, [formik, id]);
 
   const handleSalesCheckboxChange = () => {
     setIsSalesChecked((prevState) => !prevState);
