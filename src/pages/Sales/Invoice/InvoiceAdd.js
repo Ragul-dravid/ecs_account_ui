@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link ,useNavigate} from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import api from "../../../config/URL"
@@ -7,7 +7,7 @@ import toast from "react-hot-toast";
 
 function InvoiceAdd() {
     const navigate = useNavigate();
-    const [loadIndicator, setLoadIndicator] = useState(false);
+    const [loading, setLoadIndicator] = useState(false);
     const [rows, setRows] = useState([{}]);
     const AddRowContent = () => {
         setRows((prevRows) => [...prevRows, { id: prevRows.length + 1 }]);
@@ -40,7 +40,7 @@ function InvoiceAdd() {
         validationSchema: validationSchema,
         onSubmit: async (values) => {
             setLoadIndicator(true);
-            console.log("Create Tnx :",values);
+            console.log("Create Tnx :", values);
             try {
                 const response = await api.post("/createTxnInvoice", values, {
                 });
@@ -50,8 +50,8 @@ function InvoiceAdd() {
                 } else {
                     toast.error(response.data.message);
                 }
-            } catch (error) {
-                toast.error(error);
+            } catch (e) {
+                toast.error("Error fetching data: ", e?.response?.data?.message);
             } finally {
                 setLoadIndicator(false);
             }
@@ -77,18 +77,13 @@ function InvoiceAdd() {
                                             <span>Back</span>
                                         </button>
                                     </Link>
-                                    <button
-                                        type="submit"
-                                        className="btn btn-button"
-                                        disabled={loadIndicator}
-                                    >
-                                        {loadIndicator && (
-                                            <span
-                                                className="spinner-border spinner-border-sm me-2"
-                                                aria-hidden="true"
-                                            ></span>
+                                    <button type="submit" className="btn btn-sm btn-button" disabled={loading}>
+                                        {loading ? (
+                                            <span className="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                                        ) : (
+                                            <span></span>
                                         )}
-                                        Save
+                                        &nbsp;<span>Save</span>
                                     </button>
                                 </div>
                             </div>

@@ -7,7 +7,7 @@ import toast from "react-hot-toast";
 
 function VendorAdd() {
   const navigate = useNavigate();
-  const [loadIndicator, setLoadIndicator] = useState(false);
+  const [loading, setLoadIndicator] = useState(false);
 
   const validationSchema = Yup.object({
     contactName: Yup.string().required("*Contact Name is required"),
@@ -73,8 +73,8 @@ function VendorAdd() {
         } else {
           toast.error(response.data.message);
         }
-      } catch (error) {
-        toast.error(error);
+      } catch (e) {
+        toast.error("Error fetching data: ", e?.response?.data?.message);
       } finally {
         setLoadIndicator(false);
       }
@@ -101,18 +101,13 @@ function VendorAdd() {
                     </button>
 
                   </Link>
-                  <button
-                    type="submit"
-                    className="btn btn-button"
-                    disabled={loadIndicator}
-                  >
-                    {loadIndicator && (
-                      <span
-                        className="spinner-border spinner-border-sm me-2"
-                        aria-hidden="true"
-                      ></span>
+                  <button type="submit" className="btn btn-sm btn-button" disabled={loading}>
+                    {loading ? (
+                      <span className="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                    ) : (
+                      <span></span>
                     )}
-                    Save
+                    &nbsp;<span>Save</span>
                   </button>
                 </div>
               </div>

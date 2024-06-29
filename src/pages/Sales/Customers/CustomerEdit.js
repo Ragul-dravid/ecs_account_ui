@@ -8,7 +8,7 @@ import toast from "react-hot-toast";
 const CustomerEdit = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [loadIndicator, setLoadIndicator] = useState(false);
+  const [loading, setLoadIndicator] = useState(false);
 
   const validationSchema = Yup.object({
     contactName: Yup.string().required("*Contact Name is required"),
@@ -75,25 +75,26 @@ const CustomerEdit = () => {
         } else {
           toast.error(response.data.message);
         }
-      } catch (error) {
-        toast.error(error);
+      } catch (e) {
+        toast.error("Error fetching data: ", e?.response?.data?.message);
       } finally {
         setLoadIndicator(false);
       }
     },
   });
+  
   useEffect(() => {
     const getData = async () => {
       try {
         const response = await api.get(`/getMstrCustomerById/${id}`);
         formik.setValues(response.data);
-      } catch (error) {
-        toast.error("Error fetching data:", error);
+      } catch (e) {
+        toast.error("Error fetching data: ", e?.response?.data?.message);
       }
     };
 
     getData();
-  }, []);
+  }, [formik,id]);
 
   return (
     <div className="container-fluid p-2 minHeight m-0">
@@ -113,17 +114,13 @@ const CustomerEdit = () => {
                       <span>Back</span>
                     </button>
                   </Link>
-                  <button
-                    type="submit"
-                    className="btn btn-button"
-                    disabled={loadIndicator}>
-                    {loadIndicator && (
-                      <span
-                        className="spinner-border spinner-border-sm me-2"
-                        aria-hidden="true"
-                      ></span>
+                  <button type="submit" className="btn btn-sm btn-button" disabled={loading}>
+                    {loading ? (
+                      <span className="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                    ) : (
+                      <span></span>
                     )}
-                    Update
+                    &nbsp;<span>Update</span>
                   </button>
                 </div>
               </div>

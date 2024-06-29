@@ -6,8 +6,8 @@ import { Toaster } from "react-hot-toast";
 function Auth({ handleLogin }) {
   return (
     <BrowserRouter>
-      <Routes>
       <Toaster />
+      <Routes>
         <Route path="/" element={<Login onLogin={handleLogin} />} />
         <Route path="*" element={<Login onLogin={handleLogin} />} />
         <Route path="/signup" element={<Signup />} />

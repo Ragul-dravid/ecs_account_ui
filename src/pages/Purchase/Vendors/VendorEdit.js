@@ -9,7 +9,7 @@ import toast from "react-hot-toast";
 function VendorEdit() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [loadIndicator, setLoadIndicator] = useState(false);
+  const [loading, setLoadIndicator] = useState(false);
 
   const validationSchema = Yup.object({
     contactName: Yup.string().required("*Contact Name is required"),
@@ -75,8 +75,8 @@ function VendorEdit() {
         } else {
           toast.error(response.data.message);
         }
-      } catch (error) {
-        toast.error(error);
+      } catch (e) {
+        toast.error("Error fetching data: ", e?.response?.data?.message);
       } finally {
         setLoadIndicator(false);
       }
@@ -87,13 +87,13 @@ function VendorEdit() {
       try {
         const response = await api.get(`/getMstrVendorById/${id}`);
         formik.setValues(response.data);
-      } catch (error) {
-        toast.error("Error fetching data:", error);
+      } catch (e) {
+        toast.error("Error fetching data: ", e?.response?.data?.message);
       }
     };
 
     getData();
-  }, []);
+  }, [formik,id]);
 
   return (
     <div className="container-fluid p-2 minHeight m-0">
@@ -115,18 +115,13 @@ function VendorEdit() {
                     </button>
 
                   </Link>
-                  <button
-                    type="submit"
-                    className="btn btn-button"
-                    disabled={loadIndicator}
-                  >
-                    {loadIndicator && (
-                      <span
-                        className="spinner-border spinner-border-sm me-2"
-                        aria-hidden="true"
-                      ></span>
+                  <button type="submit" className="btn btn-sm btn-button" disabled={loading}>
+                    {loading ? (
+                      <span className="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                    ) : (
+                      <span></span>
                     )}
-                    Update
+                    &nbsp;<span>Update</span>
                   </button>
                 </div>
               </div>
