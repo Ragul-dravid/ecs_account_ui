@@ -16,7 +16,7 @@ function ViewItems() {
         );
         setData(response.data);
       } catch (error) {
-        toast.error("Error fetch data: ", error);
+        toast.error("Error fetching data: ", error?.response?.data?.message);
       }
     };
     getItemData();

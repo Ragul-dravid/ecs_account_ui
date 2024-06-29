@@ -8,6 +8,7 @@ import toast from "react-hot-toast";
 function AddItems() {
   const [isSalesChecked, setIsSalesChecked] = useState(true);
   const [isPurchaseChecked, setIsPurchaseChecked] = useState(true);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const validationSchema = Yup.object({
@@ -30,19 +31,22 @@ function AddItems() {
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
-      console.log("additems:", values);
+      // console.log("additems:", values);
+      setLoading(true);
       try {
         const response = await api.post(`createMstrItems`, values);
         console.log(response);
         if (response.status === 201) {
           toast.success(response.data.message);
-          console.log("Toast : ",response.data.message);
+          console.log("Toast : ", response.data.message);
           navigate("/items");
         } else {
-          toast.error(response.data.message);
+          toast.error(response?.data?.message);
         }
       } catch (error) {
         toast.error("Error fetching data: ", error?.response?.data?.message);
+      } finally {
+        setLoading(false);
       }
     },
   });
@@ -86,9 +90,18 @@ function AddItems() {
                   </Link>
                   <button
                     type="submit"
-                    className="btn btn-sm btn-button"
+                    className="btn btn-button"
+                    disabled={loading}
                   >
-                    Save
+                    {loading ? (
+                      <span
+                        className="spinner-border spinner-border-sm"
+                        aria-hidden="true"
+                      ></span>
+                    ) : (
+                      <span></span>
+                    )}
+                    &nbsp;<span>Save</span>
                   </button>
                 </div>
               </div>
