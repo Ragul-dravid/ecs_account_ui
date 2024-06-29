@@ -1,168 +1,184 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import api from "../../../config/URL"
+import toast from "react-hot-toast";
 
 const CustomerEdit = () => {
-    const formik = useFormik({
-        initialValues: {
-            customerType: "Business",
-            customerName: "Mani",
-            companyName: "ECS Cloud",
-            customerEmail: "ecscloud@gmail.com",
-            customerPhone: "6982345082",
-            panNumber: "PH639GS",
-            currency: "₹2000",
-            billingCountry: "India",
-            shippingCountry: "India",
-            billingAddress: "India",
-            shippingAddress: "India",
-            billingCity: "India",
-            shippingCity: "India",
-            billingState: "TamilNadu",
-            shippingState: "India",
-            billingZipCode: "600012",
-            shippingZipCode: "India",
-            billingPhone: "6789018923",
-            shippingPhone: "India ",
-            
-        },
-        // validationSchema: validationSchema,
-        onSubmit: async (values) => {
-          console.log("User Datas:", values);
-        },
-      });
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [loadIndicator, setLoadIndicator] = useState(false);
+
+  const validationSchema = Yup.object({
+    contactName: Yup.string().required("*Contact Name is required"),
+    accNumber: Yup.string().required("*Account Number is required"),
+    primaryContact: Yup.string().required("*Primary Contact is required"),
+    email: Yup.string().required("*Email is required"),
+    phone: Yup.number().required("*Phone is required"),
+    website: Yup.string().required("*Website is required"),
+    bankAccName: Yup.string().required("*Account Nameis required"),
+    bankAccNumber: Yup.string().required("*Account Number is required"),
+
+    // deliCountry: Yup.number().required("*Country is required"),
+    // deliAddress: Yup.string().required("*Address is required"),
+    // deliCity: Yup.string().required("*City is required"),
+    // deliState: Yup.string().required("*State is required"),
+    // deliZip: Yup.number().required("*Zip is required"),
+    // deliAttention: Yup.number().required("*Attention is required"),
+
+    // billCountry: Yup.number().required("*Country is required"),
+    // billAddress: Yup.string().required("*Address is required"),
+    // billCity: Yup.string().required("*City is required"),
+    // billState: Yup.string().required("*State is required"),
+    // billZip: Yup.number().required("*Zip is required"),
+    // billAttention: Yup.number().required("*Attention is required"),
+    // notes: Yup.number().required("*Remarks is required"),
+  })
+
+  const formik = useFormik({
+    initialValues: {
+      // companyName: "",
+      contactName: "",
+      accNumber: "",
+      primaryContact: "",
+      email: "",
+      phone: "",
+      website: "",
+      bankAccName: "",
+      bankAccNumber: "",
+      deliCountry: "",
+      deliAddress: "",
+      deliCity: "",
+      deliState: "",
+      deliZip: "",
+      deliAttention: "",
+      billCountry: "",
+      billAddress: "",
+      billCity: "",
+      billState: "",
+      billZip: "",
+      billAttention: "",
+      notes: "",
+
+    },
+    validationSchema: validationSchema,
+    onSubmit: async (values) => {
+      setLoadIndicator(true);
+      console.log(values);
+      try {
+        const response = await api.put(`/updateMstrCustomer/${id}`, values, {
+        });
+        if (response.status === 200) {
+          toast.success(response.data.message);
+          navigate("/customer");
+        } else {
+          toast.error(response.data.message);
+        }
+      } catch (error) {
+        toast.error(error);
+      } finally {
+        setLoadIndicator(false);
+      }
+    },
+  });
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const response = await api.get(`/getMstrCustomerById/${id}`);
+        formik.setValues(response.data);
+      } catch (error) {
+        toast.error("Error fetching data:", error);
+      }
+    };
+
+    getData();
+  }, []);
+
   return (
     <div className="container-fluid p-2 minHeight m-0">
-    <div className="card shadow border-0 mb-2 top-header">
-      <div className="container-fluid py-4">
-        <div className="row align-items-center">
-          <div className="col">
-            <div className="d-flex align-items-center gap-4">
-              <h1 className="h4 ls-tight headingColor">Edit Customer</h1>
-            </div>
-          </div>
-          <div className="col-auto">
-            <div className="hstack gap-2 justify-content-end">
-              <Link to="/customer">
-                <button type="submit" className="btn btn-sm btn-light">
-                  <span>Back</span>
-                </button>
-              </Link>
-              <button
-                type="submit"
-                className="btn btn-button"
-              >
-                Save
-              </button>
+      <form onSubmit={formik.handleSubmit}>
+        <div className="card shadow border-0 mb-2 top-header">
+          <div className="container-fluid py-4">
+            <div className="row align-items-center">
+              <div className="col">
+                <div className="d-flex align-items-center gap-4">
+                  <h1 className="h4 ls-tight headingColor">Edit Customer</h1>
+                </div>
+              </div>
+              <div className="col-auto">
+                <div className="hstack gap-2 justify-content-end">
+                  <Link to="/customer">
+                    <button type="submit" className="btn btn-sm btn-light">
+                      <span>Back</span>
+                    </button>
+                  </Link>
+                  <button
+                    type="submit"
+                    className="btn btn-button"
+                    disabled={loadIndicator}>
+                    {loadIndicator && (
+                      <span
+                        className="spinner-border spinner-border-sm me-2"
+                        aria-hidden="true"
+                      ></span>
+                    )}
+                    Update
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
-    <form onSubmit={formik.handleSubmit}>
-    <div className="card shadow border-0 my-2">
+
+        <div className="card shadow border-0 my-2">
           <div className="row mt-3 me-2">
             <div className="col-12 text-end">
-             
+
             </div>
           </div>
-
-          {/* User Information */}
-          {/* <div className="container fw-bold fs-5 my-4">
-            User Information
-          </div> */}
           <div className="container mb-5">
             <div className="row py-4">
               <div className="col-md-6 col-12 mb-2">
                 <lable className="form-lable">
-                 Contact Name
+                  Contact Name
                 </lable>
                 <div className="mb-3">
                   <input
                     type="text"
-                    name="firstName"
-                    className={`form-control ${
-                      formik.touched.firstName && formik.errors.firstName
-                        ? "is-invalid"
-                        : ""
-                    }`}
-                    {...formik.getFieldProps("firstName")}
+                    name="contactName"
+                    className={`form-control ${formik.touched.contactName && formik.errors.contactName
+                      ? "is-invalid"
+                      : ""
+                      }`}
+                    {...formik.getFieldProps("contactName")}
                   />
-                  {formik.touched.firstName &&
-                    formik.errors.firstName && (
+                  {formik.touched.contactName &&
+                    formik.errors.contactName && (
                       <div className="invalid-feedback">
-                        {formik.errors.firstName}
+                        {formik.errors.contactName}
                       </div>
                     )}
                 </div>
               </div>
               <div className="col-md-6 col-12 mb-2">
                 <lable className="form-lable">
-                Account Number
+                  Account Number
                 </lable>
                 <div className="mb-3">
                   <input
                     type="text"
-                    name="lastName"
-                    className={`form-control  ${
-                      formik.touched.lastName && formik.errors.lastName
-                        ? "is-invalid"
-                        : ""
-                    }`}
-                    {...formik.getFieldProps("lastName")}
+                    name="accNumber"
+                    className={`form-control  ${formik.touched.accNumber && formik.errors.accNumber
+                      ? "is-invalid"
+                      : ""
+                      }`}
+                    {...formik.getFieldProps("accNumber")}
                   />
-                  {formik.touched.lastName &&
-                    formik.errors.lastName && (
+                  {formik.touched.accNumber &&
+                    formik.errors.accNumber && (
                       <div className="invalid-feedback">
-                        {formik.errors.lastName}
-                      </div>
-                    )}
-                </div>
-              </div>
-
-              <div className="col-md-6 col-12 mb-2">
-                <lable className="form-lable">
-                   Primary Contact
-                </lable>
-                <div className="mb-3">
-                  <input
-                    type="text"
-                    name="empID"
-                    className={`form-control ${
-                      formik.touched.empID && formik.errors.empID
-                        ? "is-invalid"
-                        : ""
-                    }`}
-                    {...formik.getFieldProps("empID")}
-                  />
-                  {formik.touched.empID &&
-                    formik.errors.empID && (
-                      <div className="invalid-feedback">
-                        {formik.errors.empID}
-                      </div>
-                    )}
-                </div>
-              </div>
-              <div className="col-md-6 col-12 mb-2">
-                <lable className="form-lable">
-                Customer Email
-                </lable>
-                <div className="mb-3">
-                  <input
-                    type="text"
-                    name="empEmail"
-                    className={`form-control  ${
-                      formik.touched.empEmail && formik.errors.empEmail
-                        ? "is-invalid"
-                        : ""
-                    }`}
-                    {...formik.getFieldProps("empEmail")}
-                  />
-                  {formik.touched.empEmail &&
-                    formik.errors.empEmail && (
-                      <div className="invalid-feedback">
-                        {formik.errors.empEmail}
+                        {formik.errors.accNumber}
                       </div>
                     )}
                 </div>
@@ -170,23 +186,44 @@ const CustomerEdit = () => {
 
               <div className="col-md-6 col-12 mb-2">
                 <lable className="form-lable">
-                Customer Phone
+                  Primary Contact
                 </lable>
                 <div className="mb-3">
                   <input
                     type="text"
-                    name="empEmail"
-                    className={`form-control  ${
-                      formik.touched.empEmail && formik.errors.empEmail
-                        ? "is-invalid"
-                        : ""
-                    }`}
-                    {...formik.getFieldProps("empEmail")}
+                    name="primaryContact"
+                    className={`form-control ${formik.touched.primaryContact && formik.errors.primaryContact
+                      ? "is-invalid"
+                      : ""
+                      }`}
+                    {...formik.getFieldProps("primaryContact")}
                   />
-                  {formik.touched.empEmail &&
-                    formik.errors.empEmail && (
+                  {formik.touched.primaryContact &&
+                    formik.errors.primaryContact && (
                       <div className="invalid-feedback">
-                        {formik.errors.empEmail}
+                        {formik.errors.primaryContact}
+                      </div>
+                    )}
+                </div>
+              </div>
+              <div className="col-md-6 col-12 mb-2">
+                <lable className="form-lable">
+                  Customer Email
+                </lable>
+                <div className="mb-3">
+                  <input
+                    type="text"
+                    name="email"
+                    className={`form-control  ${formik.touched.email && formik.errors.email
+                      ? "is-invalid"
+                      : ""
+                      }`}
+                    {...formik.getFieldProps("email")}
+                  />
+                  {formik.touched.email &&
+                    formik.errors.email && (
+                      <div className="invalid-feedback">
+                        {formik.errors.email}
                       </div>
                     )}
                 </div>
@@ -194,23 +231,22 @@ const CustomerEdit = () => {
 
               <div className="col-md-6 col-12 mb-2">
                 <lable className="form-lable">
-                    Website
+                  Customer Phone
                 </lable>
                 <div className="mb-3">
                   <input
                     type="text"
-                    name="workLocation"
-                    className={`form-control  ${
-                      formik.touched.workLocation && formik.errors.workLocation
-                        ? "is-invalid"
-                        : ""
-                    }`}
-                    {...formik.getFieldProps("workLocation")}
+                    name="phone"
+                    className={`form-control  ${formik.touched.phone && formik.errors.phone
+                      ? "is-invalid"
+                      : ""
+                      }`}
+                    {...formik.getFieldProps("phone")}
                   />
-                  {formik.touched.workLocation &&
-                    formik.errors.workLocation && (
+                  {formik.touched.phone &&
+                    formik.errors.phone && (
                       <div className="invalid-feedback">
-                        {formik.errors.workLocation}
+                        {formik.errors.phone}
                       </div>
                     )}
                 </div>
@@ -218,23 +254,22 @@ const CustomerEdit = () => {
 
               <div className="col-md-6 col-12 mb-2">
                 <lable className="form-lable">
-                 Bank Name
+                  Website
                 </lable>
                 <div className="mb-3">
                   <input
                     type="text"
-                    name="empEmail"
-                    className={`form-control  ${
-                      formik.touched.empEmail && formik.errors.empEmail
-                        ? "is-invalid"
-                        : ""
-                    }`}
-                    {...formik.getFieldProps("empEmail")}
+                    name="website"
+                    className={`form-control  ${formik.touched.website && formik.errors.website
+                      ? "is-invalid"
+                      : ""
+                      }`}
+                    {...formik.getFieldProps("website")}
                   />
-                  {formik.touched.empEmail &&
-                    formik.errors.empEmail && (
+                  {formik.touched.website &&
+                    formik.errors.website && (
                       <div className="invalid-feedback">
-                        {formik.errors.empEmail}
+                        {formik.errors.website}
                       </div>
                     )}
                 </div>
@@ -242,23 +277,45 @@ const CustomerEdit = () => {
 
               <div className="col-md-6 col-12 mb-2">
                 <lable className="form-lable">
-                   Bank Account Number
+                  Bank Name
                 </lable>
                 <div className="mb-3">
                   <input
                     type="text"
-                    name="workLocation"
-                    className={`form-control  ${
-                      formik.touched.workLocation && formik.errors.workLocation
-                        ? "is-invalid"
-                        : ""
-                    }`}
-                    {...formik.getFieldProps("workLocation")}
+                    name="bankAccName"
+                    className={`form-control  ${formik.touched.bankAccName && formik.errors.bankAccName
+                      ? "is-invalid"
+                      : ""
+                      }`}
+                    {...formik.getFieldProps("bankAccName")}
                   />
-                  {formik.touched.workLocation &&
-                    formik.errors.workLocation && (
+                  {formik.touched.bankAccName &&
+                    formik.errors.bankAccName && (
                       <div className="invalid-feedback">
-                        {formik.errors.workLocation}
+                        {formik.errors.bankAccName}
+                      </div>
+                    )}
+                </div>
+              </div>
+
+              <div className="col-md-6 col-12 mb-2">
+                <lable className="form-lable">
+                  Bank Account Number
+                </lable>
+                <div className="mb-3">
+                  <input
+                    type="text"
+                    name="bankAccNumber"
+                    className={`form-control  ${formik.touched.bankAccNumber && formik.errors.bankAccNumber
+                      ? "is-invalid"
+                      : ""
+                      }`}
+                    {...formik.getFieldProps("bankAccNumber")}
+                  />
+                  {formik.touched.bankAccNumber &&
+                    formik.errors.bankAccNumber && (
+                      <div className="invalid-feedback">
+                        {formik.errors.bankAccNumber}
                       </div>
                     )}
                 </div>
@@ -272,12 +329,12 @@ const CustomerEdit = () => {
                     id="copyAddress"
                     onChange={(e) => {
                       if (e.target.checked) {
-                        formik.setFieldValue("billingCountry", formik.values.shippingCountry);
-                        formik.setFieldValue("billingAddress", formik.values.shippingAddress);
-                        formik.setFieldValue("billingCity", formik.values.shippingCity);
-                        formik.setFieldValue("billingState", formik.values.shippingState);
-                        formik.setFieldValue("billingZipCode", formik.values.shippingZipCode);
-                        formik.setFieldValue("billingAttention", formik.values.shippingAttention);
+                        formik.setFieldValue("billCountry", formik.values.deliCountry);
+                        formik.setFieldValue("billAddress", formik.values.deliAddress);
+                        formik.setFieldValue("billCity", formik.values.deliCity);
+                        formik.setFieldValue("billState", formik.values.deliState);
+                        formik.setFieldValue("billZip", formik.values.deliZip);
+                        formik.setFieldValue("billAttention", formik.values.deliAttention);
                       }
                     }}
                   />
@@ -294,9 +351,9 @@ const CustomerEdit = () => {
                 <div className="mb-3">
                   <input
                     type="text"
-                    name="shippingCountry"
+                    name="deliCountry"
                     className={`form-control`}
-                    {...formik.getFieldProps("shippingCountry")}
+                    {...formik.getFieldProps("deliCountry")}
                   />
                 </div>
               </div>
@@ -309,14 +366,14 @@ const CustomerEdit = () => {
                 <div className="mb-3">
                   <input
                     type="text"
-                    name="billingCountry"
+                    name="billCountry"
                     className={`form-control`}
-                    {...formik.getFieldProps("billingCountry")}
+                    {...formik.getFieldProps("billCountry")}
                   />
                 </div>
               </div>
 
-             
+
 
               <div className="container mb-5">
                 <div className="row py-4">
@@ -327,14 +384,14 @@ const CustomerEdit = () => {
                     <div className="mb-3">
                       <input
                         type="text"
-                        name="shippingAddress"
-                        className={`form-control ${formik.touched.shippingAddress && formik.errors.shippingAddress ? "is-invalid" : ""
+                        name="deliAddress"
+                        className={`form-control ${formik.touched.deliAddress && formik.errors.deliAddress ? "is-invalid" : ""
                           }`}
-                        {...formik.getFieldProps("shippingAddress")}
+                        {...formik.getFieldProps("deliAddress")}
                       />
-                      {formik.touched.shippingAddress && formik.errors.shippingAddress && (
+                      {formik.touched.deliAddress && formik.errors.deliAddress && (
                         <div className="invalid-feedback">
-                          {formik.errors.shippingAddress}
+                          {formik.errors.deliAddress}
                         </div>
                       )}
                     </div>
@@ -347,14 +404,14 @@ const CustomerEdit = () => {
                     <div className="mb-3">
                       <input
                         type="text"
-                        name="billingAddress"
-                        className={`form-control ${formik.touched.billingAddress && formik.errors.billingAddress ? "is-invalid" : ""
+                        name="billAddress"
+                        className={`form-control ${formik.touched.billAddress && formik.errors.billAddress ? "is-invalid" : ""
                           }`}
-                        {...formik.getFieldProps("billingAddress")}
+                        {...formik.getFieldProps("billAddress")}
                       />
-                      {formik.touched.billingAddress && formik.errors.billingAddress && (
+                      {formik.touched.billAddress && formik.errors.billAddress && (
                         <div className="invalid-feedback">
-                          {formik.errors.billingAddress}
+                          {formik.errors.billAddress}
                         </div>
                       )}
                     </div>
@@ -367,14 +424,14 @@ const CustomerEdit = () => {
                     <div className="mb-3">
                       <input
                         type="text"
-                        name="shippingCity"
-                        className={`form-control ${formik.touched.shippingCity && formik.errors.shippingCity ? "is-invalid" : ""
+                        name="deliCity"
+                        className={`form-control ${formik.touched.deliCity && formik.errors.deliCity ? "is-invalid" : ""
                           }`}
-                        {...formik.getFieldProps("shippingCity")}
+                        {...formik.getFieldProps("deliCity")}
                       />
-                      {formik.touched.shippingCity && formik.errors.shippingCity && (
+                      {formik.touched.deliCity && formik.errors.deliCity && (
                         <div className="invalid-feedback">
-                          {formik.errors.shippingCity}
+                          {formik.errors.deliCity}
                         </div>
                       )}
                     </div>
@@ -387,14 +444,14 @@ const CustomerEdit = () => {
                     <div className="mb-3">
                       <input
                         type="text"
-                        name="billingCity"
-                        className={`form-control ${formik.touched.billingCity && formik.errors.billingCity ? "is-invalid" : ""
+                        name="billCity"
+                        className={`form-control ${formik.touched.billCity && formik.errors.billCity ? "is-invalid" : ""
                           }`}
-                        {...formik.getFieldProps("billingCity")}
+                        {...formik.getFieldProps("billCity")}
                       />
-                      {formik.touched.billingCity && formik.errors.billingCity && (
+                      {formik.touched.billCity && formik.errors.billCity && (
                         <div className="invalid-feedback">
-                          {formik.errors.billingCity}
+                          {formik.errors.billCity}
                         </div>
                       )}
                     </div>
@@ -407,14 +464,14 @@ const CustomerEdit = () => {
                     <div className="mb-3">
                       <input
                         type="text"
-                        name="shippingState"
-                        className={`form-control ${formik.touched.shippingState && formik.errors.shippingState ? "is-invalid" : ""
+                        name="deliState"
+                        className={`form-control ${formik.touched.deliState && formik.errors.deliState ? "is-invalid" : ""
                           }`}
-                        {...formik.getFieldProps("shippingState")}
+                        {...formik.getFieldProps("deliState")}
                       />
-                      {formik.touched.shippingState && formik.errors.shippingState && (
+                      {formik.touched.deliState && formik.errors.deliState && (
                         <div className="invalid-feedback">
-                          {formik.errors.shippingState}
+                          {formik.errors.deliState}
                         </div>
                       )}
                     </div>
@@ -427,14 +484,14 @@ const CustomerEdit = () => {
                     <div className="mb-3">
                       <input
                         type="text"
-                        name="billingState"
-                        className={`form-control ${formik.touched.billingState && formik.errors.billingState ? "is-invalid" : ""
+                        name="billState"
+                        className={`form-control ${formik.touched.billState && formik.errors.billState ? "is-invalid" : ""
                           }`}
-                        {...formik.getFieldProps("billingState")}
+                        {...formik.getFieldProps("billState")}
                       />
-                      {formik.touched.billingState && formik.errors.billingState && (
+                      {formik.touched.billState && formik.errors.billState && (
                         <div className="invalid-feedback">
-                          {formik.errors.billingState}
+                          {formik.errors.billState}
                         </div>
                       )}
                     </div>
@@ -447,14 +504,14 @@ const CustomerEdit = () => {
                     <div className="mb-3">
                       <input
                         type="text"
-                        name="shippingZipCode"
-                        className={`form-control ${formik.touched.shippingZipCode && formik.errors.shippingZipCode ? "is-invalid" : ""
+                        name="deliZip"
+                        className={`form-control ${formik.touched.deliZip && formik.errors.deliZip ? "is-invalid" : ""
                           }`}
-                        {...formik.getFieldProps("shippingZipCode")}
+                        {...formik.getFieldProps("deliZip")}
                       />
-                      {formik.touched.shippingZipCode && formik.errors.shippingZipCode && (
+                      {formik.touched.deliZip && formik.errors.deliZip && (
                         <div className="invalid-feedback">
-                          {formik.errors.shippingZipCode}
+                          {formik.errors.deliZip}
                         </div>
                       )}
                     </div>
@@ -467,14 +524,14 @@ const CustomerEdit = () => {
                     <div className="mb-3">
                       <input
                         type="text"
-                        name="billingZipCode"
-                        className={`form-control ${formik.touched.billingZipCode && formik.errors.billingZipCode ? "is-invalid" : ""
+                        name="billZip"
+                        className={`form-control ${formik.touched.billZip && formik.errors.billZip ? "is-invalid" : ""
                           }`}
-                        {...formik.getFieldProps("billingZipCode")}
+                        {...formik.getFieldProps("billZip")}
                       />
-                      {formik.touched.billingZipCode && formik.errors.billingZipCode && (
+                      {formik.touched.billZip && formik.errors.billZip && (
                         <div className="invalid-feedback">
-                          {formik.errors.billingZipCode}
+                          {formik.errors.billZip}
                         </div>
                       )}
                     </div>
@@ -487,14 +544,14 @@ const CustomerEdit = () => {
                     <div className="mb-3">
                       <input
                         type="text"
-                        name="shippingAttention"
-                        className={`form-control ${formik.touched.shippingAttention && formik.errors.shippingAttention ? "is-invalid" : ""
+                        name="deliAttention"
+                        className={`form-control ${formik.touched.deliAttention && formik.errors.deliAttention ? "is-invalid" : ""
                           }`}
-                        {...formik.getFieldProps("shippingAttention")}
+                        {...formik.getFieldProps("deliAttention")}
                       />
-                      {formik.touched.shippingAttention && formik.errors.shippingAttention && (
+                      {formik.touched.deliAttention && formik.errors.deliAttention && (
                         <div className="invalid-feedback">
-                          {formik.errors.shippingAttention}
+                          {formik.errors.deliAttention}
                         </div>
                       )}
                     </div>
@@ -507,14 +564,14 @@ const CustomerEdit = () => {
                     <div className="mb-3">
                       <input
                         type="text"
-                        name="billingAttention"
-                        className={`form-control ${formik.touched.billingAttention && formik.errors.billingAttention ? "is-invalid" : ""
+                        name="billAttention"
+                        className={`form-control ${formik.touched.billAttention && formik.errors.billAttention ? "is-invalid" : ""
                           }`}
-                        {...formik.getFieldProps("billingAttention")}
+                        {...formik.getFieldProps("billAttention")}
                       />
-                      {formik.touched.billingAttention && formik.errors.billingAttention && (
+                      {formik.touched.billAttention && formik.errors.billAttention && (
                         <div className="invalid-feedback">
-                          {formik.errors.billingAttention}
+                          {formik.errors.billAttention}
                         </div>
                       )}
                     </div>
@@ -527,7 +584,7 @@ const CustomerEdit = () => {
                     <div className="input-group mb-3">
                       <textarea
                         className="form-control"
-                        {...formik.getFieldProps("invoiceNotes")}
+                        {...formik.getFieldProps("notes")}
                         id="exampleFormControlTextarea1"
                         rows="5"
                       ></textarea>
@@ -535,13 +592,11 @@ const CustomerEdit = () => {
                   </div>
                 </div>
               </div>
-
-          
             </div>
           </div>
         </div>
-    </form>
-  </div>
+      </form>
+    </div>
   )
 }
 

@@ -1,9 +1,27 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
 import { IoCloudDownloadSharp } from "react-icons/io5";
 import { FaTelegramPlane } from "react-icons/fa";
 import Logo from "../../../assets/AccountsLogo.png";
+import toast from "react-hot-toast";
+import api from "../../../config/URL"
+
 function InvoiceView() {
+  const { id } = useParams();
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    const getData = async () => {
+      try{
+      const response = await api.get(`/getTxnInvoiceById/${id}`);
+      setData(response.data);
+      }catch(error){
+        toast.error("Error Fetching Data ", error)
+      }
+    };
+    getData();
+  }, [id]);
+
   return (
     <div className="container-fluid px-2 minHeight">
       <div className="card shadow border-0 mb-2 top-header">
@@ -60,7 +78,7 @@ function InvoiceView() {
             </div>
             <div className="col-md-6 col-12 d-flex justify-end flex-column align-items-end mt-2">
               <h1>INVOICE</h1>
-              <h3>#IN-018</h3>
+              <h3>#{data.invoiceNumber || "#1234"}</h3>
               <span className="text-muted mt-4">Balance Due</span>
               <h3>₹3000</h3>
             </div>
@@ -81,11 +99,11 @@ function InvoiceView() {
               <div className="row mb-2  d-flex justify-content-end align-items-end">
                 <div className="col-6">
                   <p className="text-sm">
-                    <b>Invoice Date</b>
+                    <b>Issues Date</b>
                   </p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: 10.10.2023</p>
+                  <p className="text-muted text-sm">: {data.issuesDate || ""}</p>
                 </div>
               </div>
               <div className="row mb-2 d-flex justify-content-end align-items-end">
@@ -101,11 +119,11 @@ function InvoiceView() {
               <div className="row mb-2 d-flex justify-content-end align-items-end">
                 <div className="col-6">
                   <p className="text-sm">
-                    <b>Invoice Date</b>
+                    <b>Due Date</b>
                   </p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: 10.10.2023</p>
+                  <p className="text-muted text-sm">: {data.dueDate || ""}</p>
                 </div>
               </div>
             </div>
@@ -194,14 +212,14 @@ function InvoiceView() {
                 <label class="col-sm-4 col-form-label">Sub Total</label>
                 <div class="col-sm-4"></div>
                 <div class="col-sm-4 ">
-                  3500
+                : {data.subTotal || ""}
                 </div>
               </div>
               <div class="row mb-3">
                 <label class="col-sm-4 col-form-label">Total Tax</label>
                 <div class="col-sm-4"></div>
                 <div class="col-sm-4">
-                  0.00
+                : {data.totalTax || ""}
                 </div>
                 <div class="col-sm-4 "></div>
               </div>

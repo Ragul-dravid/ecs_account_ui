@@ -1,7 +1,24 @@
-import React from 'react'
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from 'react'
+import { Link, useParams } from "react-router-dom";
+import { toast } from 'react-toastify';
+import api from "../../../config/URL";
 
 const CustomerView = () => {
+  const { id } = useParams();
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    const getData = async () => {
+      try{
+      const response = await api.get(`/getMstrCustomerById/${id}`);
+      setData(response.data);
+      }catch(error){
+        toast.error("Error Fetching Data ", error)
+      }
+    };
+    getData();
+  }, [id]);
+
   return (
     <div className="container-fluid px-2 minHeight">
       <div className="card shadow border-0 mb-2 top-header">
@@ -37,7 +54,7 @@ const CustomerView = () => {
                   </p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: Ecs</p>
+                  <p className="text-muted text-sm">: {data.contactName || ""}</p>
                 </div>
               </div>
             </div>
@@ -49,31 +66,7 @@ const CustomerView = () => {
                   </p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: keerthick </p>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6 col-12">
-              <div className="row mb-3">
-                <div className="col-6 d-flex justify-content-start align-items-center">
-                  <p className="text-sm">
-                    <b>Customer Phone</b>
-                  </p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm">: 987656543</p>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6 col-12">
-              <div className="row mb-3">
-                <div className="col-6 d-flex justify-content-start align-items-center">
-                  <p className="text-sm">
-                    <b>Customer Email </b>
-                  </p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm">: ragulecs@gmail.com</p>
+                  <p className="text-muted text-sm">: {data.accNumber || ""}</p>
                 </div>
               </div>
             </div>
@@ -85,7 +78,44 @@ const CustomerView = () => {
                   </p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: 98766</p>
+                  <p className="text-muted text-sm">: {data.primaryContact || ""}</p>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-6 col-12">
+              <div className="row mb-3">
+                <div className="col-6 d-flex justify-content-start align-items-center">
+                  <p className="text-sm">
+                    <b>Customer Email </b>
+                  </p>
+                </div>
+                <div className="col-6">
+                  <p className="text-muted text-sm">: {data.email || ""}</p>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-6 col-12">
+              <div className="row mb-3">
+                <div className="col-6 d-flex justify-content-start align-items-center">
+                  <p className="text-sm">
+                    <b>Customer Phone</b>
+                  </p>
+                </div>
+                <div className="col-6">
+                  <p className="text-muted text-sm">: {data.phone || ""}</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="col-md-6 col-12">
+              <div className="row mb-3">
+                <div className="col-6 d-flex justify-content-start align-items-center">
+                  <p className="text-sm">
+                    <b>Website</b>
+                  </p>
+                </div>
+                <div className="col-6">
+                  <p className="text-muted text-sm">: {data.website || ""}</p>
                 </div>
               </div>
             </div>
@@ -97,7 +127,7 @@ const CustomerView = () => {
                   </p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: ERTH567</p>
+                  <p className="text-muted text-sm">: {data.bankAccName || ""}</p>
                 </div>
               </div>
             </div>
@@ -109,7 +139,7 @@ const CustomerView = () => {
                   </p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: ERTH567</p>
+                  <p className="text-muted text-sm">: {data.bankAccNumber || ""}</p>
                 </div>
               </div>
             </div>
@@ -129,7 +159,7 @@ const CustomerView = () => {
                   </p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: India</p>
+                  <p className="text-muted text-sm">: {data.billCountry || ""}</p>
                 </div>
               </div>
             </div>
@@ -141,7 +171,7 @@ const CustomerView = () => {
                   </p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: Indian</p>
+                  <p className="text-muted text-sm">: {data.billAddress || ""}</p>
                 </div>
               </div>
             </div>
@@ -153,7 +183,7 @@ const CustomerView = () => {
                   </p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: Trichy</p>
+                  <p className="text-muted text-sm">: {data.billCity || ""}</p>
                 </div>
               </div>
             </div>
@@ -165,7 +195,7 @@ const CustomerView = () => {
                   </p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: Trichy</p>
+                  <p className="text-muted text-sm">: {data.billState || ""}</p>
                 </div>
               </div>
             </div>
@@ -177,7 +207,7 @@ const CustomerView = () => {
                   </p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: 600243</p>
+                  <p className="text-muted text-sm">: {data.billZip || ""}</p>
                 </div>
               </div>
             </div>
@@ -185,11 +215,11 @@ const CustomerView = () => {
               <div className="row mb-3">
                 <div className="col-6 d-flex justify-content-start align-items-center">
                   <p className="text-sm">
-                    <b>Billing Phone</b>
+                    <b>Billing Attention</b>
                   </p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: 12345678</p>
+                  <p className="text-muted text-sm">: {data.billAttention || ""}</p>
                 </div>
               </div>
             </div>
@@ -208,7 +238,7 @@ const CustomerView = () => {
                   </p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: India</p>
+                  <p className="text-muted text-sm">: {data.deliCountry || ""}</p>
                 </div>
               </div>
             </div>
@@ -220,7 +250,7 @@ const CustomerView = () => {
                   </p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: Chennai </p>
+                  <p className="text-muted text-sm">: {data.deliAddress || ""}</p>
                 </div>
               </div>
             </div>
@@ -232,7 +262,7 @@ const CustomerView = () => {
                   </p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: Chennai</p>
+                  <p className="text-muted text-sm">: {data.deliCity || ""}</p>
                 </div>
               </div>
             </div>
@@ -244,7 +274,7 @@ const CustomerView = () => {
                   </p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: Tamil Nadu</p>
+                  <p className="text-muted text-sm">: {data.deliState || ""}</p>
                 </div>
               </div>
             </div>
@@ -256,7 +286,7 @@ const CustomerView = () => {
                   </p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: 600002</p>
+                  <p className="text-muted text-sm">: {data.deliZip || ""}</p>
                 </div>
               </div>
             </div>
@@ -264,11 +294,24 @@ const CustomerView = () => {
               <div className="row mb-3">
                 <div className="col-6 d-flex justify-content-start align-items-center">
                   <p className="text-sm">
-                    <b>Shipping Phone</b>
+                    <b>Shipping Attention</b>
                   </p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: 9878665544</p>
+                  <p className="text-muted text-sm">: {data.deliAttention || ""}</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="col-md-6 col-12">
+              <div className="row mb-3">
+                <div className="col-6 d-flex justify-content-start align-items-center">
+                  <p className="text-sm">
+                    <b>Remarks</b>
+                  </p>
+                </div>
+                <div className="col-6">
+                  <p className="text-muted text-sm">: {data.notes || ""}</p>
                 </div>
               </div>
             </div>

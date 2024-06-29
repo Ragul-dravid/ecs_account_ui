@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { MdOutlineDownloadForOffline } from "react-icons/md";
+import { IoCloudDownloadSharp } from "react-icons/io5";
 import { FaTelegramPlane } from "react-icons/fa";
 import Logo from "../../../assets/AccountsLogo.png";
 
@@ -23,13 +23,13 @@ const PaymentMadeView = () => {
                     <span>Back</span>
                   </button>
                 </Link>
-                <button type="submit" className="btn btn-button rounded-pill p-1">
-                  <FaTelegramPlane size={25}/>
+                <button type="submit" className="btn btn-button rounded-pill p-2">
+                  <FaTelegramPlane size={18} />
                 </button>
-                <button type="submit" className="btn btn-button rounded-pill p-1">
-                  <MdOutlineDownloadForOffline size={25}/>
+                <button type="submit" className="btn btn-button rounded-pill p-2">
+                  <IoCloudDownloadSharp size={18} />
                 </button>
-                
+
               </div>
             </div>
           </div>
@@ -38,7 +38,7 @@ const PaymentMadeView = () => {
       <div className="card shadow border-0 mb-2 minHeight">
         <div className="container-fluid mt-5">
           <div className="row mt-4 p-3">
-          <div className="col-md-6 col-12">
+            <div className="col-md-6 col-12">
               <div className="d-flex justify-content-center flex-column align-items-start">
                 <div class="d-flex">
                   <img src={Logo} alt=".." className="mt-3" width={130} />
@@ -57,14 +57,14 @@ const PaymentMadeView = () => {
               <span className="text-muted mt-4">Balance Due</span>
               <h3>₹3000</h3>
             </div>
-            
+
           </div>
           <div className="row">
-          <h5 style={{textAlign: 'center'}}>PAYMENT RECEIPT</h5>
+            <h5 style={{textAlign: 'center'}}>PAYMENT RECEIPT</h5>
 
-           
+
             <div className="col-md-6 col-12">
-            <div className="row mb-3">
+              <div className="row mb-3">
                 <div className="col-6 d-flex justify-content-start align-items-center">
                   <p className="text-sm">
                     <b>Payment Date</b>
@@ -96,58 +96,58 @@ const PaymentMadeView = () => {
               </div>
             </div>
             <div className="col-md-6 col-12 text-center">
-                <p>Amount Received</p>
-                <h3>₹1,10,000</h3>
-                </div>
-            
+              <p>Amount Received</p>
+              <h3>₹1,10,000</h3>
+            </div>
+
           </div>
 
-          <div className="row mt-2 p-3">  
+          <div className="row mt-2 p-3">
             <div className="col-md-6 col-12">
-             
+
               <p>Manikandan</p>
-              
+
             </div>
             <div className="col-md-6 col-12 text-end">
-           
+
               <div className="row my-3">
-              <div className="col-12 my-5">
-                <p className="fw-bolder">Authorized Signature ___________________</p>
-            </div>
-               
+                <div className="col-12 my-5">
+                  <p className="fw-bolder">Authorized Signature ___________________</p>
+                </div>
+
               </div>
-              
+
             </div>
-           
+
             <div className="table-responsive">
               <table class="table">
                 <thead>
                   <tr  style={{ background: "#4066D5" }} >
-                  
+
                     <th scope="col"  className="text-white">Bill Number</th>
                     <th scope="col" className="text-white">Bill Date</th>
                     <th scope="col" className="text-white">Bill Amount</th>
                     <th scope="col" className="text-white">Payment Amount</th>
-                   
+
                   </tr>
                 </thead>
                 <tbody class="table-group">
                   <tr>
-                    
+
                     <th scope="row">BI-567</th>
                     <td>28/05/2024</td>
                     <td>₹1,10,000</td>
                     <td>₹1,10,000</td>
-                   
+
                   </tr>
                 </tbody>
               </table>
             </div>
           </div>
           <div className="row mt-5 p-3">
-            
-           
-           
+
+
+
           </div>
         </div>
       </div>

@@ -1,53 +1,70 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "datatables.net-dt";
 import "datatables.net-responsive-dt";
 import $ from "jquery";
 import { Link } from "react-router-dom";
-import { FaEye, FaEdit, FaPlus } from "react-icons/fa";
+import { FaPlus } from "react-icons/fa";
 import DeleteModel from "../../../components/common/DeleteModel";
-// import DeleteModel from "../../components/common/DeleteModel";
+import api from "../../../config/URL"
 
 const Vendor = () => {
   const tableRef = useRef(null);
+  // const storedScreens = JSON.parse(sessionStorage.getItem("screens") || "{}");
+  const [datas, setDatas] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const datas = [
-    {
-      id: 1,
-      name: "Raghul",
-      companyName: "ECS",
-      email: "ragulecs@gmail.com",
-      phone: "987665432",
-      
-    },
-    {
-      id: 2,
-      name: "Raghul",
-      companyName: "ECS",
-      email: "ragulecs@gmail.com",
-      phone: "987665432",
-    },
-    {
-      id: 3,
-      name: "Raghul",
-      companyName: "ECS",
-      email: "ragulecs@gmail.com",
-      phone: "987665432",
-    },
-    {
-      id: 4,
-      name: "Raghul",
-      companyName: "ECS",
-      email: "ragulecs@gmail.com",
-      phone: "987665432",
-    },
-    {
-      id: 5,
-      name: "Raghul",
-      companyName: "ECS",
-      email: "ragulecs@gmail.com",
-      phone: "987665432",
-    },
-  ];
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const response = await api.get("/getAllMstrVendors");
+        setDatas(response.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    getData();
+  }, []);
+
+  useEffect(() => {
+    if (!loading) {
+      initializeDataTable();
+    }
+    return () => {
+      destroyDataTable();
+    };
+  }, [loading]);
+
+  const initializeDataTable = () => {
+    if ($.fn.DataTable.isDataTable(tableRef.current)) {
+      // DataTable already initialized, no need to initialize again
+      return;
+    }
+    $(tableRef.current).DataTable({
+      responsive: true,
+    });
+  };
+
+  const destroyDataTable = () => {
+    const table = $(tableRef.current).DataTable();
+    if (table && $.fn.DataTable.isDataTable(tableRef.current)) {
+      table.destroy();
+    }
+  };
+
+  const refreshData = async () => {
+    destroyDataTable();
+    setLoading(true);
+    try {
+      const response = await api.get("/getAllMstrVendors");
+      setDatas(response.data);
+      initializeDataTable(); // Reinitialize DataTable after successful data update
+    } catch (error) {
+      console.error("Error refreshing data:", error);
+    }
+    setLoading(false);
+  };
 
   useEffect(() => {
     const table = $(tableRef.current).DataTable();
@@ -71,7 +88,7 @@ const Vendor = () => {
               <div className="hstack gap-2 justify-content-end">
                 <Link to="/vendor/add">
                   <button type="submit" className="btn btn-sm btn-button">
-                  <span cla>Add <FaPlus  className="pb-1"/></span>
+                    <span cla>Add <FaPlus className="pb-1" /></span>
                   </button>
                 </Link>
               </div>
@@ -80,7 +97,7 @@ const Vendor = () => {
         </div>
         <hr className="removeHrMargin"></hr>
 
-    
+
         <div className="table-responsive p-2 minHeight">
           <table ref={tableRef} className="display table ">
             <thead className="thead-light">
@@ -90,7 +107,7 @@ const Vendor = () => {
                 </th>
                 {/* <th scope="col">EMPLOYEE ID</th> */}
                 <th scope="col">NAME</th>
-                <th scope="col" >CONTACT NAME</th>
+                <th scope="col">CONTACT NAME</th>
                 <th scope="col">EMAIL</th>
                 <th scope="col">PHONE</th>
                 <th scope="col" className="text-center ">
@@ -103,34 +120,37 @@ const Vendor = () => {
                 <tr key={index}>
                   <td className="text-center">{index + 1}</td>
                   {/* <td>{data.empId}</td> */}
-                  <td>{data.name}</td>
+                  <td>{data.contactName}</td>
                   <td>{data.companyName}</td>
                   <td>{data.email}</td>
                   <td>{data.phone}</td>
                   <td className="text-center">
                     <div>
-                      <Link to="/vendor/view">
-                      <button className="btn btn-light btn-sm  shadow-none border-none">
+                      <Link to={`/vendor/view/${data.id}`}>
+                        <button className="btn btn-light btn-sm  shadow-none border-none">
                           View
                         </button>
                       </Link>
-                      <Link to="/vendor/edit"  className="px-2">
-                      <button className="btn btn-light  btn-sm shadow-none border-none">
+                      <Link to={`/vendor/edit/${data.id}`} className="px-2">
+                        <button className="btn btn-light  btn-sm shadow-none border-none">
                           Edit
                         </button>
                       </Link>
-                      <DeleteModel />
+                      <DeleteModel
+                        onSuccess={refreshData}
+                        path={`/deleteMstrVendor/${data.id}`}
+                      />
                     </div>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
-        
 
-        <div className="card-footer border-0 py-5"></div>
+
+          <div className="card-footer border-0 py-5"></div>
+        </div>
       </div>
-    </div>
     </div>
   );
 };
