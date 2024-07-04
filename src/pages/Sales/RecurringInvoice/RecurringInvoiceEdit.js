@@ -108,6 +108,7 @@ const RecurringInvoiceEdit = () => {
           formData.append(key, value);
         }
       });
+    
       items.forEach((item) => {
         formData.append("itemId", item.id);
         formData.append("qty", item.qty);
@@ -167,6 +168,7 @@ const RecurringInvoiceEdit = () => {
     };
     getData();
   }, []);
+  
   const fetchCustamerData = async () => {
     try {
       const response = await api.get("getAllCustomerWithIds");
