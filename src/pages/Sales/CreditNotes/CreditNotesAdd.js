@@ -13,11 +13,12 @@ function CreditNotesAdd() {
         setRows((prevRows) => [...prevRows, { id: prevRows.length + 1 }]);
     };
     const [items, setItems] = useState([]);
+    const [customerData, setcustomerData] = useState([]);
 
     const validationSchema = Yup.object({
-        // customerName: Yup.string().required("*Customer name is required"),
-        date: Yup.string().required("*Date is required"),
-        files: Yup.string().required("*files is required"),
+        // customerId: Yup.string().required("*Customer name is required"),
+        // date: Yup.string().required("*Date is required"),
+        // files: Yup.string().required("*files is required"),
         reference: Yup.string().required("*Reference is required"),
         currency: Yup.string().required("*Currency is required"),
         amountsAre: Yup.string().required("*Amounts Are is required"),
@@ -25,63 +26,64 @@ function CreditNotesAdd() {
 
     const formik = useFormik({
         initialValues: {
-            customerName: "",
+            customerId: "",
             date: "",
             reference: "",
             currency: "",
             amountsAre: "",
-            qty: "",
-            account: "",
-            price: "",
-            amount: "",
-            taxRate: "",
-            files: "",
+            txnCreditNoteItems: [
+                {
+                    item: "",
+                    description: "",
+                    account: "",
+                    qty: "",
+                    price: "",
+                    taxRate: "",
+                    amount: "",
+                },
+            ],
+            files: null,
             creditNote: "",
             subTotal: "",
             total: "",
-            description: "",
-            itemId: "",
-            customerId: "",
+
         },
         validationSchema: validationSchema,
         onSubmit: async (values) => {
             setLoadIndicator(true);
-            console.log("Create Credit:", values);
+            console.log("Create Tnx :", values);
+            const { txnCreditNoteItems, file, ...value } = values;
             const formData = new FormData();
-                formData.append("customerName", values.customerName);
-                formData.append("date", values.date);
-                formData.append("reference", values.reference);
-                formData.append("currency", values.currency);
-                formData.append("amountsAre", values.amountsAre);
-                formData.append("taxRate", values.taxRate);
-                formData.append("files", values.files);
-                formData.append("creditNote", values.creditNote);
-                formData.append("description", values.description);
-                formData.append("subTotal", values.subTotal);
-                formData.append("total", values.total);
-                formData.append("creditNote", values.creditNote);
-
-                // values.items.forEach((item, index) => {
-                //     formData.append(`items[${index}].item`, item.item);
-                //     formData.append(`items[${index}].account`, item.account);
-                //     formData.append(`items[${index}].qty`, item.qty);
-                //     formData.append(`items[${index}].price`, item.price);
-                //     formData.append(`items[${index}].taxRate`, item.taxRate);
-                //     formData.append(`items[${index}].amount`, item.amount);
-                // });
+            Object.entries(value).forEach(([key, value]) => {
+                if (value !== undefined) {
+                    formData.append(key, value);
+                }
+            });
+            txnCreditNoteItems.forEach((item) => {
+                formData.append("itemId", item.item)
+                formData.append("description", item.description)
+                formData.append("account", item.account)
+                formData.append("qty", item.qty)
+                formData.append("price", item.price)
+                formData.append("taxRate", item.taxRate)
+                formData.append("amount", item.amount)
+            })
+            if (file) {
+                formData.append("files", file);
+            }
             try {
-
-                const response = await api.post("/createCreditAndCreditItems", formData, {
-                    headers: {
-                        "Content-Type": "multipart/form-data",
-                    },
-                });
-
+                const response = await api.post(
+                    "/createCreditAndCreditItems",
+                    formData,
+                    {
+                        headers: {
+                            "Content-Type": "multipart/form-data",
+                        },
+                    }
+                );
                 if (response.status === 201) {
                     toast.success(response.data.message);
                     navigate("/creditNotes");
-                } else {
-                    toast.error(response.data.message);
                 }
             } catch (e) {
                 toast.error("Error fetching data: ", e?.response?.data?.message);
@@ -91,9 +93,10 @@ function CreditNotesAdd() {
         },
     });
 
-  useEffect(() => {
-    fetchItemsData();
-  }, []);
+    useEffect(() => {
+        fetchItemsData();
+        fetchcustomerData();
+    }, []);
 
 
     const handleSelectChange = (index, value) => {
@@ -104,6 +107,15 @@ function CreditNotesAdd() {
         try {
             const response = await api.get("getAllItemNameWithIds");
             setItems(response.data);
+        } catch (error) {
+            toast.error("Error fetching tax data:", error);
+        }
+    };
+
+    const fetchcustomerData = async () => {
+        try {
+            const response = await api.get("getAllCustomerWithIds");
+            setcustomerData(response.data);
         } catch (error) {
             toast.error("Error fetching tax data:", error);
         }
@@ -150,19 +162,25 @@ function CreditNotesAdd() {
                                 </lable>
                                 <div className="mb-3">
                                     <select
-                                        {...formik.getFieldProps("customerName")}
-                                        className={`form-select    ${formik.touched.customerName && formik.errors.customerName
+                                        {...formik.getFieldProps("customerId")}
+                                        name="customerId"
+                                        className={`form-select ${formik.touched.customerId && formik.errors.customerId
                                             ? "is-invalid"
                                             : ""
-                                            }`}>
-                                        <option></option>
-                                        <option value="Manikandan">Manikandan</option>
-                                        <option value="Rahul">Rahul</option>
+                                            }`}
+                                    >
+                                        <option selected></option>
+                                        {customerData &&
+                                            customerData.map((coustomerId) => (
+                                                <option key={coustomerId.id} value={coustomerId.id}>
+                                                    {coustomerId.contactName}
+                                                </option>
+                                            ))}
                                     </select>
-                                    {formik.touched.customerName &&
-                                        formik.errors.customerName && (
+                                    {formik.touched.customerId &&
+                                        formik.errors.customerId && (
                                             <div className="invalid-feedback">
-                                                {formik.errors.customerName}
+                                                {formik.errors.customerId}
                                             </div>
                                         )}
                                 </div>
@@ -307,6 +325,7 @@ function CreditNotesAdd() {
                                             <tr>
                                                 <th scope="col">S.NO</th>
                                                 <th scope="col">ITEM DETAILS</th>
+                                                <th scope="col">DESCRIPTION</th>
                                                 <th scope="col">ACCOUNT</th>
                                                 <th scope="col">QUANTITY</th>
                                                 <th scope="col">PRICE</th>
@@ -320,18 +339,18 @@ function CreditNotesAdd() {
                                                     <th scope="row">{index + 1}</th>
                                                     <td>
                                                         <select
-                                                            className={`form-select ${formik.touched.invoiceItems?.[index]?.taxType &&
-                                                                    formik.errors.invoiceItems?.[index]?.taxType
-                                                                    ? "is-invalid"
-                                                                    : ""
+                                                            className={`form-select ${formik.touched.invoicetxnCreditNoteItemsItems?.[index]?.itemName &&
+                                                                formik.errors.txnCreditNoteItems?.[index]?.itemName
+                                                                ? "is-invalid"
+                                                                : ""
                                                                 }`}
                                                             {...formik.getFieldProps(
-                                                                `txnCreditNoteItems[${index}].itemName`
+                                                                `txnCreditNoteItems[${index}].item`
                                                             )}
                                                             style={{ width: "100%" }}
-                                                            onChange={(e) =>
-                                                                handleSelectChange(index, e.target.value)
-                                                            }
+                                                        // onChange={(e) =>
+                                                        //     handleSelectChange(index, e.target.value)
+                                                        // }
                                                         >
                                                             <option value=""></option>
                                                             {items &&
@@ -341,6 +360,15 @@ function CreditNotesAdd() {
                                                                     </option>
                                                                 ))}
                                                         </select>
+                                                    </td>
+                                                    <td>
+                                                        <input
+                                                            {...formik.getFieldProps(
+                                                                `txnCreditNoteItems[${index}].description`
+                                                            )}
+                                                            className="form-control"
+                                                            type="text"
+                                                        />
                                                     </td>
                                                     <td>
                                                         <input

@@ -77,6 +77,12 @@ import CreditNotes from "../pages/Sales/CreditNotes/CreditNotes";
 import CreditNotesAdd from "../pages/Sales/CreditNotes/CreditNotesAdd";
 import CreditNotesEdit from "../pages/Sales/CreditNotes/CreditNotesEdit";
 import CreditNotesView from "../pages/Sales/CreditNotes/CreditNotesView";
+import Expenses from "../pages/Purchase/Expenses/Expenses";
+import ExpensesAdd from "../pages/Purchase/Expenses/ExpensesAdd";
+import ExpensesEdit from "../pages/Purchase/Expenses/ExpensesEdit";
+import ExpensesView from "../pages/Purchase/Expenses/ExpensesView";
+import RecurringInvoiceView from "../pages/Sales/RecurringInvoice/RecurringInvoiceView";
+import SalesOrderView from "../pages/Sales/SalesOrder/SalesOrderView";
 
 function Admin({ handleLogout }) {
   return (
@@ -118,6 +124,10 @@ function Admin({ handleLogout }) {
                 path="/recurringinvoice/edit/:id"
                 element={<RecurringInvoiceEdit />}
               />
+              <Route
+                path="/recurringinvoice/view/:id"
+                element={<RecurringInvoiceView />}
+              />
               <Route path="/recurringinvoice" element={<RecurringInvoice />} />
 
               {/* Delivery*/}
@@ -130,6 +140,7 @@ function Admin({ handleLogout }) {
               <Route path="/salesorder" element={<SalesOrder />} />
               <Route path="/salesorder/add" element={<SalesOrderAdd />} />
               <Route path="/salesorder/edit/:id" element={<SalesOrderEdit />} />
+              <Route path="/salesorder/view/:id" element={<SalesOrderView />} />
 
               {/* CreditNotes */}
               <Route path="/creditNotes" element={<CreditNotes />} />
@@ -192,6 +203,12 @@ function Admin({ handleLogout }) {
               <Route path="/vendor/add" element={<VendorAdd />} />
               <Route path="/vendor/edit/:id" element={<VendorEdit />} />
               <Route path="/vendor/view/:id" element={<VendorView />} />
+
+              {/* {/ Expenses /} */}
+              <Route path="/expenses" element={<Expenses />} />
+              <Route path="/expenses/add" element={<ExpensesAdd />} />
+              <Route path="/expenses/edit/:id" element={<ExpensesEdit />} />
+              <Route path="/expenses/view/:id" element={<ExpensesView />} />
 
               {/* {/ payment /} */}
               <Route path="/paymentmade" element={<Paymentmade />} />

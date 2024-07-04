@@ -14,65 +14,64 @@ function CreditNotesEdit() {
         setRows((prevRows) => [...prevRows, { id: prevRows.length + 1 }]);
     };
     const [items, setItems] = useState([]);
+    const [customerData, setCustomerData] = useState([]);
 
     const validationSchema = Yup.object({
         // customerName: Yup.string().required("*Customer name is required"),
-        date: Yup.string().required("*Date is required"),
-        files: Yup.string().required("*files is required"),
+        // date: Yup.string().required("*Date is required"),
+        // files: Yup.string().required("*files is required"),
         reference: Yup.string().required("*Reference is required"),
-        currency: Yup.string().required("*Currency is required"),
+        currency: Yup.string().required("*currency is required"),
         amountsAre: Yup.string().required("*Amounts Are is required"),
     });
 
     const formik = useFormik({
         initialValues: {
-            customerName: "",
+            customerId: "",
             date: "",
             reference: "",
             currency: "",
             amountsAre: "",
-            qty: "",
-            account: "",
-            price: "",
-            amount: "",
-            taxRate: "",
-            files: "",
+            creditNoteItemsModels: [
+                {
+                    item: "",
+                    description: "",
+                    account: "",
+                    qty: "",
+                    price: "",
+                    taxRate: "",
+                    amount: "",
+                },
+            ],
+            files: null,
             creditNote: "",
             subTotal: "",
             total: "",
-            description: "",
-            itemId: "",
-            customerId: "",
         },
         validationSchema: validationSchema,
         onSubmit: async (values) => {
             setLoadIndicator(true);
-            console.log(values);
+            console.log("Create Tnx :", values);
+            const { creditNoteItemsModels, file,toName,...value } = values;
+            const formData = new FormData();
+            Object.entries(value).forEach(([key, value]) => {
+                if (value !== undefined) {
+                    formData.append(key, value);
+                }
+            });
+            creditNoteItemsModels.forEach((item) => {
+                formData.append("itemId", item.item)
+                formData.append("description", item.description)
+                formData.append("account", item.account)
+                formData.append("qty", item.qty)
+                formData.append("price", item.price)
+                formData.append("taxRate", item.taxRate)
+                formData.append("amount", item.amount)
+            })
+            if (file) {
+                formData.append("files", file);
+            }
             try {
-                const formData = new FormData();
-                formData.append("customerName", values.customerName);
-                formData.append("date", values.date);
-                formData.append("reference", values.reference);
-                formData.append("currency", values.currency);
-                formData.append("amountsAre", values.amountsAre);
-                formData.append("taxRate", values.taxRate);
-                formData.append("files", values.files);
-                formData.append("creditNote", values.creditNote);
-                formData.append("description", values.description);
-                formData.append("subTotal", values.subTotal);
-                formData.append("total", values.total);
-                formData.append("creditNote", values.creditNote);
-
-                // Append items array
-                values.items.forEach((item, index) => {
-                    formData.append(`items[${index}].item`, item.item);
-                    formData.append(`items[${index}].account`, item.account);
-                    formData.append(`items[${index}].qty`, item.qty);
-                    formData.append(`items[${index}].price`, item.price);
-                    formData.append(`items[${index}].taxRate`, item.taxRate);
-                    formData.append(`items[${index}].amount`, item.amount);
-                });
-
                 const response = await api.put(`/updateCreditAndCreditItems/${values.id}`, formData, {
                     headers: {
                         "Content-Type": "multipart/form-data",
@@ -96,7 +95,7 @@ function CreditNotesEdit() {
     useEffect(() => {
         const getData = async () => {
             try {
-                const response = await api.get(`/getCreditNotesById/${id}`);
+                const response = await api.get(`/getTxnCreditNotesById/${id}`);
                 formik.setValues(response.data);
             } catch (e) {
                 toast.error("Error fetching data: ", e?.response?.data?.message);
@@ -105,26 +104,34 @@ function CreditNotesEdit() {
 
         getData();
         fetchItemsData();
+        fetchCustomerData();
     }, [id]);
 
     const handleSelectChange = (index, value) => {
-        formik.setFieldValue(`txnCreditNoteItems[${index}].itemName`, value);
+        formik.setFieldValue(`creditNoteItemsModels[${index}].itemName`, value);
     };
 
     const fetchItemsData = async () => {
         try {
-          const response = await api.get("getAllItemNameWithIds");
-          setItems(response.data);
+            const response = await api.get("getAllItemNameWithIds");
+            setItems(response.data);
         } catch (error) {
-          toast.error("Error fetching tax data:", error);
+            toast.error("Error fetching tax data:", error);
         }
-      };
+    };
+    const fetchCustomerData = async () => {
+        try {
+            const response = await api.get("getAllCustomerWithIds");
+            setCustomerData(response.data);
+        } catch (error) {
+            toast.error("Error fetching tax data:", error);
+        }
+    };
 
     return (
         <div className="container-fluid p-2 minHeight m-0">
             <form onSubmit={formik.handleSubmit}>
-                <div
-                    className="card shadow border-0 mb-2 top-header">
+                <div className="card shadow border-0 mb-2 top-header">
                     <div className="container-fluid py-4">
                         <div className="row align-items-center">
                             <div className="col">
@@ -135,7 +142,7 @@ function CreditNotesEdit() {
                             <div className="col-auto">
                                 <div className="hstack gap-2 justify-content-end">
                                     <Link to="/creditNotes">
-                                        <button type="submit" className="btn btn-sm btn-light">
+                                        <button className="btn btn-sm btn-light">
                                             <span>Back</span>
                                         </button>
                                     </Link>
@@ -145,7 +152,7 @@ function CreditNotesEdit() {
                                         ) : (
                                             <span></span>
                                         )}
-                                        &nbsp;<span>Save</span>
+                                        &nbsp;<span>Update</span>
                                     </button>
                                 </div>
                             </div>
@@ -161,19 +168,25 @@ function CreditNotesEdit() {
                                 </lable>
                                 <div className="mb-3">
                                     <select
-                                        {...formik.getFieldProps("customerName")}
-                                        className={`form-select    ${formik.touched.customerName && formik.errors.customerName
+                                        {...formik.getFieldProps("customerId")}
+                                        name="customerId"
+                                        className={`form-select ${formik.touched.customerId && formik.errors.customerId
                                             ? "is-invalid"
                                             : ""
-                                            }`}>
-                                        <option></option>
-                                        <option value="Manikandan">Manikandan</option>
-                                        <option value="Rahul">Rahul</option>
+                                            }`}
+                                    >
+                                        <option selected></option>
+                                        {customerData &&
+                                            customerData.map((coustomerId) => (
+                                                <option key={coustomerId.id} value={coustomerId.id}>
+                                                    {coustomerId.contactName}
+                                                </option>
+                                            ))}
                                     </select>
-                                    {formik.touched.customerName &&
-                                        formik.errors.customerName && (
+                                    {formik.touched.customerId &&
+                                        formik.errors.customerId && (
                                             <div className="invalid-feedback">
-                                                {formik.errors.customerName}
+                                                {formik.errors.customerId}
                                             </div>
                                         )}
                                 </div>
@@ -248,7 +261,7 @@ function CreditNotesEdit() {
                             <div className="row">
                                 <div className="col-md-6 col-12 mb-3 d-flex align-items-start justify-content-start">
                                     <label className="col-form-label">
-                                        Currency<span className="text-danger">*</span>&nbsp;&nbsp;
+                                        currency<span className="text-danger">*</span>&nbsp;&nbsp;
                                     </label>
                                     <div className="overflow-x-auto">
                                         <select
@@ -318,6 +331,7 @@ function CreditNotesEdit() {
                                             <tr>
                                                 <th scope="col">S.NO</th>
                                                 <th scope="col">ITEM DETAILS</th>
+                                                <th scope="col">DESCRIPTION</th>
                                                 <th scope="col">ACCOUNT</th>
                                                 <th scope="col">QUANTITY</th>
                                                 <th scope="col">PRICE</th>
@@ -330,29 +344,29 @@ function CreditNotesEdit() {
                                                 <tr key={index}>
                                                     <th scope="row">{index + 1}</th>
                                                     <td>
-                                                        <select
+                                                    <select
                                                             className="form-select"
                                                             {...formik.getFieldProps(
-                                                                `txnCreditNoteItems[${index}].itemName`
+                                                              `creditNoteItemsModels[${index}].item`
                                                             )}
                                                             style={{ width: "100%" }}
-                                                            onChange={(e) =>
-                                                                handleSelectChange(index, e.target.value)
-                                                            }
-                                                        >
+                                                            // onChange={(e) =>
+                                                            //     handleSelectChange(index, e.target.value)
+                                                            //   }
+                                                          >
                                                             <option value=""></option>
                                                             {items &&
-                                                                items.map((item) => (
-                                                                    <option key={item.id} value={item.id}>
-                                                                        {item.itemName}
-                                                                    </option>
-                                                                ))}
+                                                              items.map((itemName) => (
+                                                                <option key={itemName.id} value={itemName.id}>
+                                                                  {itemName.itemName}
+                                                                </option>
+                                                              ))}
                                                         </select>
                                                     </td>
                                                     <td>
                                                         <input
                                                             {...formik.getFieldProps(
-                                                                `txnCreditNoteItems[${index}].account`
+                                                                `creditNoteItemsModels[${index}].description`
                                                             )}
                                                             className="form-control"
                                                             type="text"
@@ -361,7 +375,7 @@ function CreditNotesEdit() {
                                                     <td>
                                                         <input
                                                             {...formik.getFieldProps(
-                                                                `txnCreditNoteItems[${index}].qty`
+                                                                `creditNoteItemsModels[${index}].account`
                                                             )}
                                                             className="form-control"
                                                             type="text"
@@ -370,7 +384,7 @@ function CreditNotesEdit() {
                                                     <td>
                                                         <input
                                                             {...formik.getFieldProps(
-                                                                `txnCreditNoteItems[${index}].price`
+                                                                `creditNoteItemsModels[${index}].qty`
                                                             )}
                                                             className="form-control"
                                                             type="text"
@@ -379,7 +393,7 @@ function CreditNotesEdit() {
                                                     <td>
                                                         <input
                                                             {...formik.getFieldProps(
-                                                                `txnCreditNoteItems[${index}].taxRate`
+                                                                `creditNoteItemsModels[${index}].price`
                                                             )}
                                                             className="form-control"
                                                             type="text"
@@ -388,7 +402,16 @@ function CreditNotesEdit() {
                                                     <td>
                                                         <input
                                                             {...formik.getFieldProps(
-                                                                `txnCreditNoteItems[${index}].amount`
+                                                                `creditNoteItemsModels[${index}].taxRate`
+                                                            )}
+                                                            className="form-control"
+                                                            type="text"
+                                                        />
+                                                    </td>
+                                                    <td>
+                                                        <input
+                                                            {...formik.getFieldProps(
+                                                                `creditNoteItemsModels[${index}].amount`
                                                             )}
                                                             className="form-control"
                                                             type="text"

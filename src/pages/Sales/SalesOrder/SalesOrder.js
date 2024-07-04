@@ -162,7 +162,7 @@ const SalesOrder = () => {
                         </Link>
                         <DeleteModel
                           onSuccess={refreshData}
-                          path={`/deleteTxnInvoice/${data.id}`}
+                          path={`/deleteTxnSalesOrder/${data.id}`}
                         />
                       </div>
                     </td>

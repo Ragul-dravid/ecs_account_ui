@@ -56,6 +56,7 @@ const RecurringInvoiceEdit = () => {
   const { id } = useParams();
   const [loading, setLoadIndicator] = useState(false);
   const [items, setItems] = useState([]);
+  const [customerData, setCustomerData] = useState([]);
 
   const formik = useFormik({
     initialValues: {
@@ -106,9 +107,9 @@ const RecurringInvoiceEdit = () => {
         if (value !== undefined) {
           formData.append(key, value);
         }
-      });
+      });s
       items.forEach((item) => {
-        formData.append("itemId", item.item);
+        formData.append("itemId", item.id);
         formData.append("qty", item.qty);
         formData.append("disc", item.disc);
         formData.append("amount", item.amount);
@@ -124,7 +125,7 @@ const RecurringInvoiceEdit = () => {
         );
         if (response.status === 201) {
           toast.success(response.data.message);
-          navigate("/invoice");
+          navigate("/recurringinvoice");
         }
       } catch (e) {
         toast.error("Error fetching data: ", e?.response?.data?.message);
@@ -147,13 +148,14 @@ const RecurringInvoiceEdit = () => {
       formik.setFieldValue("items", items);
     }
   };
+  
   useEffect(() => {
     const getData = async () => {
       try {
         const response = await api.get(
-          `/getRecurringInvoiceResponseDTOById/${id}`
+          `/getTxnRecurringInvoiceById/${id}`
         );
-        formik.setValues(response.data);
+        formik.setValues(response.data); 
         formik.setFieldValue(
           "items",
           response.data.txnRecurringInvoiceItemsModels
@@ -165,13 +167,20 @@ const RecurringInvoiceEdit = () => {
     };
     getData();
   }, []);
+  const fetchCustamerData = async () => {
+    try {
+      const response = await api.get("getAllCustomerWithIds");
+      setCustomerData(response.data);
+    } catch (error) {
+      toast.error("Error fetching tax data:", error);
+    }
+  };
+
   useEffect(() => {
+    fetchCustamerData();
     fetchItemsData();
   }, []);
 
-  const handleSelectChange = (index, value) => {
-    formik.setFieldValue(`txnCreditNoteItems[${index}].itemName`, value);
-  };
 
   const fetchItemsData = async () => {
     try {
@@ -190,13 +199,13 @@ const RecurringInvoiceEdit = () => {
               <div className="col">
                 <div className="d-flex align-items-center gap-4">
                   <h1 className="h4 ls-tight headingColor">
-                    Add Recurring Invoice
+                    Edit Recurring Invoice
                   </h1>
                 </div>
               </div>
               <div className="col-auto">
                 <div className="hstack gap-2 justify-content-end">
-                  <Link to="/invoice">
+                  <Link to="/recurringinvoice">
                     <button type="submit" className="btn btn-sm btn-light">
                       <span>Back</span>
                     </button>
@@ -237,9 +246,13 @@ const RecurringInvoiceEdit = () => {
                         : ""
                     }`}
                   >
-                    <option></option>
-                    <option value="1">Manikandan</option>
-                    <option value="3">Rahul</option>
+                    <option value=""> </option>
+                    {customerData &&
+                                customerData.map((item) => (
+                                  <option key={item.id} value={item.id}>
+                                    {item.contactName}
+                                  </option>
+                                ))}
                   </select>
                   {formik.touched.customerId && formik.errors.customerId && (
                     <div className="invalid-feedback">
@@ -503,7 +516,7 @@ const RecurringInvoiceEdit = () => {
                       </tr>
                     </thead>
                     <tbody className="table-group">
-                      {formik.values.items?.map((item, index) => (
+                      {(formik.values.items || []).map((item, index) => (
                         <tr key={index}>
                           <th scope="row">{index + 1}</th>
                           <td>
@@ -516,7 +529,7 @@ const RecurringInvoiceEdit = () => {
                                   : ""
                               }`}
                             >
-                              <option value=""></option>
+                              <option value=""> </option>
                               {items &&
                                 items.map((item) => (
                                   <option key={item.id} value={item.id}>
