@@ -6,17 +6,20 @@ import { Link } from "react-router-dom";
 import { FaPlus } from "react-icons/fa6";
 import DeleteModel from "../../../components/common/DeleteModel";
 import api from "../../../config/URL"
+import toast from "react-hot-toast";
 
 const RecurringInvoice = () => {
     const tableRef = useRef(null);
   const [datas, setDatas] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [customerData, setCustomerData] = useState([]);
 
   useEffect(() => {
     const getData = async () => {
       try {
         const response = await api.get("/getAllTxnRecurringInvoice");
         setDatas(response.data);
+        fetchCustamerData();
         console.log("object",response.data)
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -25,8 +28,16 @@ const RecurringInvoice = () => {
       }
     };
     getData();
+    
   }, []);
-
+  const fetchCustamerData = async () => {
+    try {
+      const response = await api.get("getAllCustomerWithIds");
+      setCustomerData(response.data);
+    } catch (error) {
+      toast.error("Error fetching tax data:", error);
+    }
+  };
   useEffect(() => {
     if (!loading) {
       initializeDataTable();
@@ -56,7 +67,7 @@ const RecurringInvoice = () => {
     destroyDataTable();
     setLoading(true);
     try {
-      const response = await api.get("/getAllTxnInvoice");
+      const response = await api.get("/getAllTxnRecurringInvoice");
       setDatas(response.data);
       initializeDataTable();
     } catch (error) {
@@ -71,7 +82,10 @@ const RecurringInvoice = () => {
       table.destroy();
     };
   }, []);
-
+  const customer =(id)=>{
+    const name= customerData.find((item)=>(item.id == id))
+    return name?.contactName
+  }
     return (
         <div className="container-fluid px-2 minHeight">
           {loading ? (
@@ -116,7 +130,7 @@ const RecurringInvoice = () => {
                       <th scope="col" className="text-center">TRANSACTION EVERY </th>
                       <th scope="col" className="text-center">TRANSACTION EVERY N0</th>
                       <th scope="col" className="text-center">INVOICE FORM</th>
-                      <th scope="col" className="text-center">INVOICE DATE</th>
+                      {/* <th scope="col" className="text-center">INVOICE DATE</th> */}
                       <th scope="col" className="text-center">AMOUNT</th>
                       <th scope="col" className="text-center">STATUS</th>
                       {/* <th scope="col" className="text-center">
@@ -125,31 +139,18 @@ const RecurringInvoice = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {datas.map((data, index) => (
+                    {datas?.map((data, index) => (
                       <tr key={index}>
                         <td className="text-start">{index + 1}</td>
-                        <td className="text-start">{data.customerId}</td>
+                        <td className="text-start">{customer(data.customerId)}</td>
                         <td className="text-start">{data.transactionEvery}</td>
                         <td className="text-start">{data.transactionEveryNo}</td>
                         <td className="text-start">{data.invoiceFrom}</td>
-                        <td className="text-start">{data.invoiceDate}</td>
+                        {/* <td className="text-start">{data.invoiceDate}</td> */}
                         <td className="text-start">{data.totalAmount}</td>
-                        {/* <td className="text-start">
-                          {data.status === "PAID" ? (
-                            <span className="badge badge-lg badge-dot">
-                              <i className="bg-success"></i>Paid
-                            </span>
-                          ) : data.status === "PENDING" ? (
-                            <span className="badge badge-lg badge-dot">
-                              <i className="bg-warning"></i>PENDING</span>
-                          ) : (
-                            <span className="badge badge-lg badge-dot">
-                              <i className="bg-dark"></i>PARTLY PAID</span>
-                          )}
-                        </td> */}
                         <td className="text-center">
                           <div className="gap-2">
-                            <Link to={`/invoice/view/${data.id}`}>
+                            <Link to={`/recurringinvoice/view/${data.id}`}>
                               <button className="btn btn-light btn-sm  shadow-none border-none">
                                 View
                               </button>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -55,6 +55,8 @@ const validationSchema = Yup.object().shape({
 const RecurringInvoiceAdd = () => {
   const navigate = useNavigate();
   const [loading, setLoadIndicator] = useState(false);
+  const [items, setItems] = useState([]);
+  const [customerData, setCustomerData] = useState([]);
 
   const formik = useFormik({
     initialValues: {
@@ -98,7 +100,7 @@ const RecurringInvoiceAdd = () => {
         }
       });
        items.forEach((item)=>{
-        formData.append("item",item.item)
+        formData.append("itemId",item.item)
         formData.append("qty",item.qty)
         formData.append("disc",item.disc)
         formData.append("amount",item.amount)
@@ -114,7 +116,7 @@ const RecurringInvoiceAdd = () => {
         );
         if (response.status === 201) {
           toast.success(response.data.message);
-          navigate("/invoice");
+          navigate("/recurringinvoice");
         }
       } catch (e) {
         toast.error("Error fetching data: ", e?.response?.data?.message);
@@ -138,6 +140,28 @@ const RecurringInvoiceAdd = () => {
     }
   };
 
+  const fetchItemsData = async () => {
+    try {
+      const response = await api.get("getAllItemNameWithIds");
+      setItems(response.data);
+    } catch (error) {
+      toast.error("Error fetching tax data:", error);
+    }
+  };
+  const fetchCustamerData = async () => {
+    try {
+      const response = await api.get("getAllCustomerWithIds");
+      setCustomerData(response.data);
+    } catch (error) {
+      toast.error("Error fetching tax data:", error);
+    }
+  };
+
+useEffect(() => {
+    fetchItemsData();
+    fetchCustamerData();
+  }, []);
+
   return (
     <div className="container-fluid p-2 minHeight m-0">
       <form onSubmit={formik.handleSubmit}>
@@ -153,7 +177,7 @@ const RecurringInvoiceAdd = () => {
               </div>
               <div className="col-auto">
                 <div className="hstack gap-2 justify-content-end">
-                  <Link to="/invoice">
+                  <Link to="/recurringinvoice">
                     <button type="submit" className="btn btn-sm btn-light">
                       <span>Back</span>
                     </button>
@@ -194,9 +218,13 @@ const RecurringInvoiceAdd = () => {
                         : ""
                     }`}
                   >
-                    <option></option>
-                    <option value="1">Manikandan</option>
-                    <option value="3">Rahul</option>
+                    <option value=""> </option>
+                              {customerData &&
+                                customerData.map((item) => (
+                                  <option key={item.id} value={item.id}>
+                                    {item.contactName}
+                                  </option>
+                                ))}
                   </select>
                   {formik.touched.customerId && formik.errors.customerId && (
                     <div className="invalid-feedback">
@@ -327,7 +355,7 @@ const RecurringInvoiceAdd = () => {
                   <select
                     name="amountsAre"
                     {...formik.getFieldProps("amountsAre")}
-                    className={`form-control  ${
+                    className={`form-select  ${
                       formik.touched.amountsAre && formik.errors.amountsAre
                         ? "is-invalid"
                         : ""
@@ -473,9 +501,13 @@ const RecurringInvoiceAdd = () => {
                                   : ""
                               }`}
                             >
-                              <option value=""></option>
-                              <option value="Apple">Apple</option>
-                              <option value="Orange">Orange</option>
+                              <option value=""> </option>
+                              {items &&
+                                items.map((item) => (
+                                  <option key={item.id} value={item.id}>
+                                    {item.itemName}
+                                  </option>
+                                ))}
                             </select>
                             {formik.touched.items?.[index]?.item &&
                               formik.errors.items?.[index]?.item && (
