@@ -12,6 +12,7 @@ import toast from "react-hot-toast";
 const Delivery = () => {
   const [datas, setDatas] = useState();
   const [loading, setLoading] = useState(true);
+  const[customerData, setCustomerData] = useState([]);
   const tableRef = useRef(null);
   const getData = async () => {
     console.log("gbnm")
@@ -52,12 +53,24 @@ const Delivery = () => {
       destroyDataTable();
     };
   }, [loading]);
-
+  const fetchCustamerData = async () => {
+    try {
+      const response = await api.get("getAllCustomerWithIds");
+      setCustomerData(response.data);
+    } catch (error) {
+      toast.error("Error fetching tax data:", error);
+    }
+  };
 
 
   useEffect(() => {
     getData();
+    fetchCustamerData();
   }, []);
+  const customer =(id)=>{
+    const name= customerData.find((item)=>(item.id==id))
+    return name?.contactName
+  }
   return (
     <div className="container-fluid px-2 minHeight">
       <div className="card shadow border-0 my-2">
@@ -100,7 +113,7 @@ const Delivery = () => {
               {datas?.map((data, index) => (
                 <tr key={index}>
                   <td className="text-center">{index + 1}</td>
-                  <td className="text-center">{data.customerName}</td>
+                  <td className="text-center">{customer(data.customerId)}</td>
               
                   <td className="text-center">{data.reference}</td>
                   <td>
