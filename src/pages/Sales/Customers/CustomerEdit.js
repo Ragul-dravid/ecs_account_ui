@@ -17,7 +17,7 @@ const CustomerEdit = () => {
     email: Yup.string().required("*Email is required"),
     phone: Yup.number().required("*Phone is required"),
     website: Yup.string().required("*Website is required"),
-    bankAccName: Yup.string().required("*Account Nameis required"),
+    bankAccName: Yup.string().required("*Account Name is required"),
     bankAccNumber: Yup.string().required("*Account Number is required"),
 
     // deliCountry: Yup.number().required("*Country is required"),
