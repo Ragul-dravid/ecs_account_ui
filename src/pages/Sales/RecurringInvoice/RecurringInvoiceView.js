@@ -9,7 +9,8 @@ import Logo from "../../../assets/AccountsLogo.png";
 const RecurringInvoiceView = () => {
     const { id } = useParams();
     const [datas, setData] = useState([]);
-  
+    const [customerData, setCustomerData] = useState([]);
+
     useEffect(() => {
       const getData = async () => {
         try{
@@ -21,8 +22,21 @@ const RecurringInvoiceView = () => {
         }
       };
       getData();
+      fetchCustamerData();
     }, [id]);
 
+    const fetchCustamerData = async () => {
+        try {
+          const response = await api.get("getAllCustomerWithIds");
+          setCustomerData(response.data);
+        } catch (error) {
+          toast.error("Error fetching tax data:", error);
+        }
+      };
+    const customer =(id)=>{
+        const name= customerData.find((item)=>(item.id == id))
+        return name?.contactName
+      }
     return (
         <div className="container-fluid px-2 minHeight">
           <div className="card shadow border-0 mb-2 top-header">
@@ -35,7 +49,7 @@ const RecurringInvoiceView = () => {
                 </div>
                 <div className="col-auto">
                   <div className="hstack gap-2 justify-content-start">
-                    <Link to="/salesorder">
+                    <Link to="/recurringinvoice">
                       <button type="button" className="btn btn-light btn-sm me-1">
                         <span>Back</span>
                       </button>
@@ -87,7 +101,7 @@ const RecurringInvoiceView = () => {
                       <>
                         <h3>Customer Details</h3>
                         <span style={{ color: "#2196f3" }}>
-                          {datas.customerName || ""}
+                          {customer(datas.customerId) || ""}
                         </span>
                         <p className="fw-small">
                           {datas.customerAddress || "Address not available"}
@@ -167,8 +181,8 @@ const RecurringInvoiceView = () => {
                     </thead>
                     <tbody className="table-group">
                       {datas &&
-                        datas.txnSalesOrderItemsModels &&
-                        datas.txnSalesOrderItemsModels.map((item, index) => (
+                        datas.txnRecurringInvoiceItemsModels &&
+                        datas.txnRecurringInvoiceItemsModels.map((item, index) => (
                           <tr key={index}>
                             <th scope="row">{index + 1}</th>
                             <td>{item.item}</td>
@@ -200,7 +214,7 @@ const RecurringInvoiceView = () => {
                       </div>
                       <div className="row mb-3">
                         <label className="col-sm-6 col-form-label">Total</label>
-                        <div className="col-sm-6">₹{datas.total || "0"}</div>
+                        <div className="col-sm-6">₹{datas.totalAmount || "0"}</div>
                       </div>
                     </>
                   )}
@@ -221,7 +235,7 @@ const RecurringInvoiceView = () => {
                     <div className="col-md-6 col-12">
                       <div className="d-flex justify-content-center flex-column align-items-start">
                         <h3>Customer Notes</h3>
-                        <p className="fw-small">{datas.cusNotes || ""}</p>
+                        <p className="fw-small">{datas.notes || ""}</p>
                       </div>
                     </div>
                   </>
