@@ -165,6 +165,36 @@ function Sidebar({ onLogout }) {
                   </NavLink>
                   <NavLink
                     className="nav-link"
+                    to="/salesorder"
+                    onClick={() => handleReferSubmenuClick("create")}
+                  >
+                    <li
+                      className={`nav-item ${activeReferSubmenu === "create"
+                        ? "active-referSubmenu"
+                        : ""
+                        }`}
+                    >
+                      <span className="mx-2">
+                        Sales Order
+                      </span>
+                    </li>
+                  </NavLink>
+                  <NavLink
+                    className="nav-link"
+                    to="/delivery"
+                    onClick={() => handleReferSubmenuClick("create")}
+                  >
+                    <li
+                      className={`nav-item ${activeReferSubmenu === "create"
+                        ? "active-referSubmenu"
+                        : ""
+                        }`}
+                    >
+                      <span className="mx-2">Deliver Challans</span>
+                    </li>
+                  </NavLink>
+                  <NavLink
+                    className="nav-link"
                     to="/invoice"
                     onClick={() => handleReferSubmenuClick("create")}
                   >
@@ -175,6 +205,20 @@ function Sidebar({ onLogout }) {
                         }`}
                     >
                       <span className="mx-2">Invoice</span>
+                    </li>
+                  </NavLink>
+                  <NavLink
+                    className="nav-link"
+                    to="/recurringinvoice"
+                    onClick={() => handleReferSubmenuClick("create")}
+                  >
+                    <li
+                      className={`nav-item ${activeReferSubmenu === "create"
+                        ? "active-referSubmenu"
+                        : ""
+                        }`}
+                    >
+                      <span className="mx-2">Recurring Invoice</span>
                     </li>
                   </NavLink>
                   <NavLink
@@ -190,6 +234,22 @@ function Sidebar({ onLogout }) {
                     >
                       <span className="mx-2">
                         Payement Received
+                      </span>
+                    </li>
+                  </NavLink>
+                  <NavLink
+                    className="nav-link"
+                    to="/creditNotes"
+                    onClick={() => handleReferSubmenuClick("create")}
+                  >
+                    <li
+                      className={`nav-item ${activeReferSubmenu === "create"
+                        ? "active-referSubmenu"
+                        : ""
+                        }`}
+                    >
+                      <span className="mx-2">
+                        Credit Notes
                       </span>
                     </li>
                   </NavLink>

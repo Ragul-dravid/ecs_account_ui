@@ -63,6 +63,20 @@ import PaymentReceived from "../pages/Sales/PaymentReceived/PaymentReceived";
 import PaymentReceivedView from "../pages/Sales/PaymentReceived/PaymentReceivedView";
 import { Toaster } from "react-hot-toast";
 import Report from "../pages/Report";
+import RecurringInvoiceAdd from "../pages/Sales/RecurringInvoice/RecurringInvoiceAdd";
+import RecurringInvoice from "../pages/Sales/RecurringInvoice/RecurringInvoice";
+import RecurringInvoiceEdit from "../pages/Sales/RecurringInvoice/RecurringInvoiceEdit";
+import Delivery from "../pages/Sales/Delivery/Delivery";
+import DeliveryAdd from "../pages/Sales/Delivery/DeliveryAdd";
+import DeliveryEdit from "../pages/Sales/Delivery/DeliveryEdit";
+import DeliveryView from "../pages/Sales/Delivery/DeliveryView";
+import SalesOrder from "../pages/Sales/SalesOrder/SalesOrder";
+import SalesOrderAdd from "../pages/Sales/SalesOrder/SalesOrderAdd";
+import SalesOrderEdit from "../pages/Sales/SalesOrder/SalesOrderEdit";
+import CreditNotes from "../pages/Sales/CreditNotes/CreditNotes";
+import CreditNotesAdd from "../pages/Sales/CreditNotes/CreditNotesAdd";
+import CreditNotesEdit from "../pages/Sales/CreditNotes/CreditNotesEdit";
+import CreditNotesView from "../pages/Sales/CreditNotes/CreditNotesView";
 
 function Admin({ handleLogout }) {
   return (
@@ -94,6 +108,40 @@ function Admin({ handleLogout }) {
                 element={<ExpenseView />}
               />
               <Route path="/income/view/:id" element={<IncomeView />} />
+
+              {/* Recurring Invoice*/}
+              <Route
+                path="/recurringinvoice/add"
+                element={<RecurringInvoiceAdd />}
+              />
+              <Route
+                path="/recurringinvoice/edit/:id"
+                element={<RecurringInvoiceEdit />}
+              />
+              <Route path="/recurringinvoice" element={<RecurringInvoice />} />
+
+              {/* Delivery*/}
+              <Route path="/delivery" element={<Delivery />} />
+              <Route path="/delivery/add" element={<DeliveryAdd />} />
+              <Route path="/delivery/edit/:id" element={<DeliveryEdit />} />
+              <Route path="/delivery/view/:id" element={<DeliveryView />} />
+
+              {/* Sales Order*/}
+              <Route path="/salesorder" element={<SalesOrder />} />
+              <Route path="/salesorder/add" element={<SalesOrderAdd />} />
+              <Route path="/salesorder/edit/:id" element={<SalesOrderEdit />} />
+
+              {/* CreditNotes */}
+              <Route path="/creditNotes" element={<CreditNotes />} />
+              <Route path="/creditNotes/add" element={<CreditNotesAdd />} />
+              <Route
+                path="/creditNotes/edit/:id"
+                element={<CreditNotesEdit />}
+              />
+              <Route
+                path="/creditNotes/view/:id"
+                element={<CreditNotesView />}
+              />
 
               {/* {/ Customer /} */}
               <Route path="/customer" element={<Customers />} />
