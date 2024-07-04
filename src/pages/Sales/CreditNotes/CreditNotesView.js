@@ -7,18 +7,29 @@ import api from "../../../config/URL"
 function CreditNotesView() {
     const { id } = useParams();
     const [data, setData] = useState([]);
+    const [items, setItems] = useState([]);
 
     useEffect(() => {
         const getData = async () => {
             try {
-                const response = await api.get(`/getCreditNotesById/${id}`);
+                const response = await api.get(`/getTxnCreditNotesById/${id}`);
                 setData(response.data);
             } catch (e) {
                 toast.error("Error fetching data: ", e?.response?.data?.message);
             }
         };
         getData();
+        fetchItemsData();
     }, [id]);
+
+    const fetchItemsData = async () => {
+        try {
+            const response = await api.get("getAllItemNameWithIds");
+            setItems(response.data);
+        } catch (error) {
+            toast.error("Error fetching tax data:", error);
+        }
+    };
 
     return (
         <div className="container-fluid px-2 minHeight">
@@ -61,8 +72,8 @@ function CreditNotesView() {
                             </div>
                         </div>
                         <div className="col-md-6 col-12 d-flex justify-end flex-column align-items-end mt-2">
-                            <h1>INVOICE</h1>
-                            <h3>#{data.invoiceNumber || "#1234"}</h3>
+                            <h2>CREDIT NOTES</h2>
+                            <h3>{data.invoiceNumber || "#1234"}</h3>
                             <span className="text-muted mt-4">Balance Due</span>
                             <h3>₹3000</h3>
                         </div>
@@ -87,39 +98,8 @@ function CreditNotesView() {
                                     </p>
                                 </div>
                                 <div className="col-6">
-                                    <p className="text-muted text-sm">: {data.issuesDate || ""}</p>
+                                    <p className="text-muted text-sm">: {data.date || "27-05-2024"}</p>
                                 </div>
-                            </div>
-                            <div className="row mb-2 d-flex justify-content-end align-items-end">
-                                <div className="col-6">
-                                    <p className="text-sm">
-                                        <b>Terms</b>
-                                    </p>
-                                </div>
-                                <div className="col-6">
-                                    <p className="text-muted text-sm">: Due on Receipt</p>
-                                </div>
-                            </div>
-                            <div className="row mb-2 d-flex justify-content-end align-items-end">
-                                <div className="col-6">
-                                    <p className="text-sm">
-                                        <b>Due Date</b>
-                                    </p>
-                                </div>
-                                <div className="col-6">
-                                    <p className="text-muted text-sm">: {data.dueDate || ""}</p>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                    <div className="row mt-5">
-                        <div className="col-md-6 col-12">
-                            <div className="d-flex justify-content-center flex-column align-items-start">
-                                <h3>Subject</h3>
-                                <p className="fw-small">
-                                    Full Stack Developer Training Program
-                                </p>
                             </div>
                         </div>
                     </div>
@@ -134,38 +114,37 @@ function CreditNotesView() {
                                 <table class="table table-light table-nowrap table table-bordered">
                                     <thead className="thead-light">
                                         <tr>
-                                            <th>S.NO</th>
-                                            <th>ITEM DETAILS</th>
-                                            <th>QUANTITY</th>
-                                            <th>RATE</th>
-                                            <th>DISCOUNT</th>
-                                            <th>TAX</th>
-                                            <th>AMOUNT</th>
+                                            <th scope="col">S.NO</th>
+                                            <th scope="col">ITEM DETAILS</th>
+                                            <th scope="col">DESCRIPTION</th>
+                                            <th scope="col">ACCOUNT</th>
+                                            <th scope="col">QUANTITY</th>
+                                            <th scope="col">PRICE</th>
+                                            <th scope="col">TAX RATE</th>
+                                            <th scope="col">AMOUNT</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>1
-                                            </td>
-                                            <td>
-                                                Apple
-                                            </td>
-                                            <td>
-                                                1.00
-                                            </td>
-                                            <td>
-                                                3500
-                                            </td>
-                                            <td>
-                                                10
-                                            </td>
-                                            <td>
-                                                Commision
-                                            </td>
-                                            <td>
-                                                3500
-                                            </td>
-                                        </tr>
+                                        {data.creditNoteItemsModels &&
+                                            data.creditNoteItemsModels.map((itemRow, index) => (
+                                                <tr key={index}>
+                                                    <th scope="row">{index + 1}</th>
+                                                    <td>
+                                                        {items &&
+                                                            items.map((item) =>
+                                                                parseInt(itemRow.itemName) === item.id
+                                                                    ? item.itemName || "--"
+                                                                    : ""
+                                                            )}
+                                                    </td>
+                                                    <td>{itemRow.description}</td>
+                                                    <td>{itemRow.account}</td>
+                                                    <td>{itemRow.qty}</td>
+                                                    <td>{itemRow.price}</td>
+                                                    <td>{itemRow.taxRate}</td>
+                                                    <td>{itemRow.amount}</td>
+                                                </tr>
+                                            ))}
                                     </tbody>
                                 </table>
                             </div>
@@ -174,10 +153,10 @@ function CreditNotesView() {
                     <div class="row mt-5">
                         <div className="col-md-6 col-12 mb-3 mt-5">
                             <lable className="form-lable">
-                                Credit Notes
+                                Credit Note #
                             </lable>
                             <div className="mb-3">
-                                Thanks For Your Bussiness
+                                {data.creditNote || ""}
                             </div>
                         </div>
                         <div className="col-md-6 col-12 mt-5 mb-3 rounded" style={{ border: "1px solid lightgrey" }}>
