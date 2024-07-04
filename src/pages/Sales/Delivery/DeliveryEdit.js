@@ -40,6 +40,23 @@ const DeliveryEdit = () => {
     },
     // validationSchema: validationSchema,
     onSubmit: async (values) => {
+      const { items, file, challanDate, ...value } = values;
+        const formData = new FormData();
+
+        Object.entries(value).forEach(([key, value]) => {
+          if (value !== undefined) {
+            formData.append(key, value);
+          }
+        });
+        items.forEach((item) => {
+          formData.append("itemId", item.id);
+          formData.append("qty", item.qty);
+          formData.append("rate", item.rate);
+          formData.append("amount", item.amount);
+        });
+        if (file) {
+          formData.append("files", file);
+        }
       setLoading(true);
       try {
         const response = await api.put(`/updateDeliveryChallanWithDeliveryItems/${id}`, values, {
@@ -76,7 +93,7 @@ const DeliveryEdit = () => {
   const addRow = () => {
     formik.setFieldValue("items", [
       ...formik.values.items,
-      { item: "", qty: "", taxRate: "", disc: "", tax: "", amount: "" },
+      { itemId: "", qty: "",  tax: "", amount: "" },
     ]);
   };
 

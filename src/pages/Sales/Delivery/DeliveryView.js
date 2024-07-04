@@ -10,18 +10,32 @@ const DeliveryView = () => {
 
   const { id } = useParams();
   const [data, setData] = useState([]);
-
+  const [customerData, setCustomerData] = useState([]);
+  
   useEffect(() => {
-    const getData = async () => {
+    const fetchDelivery = async () => {
       try {
-        const response = await api.get(`/getTxnQuotesById/${id}`);
+        const response = await api.get(`/getTxnDeliveryChallansById/${id}`);
         setData(response.data);
       } catch (error) {
         toast.error("Error Fetching Data", error);
       }
     };
-    getData();
+    fetchDelivery();
+    fetchCustamerData();
   }, [id]);
+  const fetchCustamerData = async () => {
+    try {
+      const response = await api.get("getAllCustomerWithIds");
+      setCustomerData(response.data);
+    } catch (error) {
+      toast.error("Error fetching tax data:", error);
+    }
+  };
+  const customer =(id)=>{
+    const name= customerData.find((item)=>(item.id==id))
+    return name?.contactName
+  }
   return (
     <div className="container-fluid px-2 minHeight">
       <div className="card shadow border-0 mb-2 top-header">
@@ -77,7 +91,7 @@ const DeliveryView = () => {
               <h3>Bill To</h3>
             </div>
             <div className="col-md-6 col-12">
-              <p className="text-info">{data.customerName}</p>
+              <p className="text-info">{customer(data.customerId)}</p>
               <p>Purasaiwalkam,</p>
               <p>Chennai-600002</p>
               <p>Tamil Nadu</p>
@@ -86,7 +100,7 @@ const DeliveryView = () => {
               <div className="row my-3">
                 <div className="col-6 d-flex justify-content-end align-items-center">
                   <p className="text-sm">
-                    <b>Estimate Date</b>
+                    <b>Challan Date</b>
                   </p>
                 </div>
                 <div className="col-6">
@@ -106,11 +120,11 @@ const DeliveryView = () => {
               <div className="row my-3">
                 <div className="col-6 d-flex justify-content-end align-items-center">
                   <p className="text-sm">
-                    <b>Expiry Date</b>
+                    <b>Payment Terms</b>
                   </p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">:  {new Date(data.expiryDate).toLocaleDateString('en-GB')}</p>
+                  <p className="text-muted text-sm">:  {data.paymentTerms}</p>
                 </div>
               </div>
             </div>
@@ -133,21 +147,25 @@ const DeliveryView = () => {
                     <th scope="col">ITEM DETAILS</th>
                     <th scope="col">QUANTITY</th>
                     <th scope="col">RATE</th>
-                    <th scope="col">DISCOUNT</th>
-                    <th scope="col">TAX</th>
+                    {/* <th scope="col">DISCOUNT</th> */}
+                    {/* <th scope="col">TAX</th> */}
                     <th scope="col">AMOUNT</th>
                   </tr>
                 </thead>
                 <tbody class="table-group">
-                  <tr>
-                    <th scope="row">1</th>
-                    <td>Apple</td>
-                    <td>1.00</td>
-                    <td>3500</td>
-                    <td>10</td>
-                    <td>Commission</td>
-                    <td>3500</td>
-                  </tr>
+                {data &&
+                    data.challansItemsModels &&
+                    data.challansItemsModels.map((item, index) => (
+                      <tr key={index}>
+                        <th scope="row">{index + 1}</th>
+                        <td>{item.item}</td>
+                        <td>{item.qty}</td>
+                        <td>{item.rate}</td>
+                        {/* <td>{item.discount}</td> */}
+                        {/* <td>{item.tax}</td> */}
+                        <td>{item.amount}</td>
+                      </tr>
+                    ))}
                 </tbody>
               </table>
             </div>
@@ -155,13 +173,13 @@ const DeliveryView = () => {
           <div className="row mt-5 p-3">
             <div className="col-md-6 col-12">
               <h5 className="fw-bolder my-2">Notes</h5>
-              <p className="my-3">Thanks for your business.</p>
+              <p className="my-3">{data.cusNotes}</p>
               <h5 className="fw-bolder my-2">Terms & Conditions</h5>
               <p className="my-3">
-                {data.terms}
+                {data.termsConditions}
               </p>
               <p className="my-3">
-               {data.terms}
+               {data.termsConditions}
               </p>
             </div>
             <div className="col-md-6 col-12 card shadow border-2 h-40 d-flex justify-content-center gap-5 ">
