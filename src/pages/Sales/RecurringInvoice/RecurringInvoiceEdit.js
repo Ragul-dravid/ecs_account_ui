@@ -107,7 +107,7 @@ const RecurringInvoiceEdit = () => {
         if (value !== undefined) {
           formData.append(key, value);
         }
-      });s
+      });
       items.forEach((item) => {
         formData.append("itemId", item.id);
         formData.append("qty", item.qty);
