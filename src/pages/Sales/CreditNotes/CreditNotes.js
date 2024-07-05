@@ -119,9 +119,6 @@ const CreditNotes = () => {
                       S.NO
                     </th>
                     <th scope="col" className="text-center">
-                      NAME
-                    </th>
-                    <th scope="col" className="text-center">
                     Credit Note
                     </th>
                     <th scope="col" className="text-center">
@@ -139,7 +136,6 @@ const CreditNotes = () => {
                   {datas.map((data, index) => (
                     <tr key={index}>
                       <td className="text-center">{index + 1}</td>
-                      <td className="text-center">{data.contactName}</td>
                       <td className="text-center">{data.creditNote}</td>
                       <td className="text-center">{data.reference}</td>
                       <td className="text-center">{data.amountsAre}</td>

@@ -86,7 +86,7 @@ const RecurringInvoiceView = () => {
                 <div className="col-md-6 col-12 d-flex justify-end flex-column align-items-end mt-2">
                   {datas && (
                     <>
-                      <h1>SALES ORDER</h1>
+                      <h1>Recurring Invoice</h1>
                       <h3>{datas.datas || "--"}</h3>
                       <span className="text-muted mt-4">Order Date</span>
                       <h3>{datas.orderDate || "N/A"}</h3>
