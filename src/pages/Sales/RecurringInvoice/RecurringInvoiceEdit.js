@@ -25,6 +25,7 @@ const validationSchema = Yup.object().shape({
     Yup.object().shape({
       item: Yup.string().required("*Item Details is required"),
       qty: Yup.number()
+      .min(1, "*Quantity must be a min 1")
         .typeError("*Quantity must be a number")
         .required("*Quantity is required"),
       taxRate: Yup.number()
@@ -33,7 +34,8 @@ const validationSchema = Yup.object().shape({
       disc: Yup.number()
         .typeError("*Discount must be a number")
         .required("*Discount is required"),
-      tax: Yup.string().required("*Tax is required"),
+      tax: Yup.string().required("*Tax is required")
+      .max(100, "*Quantity must be a max 100"),
       amount: Yup.number()
         .typeError("*Amount must be a number")
         .required("*Amount is required"),
@@ -94,9 +96,6 @@ const RecurringInvoiceEdit = () => {
       const {
         items,
         file,
-        invoiceDate,
-        endDate,
-        dueDate,
         txnRecurringInvoiceItemsModels,
         uploadFile,
         ...value
@@ -108,11 +107,13 @@ const RecurringInvoiceEdit = () => {
           formData.append(key, value);
         }
       });
+    
       items.forEach((item) => {
-        formData.append("itemId", item.id);
-        formData.append("qty", item.qty);
-        formData.append("disc", item.disc);
-        formData.append("amount", item.amount);
+        formData.append("itemId",item.id)
+        formData.append("qty",item.qty)
+        formData.append("disc",item.disc)
+        formData.append("amount",item.amount)
+        formData.append("mstrItemsId",item.item)
       });
       if (file) {
         formData.append("uploadFile", file);
@@ -167,6 +168,7 @@ const RecurringInvoiceEdit = () => {
     };
     getData();
   }, []);
+  
   const fetchCustamerData = async () => {
     try {
       const response = await api.get("getAllCustomerWithIds");
@@ -445,7 +447,7 @@ const RecurringInvoiceEdit = () => {
               </div>
               <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">
-                  Upload File<span className="text-danger">*</span>
+                  Upload File
                 </label>
                 <div className="mb-3">
                   <input
@@ -462,9 +464,9 @@ const RecurringInvoiceEdit = () => {
                       );
                     }}
                   />
-                  {formik.touched.file && formik.errors.file && (
+                  {/* {formik.touched.file && formik.errors.file && (
                     <div className="invalid-feedback">{formik.errors.file}</div>
-                  )}
+                  )} */}
                 </div>
               </div>
 
@@ -553,6 +555,7 @@ const RecurringInvoiceEdit = () => {
                                   ? "is-invalid"
                                   : ""
                               }`}
+                              
                               {...formik.getFieldProps(`items[${index}].qty`)}
                             />
                             {formik.touched.items?.[index]?.qty &&
