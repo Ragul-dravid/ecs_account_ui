@@ -27,8 +27,7 @@ const RecurringInvoice = () => {
         setLoading(false);
       }
     };
-    getData();
-    
+    getData();  
   }, []);
   const fetchCustamerData = async () => {
     try {
@@ -73,7 +72,7 @@ const RecurringInvoice = () => {
     } catch (error) {
       console.error("Error refreshing data:", error);
     }
-    setLoading(false);
+      setLoading(false);  
   };
 
   useEffect(() => {
@@ -82,10 +81,12 @@ const RecurringInvoice = () => {
       table.destroy();
     };
   }, []);
+
   const customer =(id)=>{
     const name= customerData.find((item)=>(item.id == id))
     return name?.contactName
   }
+  
     return (
         <div className="container-fluid px-2 minHeight">
           {loading ? (
@@ -139,7 +140,7 @@ const RecurringInvoice = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {datas?.map((data, index) => (
+                    {datas.map((data, index) => (
                       <tr key={index}>
                         <td className="text-start">{index + 1}</td>
                         <td className="text-start">{customer(data.customerId)}</td>
