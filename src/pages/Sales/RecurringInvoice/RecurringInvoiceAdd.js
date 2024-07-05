@@ -25,6 +25,7 @@ const validationSchema = Yup.object().shape({
     Yup.object().shape({
       item: Yup.string().required("*Item Details is required"),
       qty: Yup.number()
+        .min(1, "*Quantity must be a min 1")
         .typeError("*Quantity must be a number")
         .required("*Quantity is required"),
       taxRate: Yup.number()
@@ -40,15 +41,15 @@ const validationSchema = Yup.object().shape({
     })
   ),
   notes: Yup.string().required("*Notes is required"),
-  subTotal: Yup.number()
-    .typeError("*Sub Total must be a number")
-    .required("*Sub Total is required"),
-  tax: Yup.number()
-    .typeError("*Tax must be a number")
-    .required("*Tax is required"),
-  totalAmount: Yup.number()
-    .typeError("*Total Amount must be a number")
-    .required("*Total Amount is required"),
+  // subTotal: Yup.number()
+  //   .typeError("*Sub Total must be a number")
+  //   .required("*Sub Total is required"),
+  // tax: Yup.number()
+  //   .typeError("*Tax must be a number")
+  //   .required("*Tax is required"),
+  // totalAmount: Yup.number()
+  //   .typeError("*Total Amount must be a number")
+  //   .required("*Total Amount is required"),
   file: Yup.mixed().required("*A file is required"),
 });
 
@@ -91,24 +92,24 @@ const RecurringInvoiceAdd = () => {
     onSubmit: async (values) => {
       setLoadIndicator(true);
       console.log("Create Tnx :", values);
-      const { items, file,invoiceDate,endDate,dueDate, ...value } = values;
-      const formData = new FormData();   
-      
+      const { items, file,total, ...value } = values;
+      const formData = new FormData();
+
       Object.entries(value).forEach(([key, value]) => {
         if (value !== undefined) {
-            formData.append(key, value);
+          formData.append(key, value);
         }
       });
-       items.forEach((item)=>{
-        formData.append("itemId",item.item)
-        formData.append("qty",item.qty)
-        formData.append("disc",item.disc)
-        formData.append("amount",item.amount)
-       })
+      items.forEach((item) => {
+        formData.append("qty", item.qty);
+        formData.append("disc", item.disc);
+        formData.append("amount", item.amount);
+        formData.append("mstrItemsId", item.item);
+      });
       if (file) {
         formData.append("files", file);
       }
-      
+
       try {
         const response = await api.post(
           "/createRecurringInvoiceAndRecurringInvoiceItems",
@@ -157,10 +158,76 @@ const RecurringInvoiceAdd = () => {
     }
   };
 
-useEffect(() => {
+  useEffect(() => {
     fetchItemsData();
     fetchCustamerData();
   }, []);
+
+  useEffect(() => {
+    const updateAndCalculate = async () => {
+      try {
+        let totalRate = 0;
+        let totalAmount = 0;
+        let totalTax = 0;
+  
+        const updatedItems = await Promise.all(
+          formik.values.items.map(async (item, index) => {
+            if (item.item && !formik.values.items[index].qty) {
+              formik.values.items[index].qty = 1;
+            }
+            if (item.item) {
+              try {
+                const response = await api.get(`getMstrItemsById/${item.item}`);
+                const updatedItem = { ...item, taxRate: response.data.salesPrice };
+                const amount = calculateAmount(updatedItem.qty, updatedItem.taxRate, updatedItem.disc, updatedItem.tax);
+                const itemTotalRate = updatedItem.qty * updatedItem.taxRate;
+                const itemTotalTax = itemTotalRate * (updatedItem.tax / 100);
+                totalRate += updatedItem.taxRate;
+                totalAmount += amount;
+                totalTax += itemTotalTax;
+                return { ...updatedItem, amount };
+              } catch (error) {
+                toast.error("Error fetching data: ", error?.response?.data?.message);
+              }
+            }
+          
+            if (item.qty && item.taxRate && item.disc !== undefined && item.tax !== undefined) {
+              const amount = calculateAmount(item.qty, item.taxRate, item.disc, item.tax);
+              const itemTotalRate = item.qty * item.taxRate;
+              const itemTotalTax = itemTotalRate * (item.tax / 100);
+              totalRate += item.taxRate;
+              totalAmount += amount;
+              totalTax += itemTotalTax;
+              return { ...item, amount,};
+            }
+            return item;
+          })
+        );
+        formik.setValues({ ...formik.values, items: updatedItems });
+        formik.setFieldValue("subTotal", totalRate);
+        formik.setFieldValue("totalAmount", totalAmount);
+        formik.setFieldValue("tax", totalTax);
+      } catch (error) {
+        toast.error("Error updating items: ", error.message);
+      }
+    };
+
+    updateAndCalculate();
+  }, [
+    formik.values.items.map((item) => item.item).join(""),
+    formik.values.items.map((item) => item.qty).join(","),
+    formik.values.items.map((item) => item.taxRate).join(""),
+    formik.values.items.map((item) => item.disc).join(""),
+    formik.values.items.map((item) => item.tax).join(""),
+  ]);
+
+  const calculateAmount = (qty, taxRate, disc, tax) => {
+    const totalRate = qty * taxRate;
+    const discountAmount = totalRate * (disc / 100);
+    const taxableAmount = totalRate * (tax / 100);
+    const totalAmount = totalRate + taxableAmount - discountAmount;
+    return totalAmount;
+  };
 
   return (
     <div className="container-fluid p-2 minHeight m-0">
@@ -219,12 +286,12 @@ useEffect(() => {
                     }`}
                   >
                     <option value=""> </option>
-                              {customerData &&
-                                customerData.map((item) => (
-                                  <option key={item.id} value={item.id}>
-                                    {item.contactName}
-                                  </option>
-                                ))}
+                    {customerData &&
+                      customerData.map((item) => (
+                        <option key={item.id} value={item.id}>
+                          {item.contactName}
+                        </option>
+                      ))}
                   </select>
                   {formik.touched.customerId && formik.errors.customerId && (
                     <div className="invalid-feedback">
@@ -416,7 +483,7 @@ useEffect(() => {
                 </div>
               </div>
               <div className="col-md-6 col-12 mb-3">
-                <label className="form-label">
+                <label className="form-label mb-0">
                   Upload File<span className="text-danger">*</span>
                 </label>
                 <div className="mb-3">
@@ -440,12 +507,12 @@ useEffect(() => {
                 </div>
               </div>
 
-              <div className="col-12 mb-3 ">
+              {/* <div className="col-12 mb-3 ">
                 <div className="d-flex align-items-end justify-content-end">
                   <label className="col-form-label">
                     Total<span className="text-danger">*</span>&nbsp;&nbsp;
                   </label>
-                  <div className="overflow-x-auto" >
+                  <div className="overflow-x-auto">
                     <input
                       name="total"
                       {...formik.getFieldProps("total")}
@@ -457,13 +524,13 @@ useEffect(() => {
                       style={{ width: "100%" }}
                     ></input>
                   </div>
-                {/* {formik.touched.total && formik.errors.total && (
+                  {formik.touched.total && formik.errors.total && (
                   <div className="">
                     <small className="text-danger" >{formik.errors.total}</small>
                   </div>
-                )} */}
+                )}
                 </div>
-              </div>
+              </div> */}
 
               <div className="row">
                 <div className="">
@@ -479,11 +546,11 @@ useEffect(() => {
                     <thead>
                       <tr>
                         <th scope="col">S.NO</th>
-                        <th scope="col">ITEM DETAILS</th>
+                        <th scope="col" style={{width:"25%"}}>ITEM DETAILS</th>
                         <th scope="col">QUANTITY</th>
                         <th scope="col">RATE</th>
-                        <th scope="col">DISCOUNT</th>
-                        <th scope="col">TAX</th>
+                        <th scope="col">DISCOUNT(%)</th>
+                        <th scope="col">TAX(%)</th>
                         <th scope="col">AMOUNT</th>
                       </tr>
                     </thead>
@@ -492,7 +559,7 @@ useEffect(() => {
                         <tr key={index}>
                           <th scope="row">{index + 1}</th>
                           <td>
-                            <select
+                            <select 
                               {...formik.getFieldProps(`items[${index}].item`)}
                               className={`form-select ${
                                 formik.touched.items?.[index]?.item &&
@@ -518,7 +585,8 @@ useEffect(() => {
                           </td>
                           <td>
                             <input
-                              type="text"
+                              type="number"
+                              min={1}
                               className={`form-control ${
                                 formik.touched.items?.[index]?.qty &&
                                 formik.errors.items?.[index]?.qty
@@ -535,7 +603,7 @@ useEffect(() => {
                               )}
                           </td>
                           <td>
-                            <input
+                            <input readOnly
                               type="text"
                               className={`form-control ${
                                 formik.touched.items?.[index]?.taxRate &&
@@ -573,19 +641,16 @@ useEffect(() => {
                               )}
                           </td>
                           <td>
-                            <select
+                            <input
                               {...formik.getFieldProps(`items[${index}].tax`)}
-                              className={`form-select ${
+                              className={`form-control ${
                                 formik.touched.items?.[index]?.tax &&
                                 formik.errors.items?.[index]?.tax
                                   ? "is-invalid"
                                   : ""
                               }`}
-                            >
-                              <option value=""></option>
-                              <option value="Commission">Commission</option>
-                              <option value="Brokerage">Brokerage</option>
-                            </select>
+                            />
+
                             {formik.touched.items?.[index]?.tax &&
                               formik.errors.items?.[index]?.tax && (
                                 <div className="invalid-feedback">
@@ -594,7 +659,7 @@ useEffect(() => {
                               )}
                           </td>
                           <td>
-                            <input
+                            <input readOnly
                               type="text"
                               className={`form-control ${
                                 formik.touched.items?.[index]?.amount &&
@@ -669,7 +734,7 @@ useEffect(() => {
                     </label>
                     <div className="col-sm-4"></div>
                     <div className="col-sm-4">
-                      <input
+                      <input readOnly
                         type="text"
                         className={`form-control ${
                           formik.touched.subTotal && formik.errors.subTotal
@@ -691,7 +756,7 @@ useEffect(() => {
                     </label>
                     <div className="col-sm-4"></div>
                     <div className="col-sm-4">
-                      <input
+                      <input readOnly
                         type="text"
                         className={`form-control ${
                           formik.touched.tax && formik.errors.tax
@@ -715,6 +780,7 @@ useEffect(() => {
                     <div className="col-sm-4">
                       <input
                         type="text"
+                        readOnly
                         className={`form-control ${
                           formik.touched.totalAmount &&
                           formik.errors.totalAmount
