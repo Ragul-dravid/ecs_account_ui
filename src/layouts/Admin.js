@@ -83,6 +83,10 @@ import ExpensesEdit from "../pages/Purchase/Expenses/ExpensesEdit";
 import ExpensesView from "../pages/Purchase/Expenses/ExpensesView";
 import RecurringInvoiceView from "../pages/Sales/RecurringInvoice/RecurringInvoiceView";
 import SalesOrderView from "../pages/Sales/SalesOrder/SalesOrderView";
+import Purchase from "../pages/Purchase/PurchaseOrder/Purchase";
+import PurchaseAdd from "../pages/Purchase/PurchaseOrder/PurchaseAdd";
+import PurchaseEdit from "../pages/Purchase/PurchaseOrder/PurchaseEdit";
+import PurchaseView from "../pages/Purchase/PurchaseOrder/PurchaseView";
 
 function Admin({ handleLogout }) {
   return (
@@ -209,6 +213,12 @@ function Admin({ handleLogout }) {
               <Route path="/expenses/add" element={<ExpensesAdd />} />
               <Route path="/expenses/edit/:id" element={<ExpensesEdit />} />
               <Route path="/expenses/view/:id" element={<ExpensesView />} />
+
+              {/* {/ Purchase /} */}
+              <Route path="/purchase" element={<Purchase />} />
+              <Route path="/purchase/add" element={<PurchaseAdd />} />
+              <Route path="/purchase/edit/:id" element={<PurchaseEdit />} />
+              <Route path="/purchase/view/:id" element={<PurchaseView />} />
 
               {/* {/ payment /} */}
               <Route path="/paymentmade" element={<Paymentmade />} />

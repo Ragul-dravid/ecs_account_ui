@@ -7,7 +7,7 @@ import DeleteModel from "../../../components/common/DeleteModel";
 import api from "../../../config/URL";
 import toast from "react-hot-toast";
 
-const Expenses = () => {
+const Purchase = () => {
   const tableRef = useRef(null);
   const [datas, setDatas] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -40,7 +40,7 @@ const Expenses = () => {
     destroyDataTable();
     setLoading(true);
     try {
-      const response = await api.get("getAllTxnExpenses");
+      const response = await api.get("getAllTxnPurchaseOrder");
       setDatas(response.data);
       initializeDataTable();
     } catch (error) {
@@ -53,7 +53,7 @@ const Expenses = () => {
   useEffect(() => {
     const getExpensesData = async () => {
       try {
-        const resposnse = await api.get("getAllTxnExpenses");
+        const resposnse = await api.get("getAllTxnPurchaseOrder");
         setDatas(resposnse.data);
       } catch (error) {
         toast.error("Error fetching data: ", error?.response?.data?.message);
@@ -71,12 +71,12 @@ const Expenses = () => {
           <div className="row align-items-center justify-content-between ">
             <div className="col">
               <div className="d-flex align-items-center gap-4">
-                <h1 className="h4 ls-tight headingColor ">Expenses</h1>
+                <h1 className="h4 ls-tight headingColor ">Purchase Orders</h1>
               </div>
             </div>
             <div className="col-auto">
               <div className="hstack gap-2 justify-content-end">
-                <Link to="/expenses/add">
+                <Link to="/purchase/add">
                   <button type="submit" className="btn btn-sm btn-button">
                     <span>Add +</span>
                   </button>
@@ -97,16 +97,16 @@ const Expenses = () => {
                     S.NO
                   </th>
                   <th scope="col" className="text-center">
-                    Expense Account
+                    Date
                   </th>
                   <th scope="col" className="text-center">
-                    Spend On
+                    ORDER NUMBER
                   </th>
                   <th scope="col" className="text-center">
-                    Paid Through
+                    REFERENCE
                   </th>
                   <th scope="col" className="text-center">
-                    Amount
+                    STATUS
                   </th>
                   {/* <th scope="col">DEPARTMENT NAME</th>
                 <th scope="col">WORK LOCATION</th> */}
@@ -119,24 +119,24 @@ const Expenses = () => {
                 {datas?.map((data, index) => (
                   <tr key={index}>
                     <td className="text-center">{index + 1}</td>
-                    <td className="text-center">{data.expenseAcc}</td>
-                    <td className="text-center">{data.spendOn}</td>
-                    <td className="text-center">{data.paidThrough}</td>
-                    <td className="text-center">{data.amount}</td>
+                    <td className="text-center">{data.date}</td>
+                    <td className="text-center">{data.orderNumber}</td>
+                    <td className="text-center">{data.reference}</td>
+                    <td className="text-center">{data.status}</td>
                     <td className="text-center">
                       <div className="gap-2">
-                        <Link to={`/expenses/view/${data.id}`}>
+                        <Link to={`/purchase/view/${data.id}`}>
                           <button className="btn btn-light btn-sm  shadow-none border-none">
                             View
                           </button>
                         </Link>
-                        <Link to={`/expenses/edit/${data.id}`} className="px-2">
+                        <Link to={`/purchase/edit/${data.id}`} className="px-2">
                           <button className="btn btn-light  btn-sm shadow-none border-none">
                             Edit
                           </button>
                         </Link>
                         <DeleteModel
-                          path={`/deleteTxnExpenses/${data.id}`}
+                          path={`/deleteTxnPurchaseOrder/${data.id}`}
                           onSuccess={refreshData}
                         />
                       </div>
@@ -153,4 +153,4 @@ const Expenses = () => {
   );
 };
 
-export default Expenses;
+export default Purchase;

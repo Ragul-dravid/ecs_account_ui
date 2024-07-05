@@ -299,7 +299,19 @@ function Sidebar({ onLogout }) {
                       className={`nav-item ${activeSubmenu === "create" ? "active-submenu" : ""
                         }`}
                     >
-                      <span className="mx-2">Expense</span>
+                      <span className="mx-2">Expenses</span>
+                    </li>
+                  </NavLink>
+                  <NavLink
+                    className="nav-link"
+                    to="/purchase"
+                    onClick={() => handleSubmenuClick("create")}
+                  >
+                    <li
+                      className={`nav-item ${activeSubmenu === "create" ? "active-submenu" : ""
+                        }`}
+                    >
+                      <span className="mx-2">Purchase Orders</span>
                     </li>
                   </NavLink>
                   <NavLink
