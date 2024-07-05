@@ -147,7 +147,7 @@ const Delivery = () => {
                           Edit
                         </button>
                       </Link>
-                      <DeleteModel />
+                      <DeleteModel path={`/deleteTxnDeliveryChallans/${data.id}`}/>
                     </div>
                   </td>
                 </tr>
