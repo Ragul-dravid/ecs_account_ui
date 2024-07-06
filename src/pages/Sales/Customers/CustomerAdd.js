@@ -122,7 +122,7 @@ const CustomerAdd = () => {
             <div className="row py-4">
               <div className="col-md-6 col-12 mb-2">
                 <lable className="form-lable">
-                  Contact Name
+                  Contact Name<span className="text-danger">*</span>
                 </lable>
                 <div className="mb-3">
                   <input
@@ -144,7 +144,7 @@ const CustomerAdd = () => {
               </div>
               <div className="col-md-6 col-12 mb-2">
                 <lable className="form-lable">
-                  Account Number
+                  Account Number<span className="text-danger">*</span>
                 </lable>
                 <div className="mb-3">
                   <input
@@ -167,7 +167,7 @@ const CustomerAdd = () => {
 
               <div className="col-md-6 col-12 mb-2">
                 <lable className="form-lable">
-                  Primary Contact
+                  Primary Contact<span className="text-danger">*</span>
                 </lable>
                 <div className="mb-3">
                   <input
@@ -189,7 +189,7 @@ const CustomerAdd = () => {
               </div>
               <div className="col-md-6 col-12 mb-2">
                 <lable className="form-lable">
-                  Customer Email
+                  Customer Email<span className="text-danger">*</span>
                 </lable>
                 <div className="mb-3">
                   <input
@@ -212,7 +212,7 @@ const CustomerAdd = () => {
 
               <div className="col-md-6 col-12 mb-2">
                 <lable className="form-lable">
-                  Customer Phone
+                  Customer Phone<span className="text-danger">*</span>
                 </lable>
                 <div className="mb-3">
                   <input
@@ -235,7 +235,7 @@ const CustomerAdd = () => {
 
               <div className="col-md-6 col-12 mb-2">
                 <lable className="form-lable">
-                  Website
+                  Website<span className="text-danger">*</span>
                 </lable>
                 <div className="mb-3">
                   <input
@@ -258,7 +258,7 @@ const CustomerAdd = () => {
 
               <div className="col-md-6 col-12 mb-2">
                 <lable className="form-lable">
-                  Bank Name
+                  Bank Name<span className="text-danger">*</span>
                 </lable>
                 <div className="mb-3">
                   <input
@@ -281,7 +281,7 @@ const CustomerAdd = () => {
 
               <div className="col-md-6 col-12 mb-2">
                 <lable className="form-lable">
-                  Bank Account Number
+                  Bank Account Number<span className="text-danger">*</span>
                 </lable>
                 <div className="mb-3">
                   <input
