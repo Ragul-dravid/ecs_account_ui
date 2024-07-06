@@ -119,8 +119,8 @@ const Items = () => {
               {datas.map((data, index) => (
                 <tr key={index}>
                   <td className="text-center">{index + 1}</td>
-                  <td className="text-center">{data.ItemCode}</td>
-                  <td className="text-center">{data.ItemName}</td>
+                  <td className="text-center">{data.itemCode}</td>
+                  <td className="text-center">{data.itemName}</td>
                   <td className="text-center">{data.costPrice}</td>
                   <td className="text-center">{data.unit}</td>
                   <td className="text-center">

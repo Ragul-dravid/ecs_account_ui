@@ -141,9 +141,9 @@ function BankEdit() {
                 </lable>
                 <div className="mb-3">
                   <select
-                    name="selectaccounttype"
-                    {...formik.getFieldProps("selectaccounttype")}
-                    className={`form-select    ${formik.touched.selectaccounttype && formik.errors.selectaccounttype
+                    name="bankType"
+                    {...formik.getFieldProps("bankType")}
+                    className={`form-select    ${formik.touched.bankType && formik.errors.bankType
                       ? "is-invalid"
                       : ""
                       }`}>
@@ -153,10 +153,10 @@ function BankEdit() {
                     <option value="pretty cash"> pretty cash</option>
                     <option value="Undeposited Fund">Undeposited Fund</option>
                   </select>
-                  {formik.touched.selectaccounttype &&
-                    formik.errors.selectaccounttype && (
+                  {formik.touched.bankType &&
+                    formik.errors.bankType && (
                       <div className="invalid-feedback">
-                        {formik.errors.selectaccounttype}
+                        {formik.errors.bankType}
                       </div>
                     )}
                 </div>
