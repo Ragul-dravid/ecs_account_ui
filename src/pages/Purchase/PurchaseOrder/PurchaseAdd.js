@@ -70,12 +70,12 @@ const PurchaseAdd = () => {
       setLoading(true);
 
       const formData = new FormData();
-      formData.append("vendorId", values.vendorId);1
-      formData.append("date", values.date);1
-      formData.append("deliveryDate", values.deliveryDate);1
+      formData.append("vendorId", values.vendorId);
+      formData.append("date", values.date);
+      formData.append("deliveryDate", values.deliveryDate);
       // formData.append("orderNumber", values.orderNumber);
-      formData.append("reference", values.reference);1
-      formData.append("currency", values.currency);1
+      formData.append("reference", values.reference);
+      formData.append("currency", values.currency);
       formData.append("amountsAre", values.amountsAre);
       formData.append("subTotal", values.subTotal);
       formData.append("total", values.total);
@@ -84,12 +84,12 @@ const PurchaseAdd = () => {
       formData.append("instructions", "Glass Items");
       formData.append("label", "label");
       formData.append("addAttention", "new washermenpet");
-      formData.append("street", values.street);1
-      formData.append("city", values.city);1
-      formData.append("state  ", values.state);1
-      formData.append("zipCode", values.zipCode);1
-      formData.append("country", values.country);1
-      formData.append("phone", values.phone);1
+      formData.append("street", values.street);
+      formData.append("city", values.city);
+      formData.append("state  ", values.state);
+      formData.append("zipCode", values.zipCode);
+      formData.append("country", values.country);
+      formData.append("phone", values.phone);
       formData.append("addIntructions", values.addInstructions);
       formData.append("description", "Nothing");
       formData.append("qty", values.qty);
@@ -99,7 +99,7 @@ const PurchaseAdd = () => {
       formData.append("taxRate", values.taxRate);
       formData.append("amount", values.amount);
       formData.append("itemId", values.itemId);
-      formData.append("file", values.files);1
+      formData.append("file", values.files);
 
       try {
         const response = await api.post("/createTxnPurchaseOrder", formData);
