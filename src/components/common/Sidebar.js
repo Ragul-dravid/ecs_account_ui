@@ -330,6 +330,20 @@ function Sidebar({ onLogout }) {
                   </NavLink>
                   <NavLink
                     className="nav-link"
+                    to="/recurringbill"
+                    onClick={() => handleSubmenuClick("create")}
+                  >
+                    <li
+                      className={`nav-item ${activeSubmenu === "create" ? "active-submenu" : ""
+                        }`}
+                    >
+                      <span className="mx-2">
+                        Recurring Bills
+                      </span>
+                    </li>
+                  </NavLink>
+                  <NavLink
+                    className="nav-link"
                     to="/paymentmade"
                     onClick={() => handleSubmenuClick("create")}
                   >

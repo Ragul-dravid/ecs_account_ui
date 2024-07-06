@@ -14,7 +14,6 @@ const Estimates = () => {
   const [loading, setLoading] = useState(true);
   const tableRef = useRef(null);
   const getData = async () => {
-    console.log("gbnm")
 
     try {
       const response = await api.get("/getAllTxnQuotes");
@@ -53,6 +52,18 @@ const Estimates = () => {
     };
   }, [loading]);
 
+  const refreshData = async () => {
+    destroyDataTable();
+    setLoading(true);
+    try {
+      const response = await api.get("/getAllTxnQuotes");
+      setDatas(response.data);
+      initializeDataTable();
+    } catch (error) {
+      console.error("Error refreshing data:", error);
+    }
+    setLoading(false);
+  };
 
 
   useEffect(() => {
@@ -125,7 +136,10 @@ const Estimates = () => {
                           Edit
                         </button>
                       </Link>
-                      <DeleteModel />
+                      <DeleteModel
+                        onSuccess={refreshData}
+                        path={`/deleteTxnQuotes/${data.id}`}
+                      />
                     </div>
                   </td>
                 </tr>

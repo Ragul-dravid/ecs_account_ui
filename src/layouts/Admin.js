@@ -83,10 +83,14 @@ import ExpensesEdit from "../pages/Purchase/Expenses/ExpensesEdit";
 import ExpensesView from "../pages/Purchase/Expenses/ExpensesView";
 import RecurringInvoiceView from "../pages/Sales/RecurringInvoice/RecurringInvoiceView";
 import SalesOrderView from "../pages/Sales/SalesOrder/SalesOrderView";
+import RecurringBillAdd from "../pages/Purchase/RecurringBills/RecurringBillAdd";
 import Purchase from "../pages/Purchase/PurchaseOrder/Purchase";
 import PurchaseAdd from "../pages/Purchase/PurchaseOrder/PurchaseAdd";
 import PurchaseEdit from "../pages/Purchase/PurchaseOrder/PurchaseEdit";
 import PurchaseView from "../pages/Purchase/PurchaseOrder/PurchaseView";
+import RecurringBill from "../pages/Purchase/RecurringBills/RecurringBill";
+import RecurringBillEdit from "../pages/Purchase/RecurringBills/RecurringBillEdit";
+import RecurringBillView from "../pages/Purchase/RecurringBills/RecurringBillView";
 
 function Admin({ handleLogout }) {
   return (
@@ -133,6 +137,13 @@ function Admin({ handleLogout }) {
                 element={<RecurringInvoiceView />}
               />
               <Route path="/recurringinvoice" element={<RecurringInvoice />} />
+
+              {/* Recurring Invoice*/}
+              <Route path="/recurringbill/add" element={<RecurringBillAdd />} />
+              <Route path="/recurringbill" element={<RecurringBill />} />
+              <Route path="/recurringbill/edit/:id" element={<RecurringBillEdit />} />
+              <Route path="/recurringbill/view/:id" element={<RecurringBillView />} />
+
 
               {/* Delivery*/}
               <Route path="/delivery" element={<Delivery />} />
