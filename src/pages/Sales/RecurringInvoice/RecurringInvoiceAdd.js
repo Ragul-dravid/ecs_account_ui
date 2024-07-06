@@ -18,9 +18,9 @@ const validationSchema = Yup.object().shape({
   amountsAre: Yup.string().required("*Amounts Are is required"),
   invoiceFrom: Yup.string().required("*Invoice From is required"),
   currency: Yup.string().required("*Currency is required"),
-  total: Yup.number()
-    .typeError("*Total must be a number")
-    .required("*Total is required"),
+  // total: Yup.number()
+  //   .typeError("*Total must be a number")
+  //   .required("*Total is required"),
   items: Yup.array().of(
     Yup.object().shape({
       item: Yup.string().required("*Item Details is required"),

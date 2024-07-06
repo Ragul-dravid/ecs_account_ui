@@ -10,7 +10,7 @@ function BankAdd() {
   const [loading, setLoading] = useState(false);
 
   const validationSchema = Yup.object({
-    selectaccounttype: Yup.string().required("*Select Account Type is required"),
+    bankType: Yup.string().required("*Select Account Type is required"),
     accountName: Yup.string().required("*Account Name is required"),
     currency: Yup.string().required("*Currency is required"),
     accountNumber: Yup.string().required("*Account Number is required"),
@@ -26,7 +26,7 @@ function BankAdd() {
       bankName: "",
       currency: "",
       ifsc: "",
-      selectaccounttype: "",
+      bankType: "",
     },
 
     validationSchema: validationSchema,
@@ -122,9 +122,9 @@ function BankAdd() {
                 </lable>
                 <div className="mb-3">
                   <select
-                    name="selectaccounttype"
-                    {...formik.getFieldProps("selectaccounttype")}
-                    className={`form-select    ${formik.touched.selectaccounttype && formik.errors.selectaccounttype
+                    name="bankType"
+                    {...formik.getFieldProps("bankType")}
+                    className={`form-select    ${formik.touched.bankType && formik.errors.bankType
                       ? "is-invalid"
                       : ""
                       }`}>
@@ -134,10 +134,10 @@ function BankAdd() {
                     <option value="pretty cash"> pretty cash</option>
                     <option value="Undeposited Fund">Undeposited Fund</option>
                   </select>
-                  {formik.touched.selectaccounttype &&
-                    formik.errors.selectaccounttype && (
+                  {formik.touched.bankType &&
+                    formik.errors.bankType && (
                       <div className="invalid-feedback">
-                        {formik.errors.selectaccounttype}
+                        {formik.errors.bankType}
                       </div>
                     )}
                 </div>

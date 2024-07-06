@@ -4,9 +4,7 @@ import "datatables.net-dt";
 import "datatables.net-responsive-dt";
 import $ from "jquery";
 import { Link } from "react-router-dom";
-
 import DeleteModel from "../../components/common/DeleteModel";
-
 import api from "../../config/URL";
 import toast from "react-hot-toast";
 
@@ -25,7 +23,7 @@ const Bank = () => {
       setDatas(response.data);
       initializeDataTable(); // Reinitialize DataTable after successful data update
     } catch (error) {
-      console.error("Error refreshing data:", error);
+      console.error("Error refreshing data:", error.message);
     }
     setLoading(false);
   };
