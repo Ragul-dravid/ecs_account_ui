@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
-
-import { MdDeleteSweep } from "react-icons/md";
+// import { MdDeleteSweep } from "react-icons/md";
 import api from "../../../config/URL";
 import toast from "react-hot-toast";
+import * as Yup from "yup";
 
 const PurchaseAdd = () => {
   const navigate = useNavigate();
@@ -13,7 +13,22 @@ const PurchaseAdd = () => {
   // const [title, setTitle] = useState('');
   // const [summary, setSummary] = useState('');
   const [rows, setRows] = useState([{ id: 1 }]);
-  const [rowss, setRowss] = useState([]); // Initialize rows with one row having an id
+  // const [rowss, setRowss] = useState([]);
+
+  const validationSchema = Yup.object({
+    vendorId: Yup.string().required("*Vendor Name is required"),
+    // orderNumber: Yup.string().required("*Order Number is required"),
+    currency: Yup.string().required("*Currency is required"),
+    phone: Yup.string().required("*Phone is required"),
+    street: Yup.string().required("*Street is required"),
+    city: Yup.string().required("*City is required"),
+    state: Yup.string().required("*State is required"),
+    zipCode: Yup.string().required("*Zip Code is required"),
+    country: Yup.string().required("*Country is required"),
+    file: Yup.string().required("*Attachment is required"),
+    amountsAre: Yup.string().required("*Amounts is required"),
+  });
+
   const AddRowContent = () => {
     setRows((prevRows) => [...prevRows, { id: prevRows.length + 1 }]);
   };
@@ -23,7 +38,6 @@ const PurchaseAdd = () => {
       vendorId: "",
       date: "",
       deliveryDate: "",
-      orderNumber: "",
       reference: "",
       currency: "",
       amountsAre: "",
@@ -41,16 +55,54 @@ const PurchaseAdd = () => {
       country: "",
       phone: "",
       addIntructions: "",
+      description: "",
+      qty: "",
+      unitPrice: "",
+      disc: "",
+      account: "",
+      taxRate: "",
+      amount: "",
+      itemId: "",
       file: "",
     },
+    validationSchema: validationSchema,
     onSubmit: async (values) => {
       setLoading(true);
+
+      const formData = new FormData();
+      formData.append("vendorId", values.vendorId);1
+      formData.append("date", values.date);1
+      formData.append("deliveryDate", values.deliveryDate);1
+      // formData.append("orderNumber", values.orderNumber);
+      formData.append("reference", values.reference);1
+      formData.append("currency", values.currency);1
+      formData.append("amountsAre", values.amountsAre);
+      formData.append("subTotal", values.subTotal);
+      formData.append("total", values.total);
+      formData.append("attention", values.attention);
+      formData.append("telePhone", "6578899");
+      formData.append("instructions", "Glass Items");
+      formData.append("label", "label");
+      formData.append("addAttention", "new washermenpet");
+      formData.append("street", values.street);1
+      formData.append("city", values.city);1
+      formData.append("state  ", values.state);1
+      formData.append("zipCode", values.zipCode);1
+      formData.append("country", values.country);1
+      formData.append("phone", values.phone);1
+      formData.append("addIntructions", values.addInstructions);
+      formData.append("description", "Nothing");
+      formData.append("qty", values.qty);
+      formData.append("unitPrice", values.unitPrice);
+      formData.append("disc", values.disc);
+      formData.append("account", values.account);
+      formData.append("taxRate", values.taxRate);
+      formData.append("amount", values.amount);
+      formData.append("itemId", values.itemId);
+      formData.append("file", values.files);1
+
       try {
-        const response = await api.post("/createTxnPurchaseOrder", values, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+        const response = await api.post("/createTxnPurchaseOrder", formData);
         if (response.status === 201) {
           toast.success("Estimate created successfully");
           navigate("/purchase");
@@ -76,7 +128,7 @@ const PurchaseAdd = () => {
             </div>
             <div className="col-auto">
               <div className="hstack gap-2 justify-content-end">
-                <Link to="/estimates">
+                <Link to="/purchase">
                   <button type="submit" className="btn btn-sm btn-light">
                     <span>Back</span>
                   </button>
@@ -107,18 +159,30 @@ const PurchaseAdd = () => {
           <div className="container mb-5">
             <div className="row py-4">
               <div className="col-md-6 col-12 mb-2">
-                <lable className="form-lable">Vendor Name</lable>
+                <lable className="form-lable">Vendor</lable>
                 <span className="text-danger">*</span>
-                <select
-                  name="Vendor Name"
-                  {...formik.getFieldProps("Vendor Name")}
-                  className={`form-select `}
-                >
-                  <option value=""></option>
-                  <option value="Raghul">Raghul</option>
-                  <option value="Harish">Harish</option>
-                  <option value="Antony">Antony</option>
-                </select>
+                <div className="mb-3">
+                  <select
+                    name="vendorId"
+                    {...formik.getFieldProps("vendorId")}
+                    className={`form-select    ${
+                      formik.touched.vendorId && formik.errors.vendorId
+                        ? "is-invalid"
+                        : ""
+                    }`}
+                  >
+                    <option selected></option>
+                    <option value="1">Vendor 1</option>
+                    <option value="2">Vendor 2</option>
+                    <option value="3">Vendor 3</option>
+                    <option value="4">Vendor 4</option>
+                  </select>
+                  {formik.touched.vendorId && formik.errors.vendorId && (
+                    <div className="invalid-feedback">
+                      {formik.errors.vendorId}
+                    </div>
+                  )}
+                </div>
               </div>
 
               <div className="col-md-6 col-12 mb-2">
@@ -146,14 +210,24 @@ const PurchaseAdd = () => {
               </div>
 
               <div className="col-md-6 col-12 mb-2">
-                <lable className="form-lable">Order Number</lable><span className="text-danger">*</span>
+                <lable className="form-lable">Order Number</lable>
+                <span className="text-danger">*</span>
                 <div className="mb-3">
                   <input
                     type="text"
                     name="orderNumber"
                     {...formik.getFieldProps("orderNumber")}
-                    className="form-control"
+                    className={`form-control  ${
+                      formik.touched.orderNumber && formik.errors.orderNumber
+                        ? "is-invalid"
+                        : ""
+                    }`}
                   />
+                  {formik.touched.orderNumber && formik.errors.orderNumber && (
+                    <div className="invalid-feedback">
+                      {formik.errors.orderNumber}
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -173,136 +247,198 @@ const PurchaseAdd = () => {
                 <select
                   name="currency"
                   {...formik.getFieldProps("currency")}
-                  className={`form-select `}
+                  className={`form-control  ${
+                    formik.touched.currency && formik.errors.currency
+                      ? "is-invalid"
+                      : ""
+                  }`}
                 >
                   <option value=""></option>
-                  <option value="Raghul">Raghul</option>
-                  <option value="Harish">Harish</option>
-                  <option value="Antony">Antony</option>
+                  <option value="India">India</option>
+                  <option value="Singapore">Singapore</option>
                 </select>
+                {formik.touched.currency && formik.errors.currency && (
+                  <div className="invalid-feedback">
+                    {formik.errors.currency}
+                  </div>
+                )}
               </div>
 
               <div className="col-md-6 col-12 mb-2">
-                <lable className="form-lable">Amounts Are</lable>
+                <lable className="form-lable">Phone</lable>
                 <span className="text-danger">*</span>
-                <select
-                  name="amountsAre"
-                  {...formik.getFieldProps("amountsAre")}
-                  className={`form-select `}
-                >
-                  <option value=""></option>
-                  <option value="Tax Exclusive">Tax Exclusive</option>
-                  <option value="Tax Inclusive">Tax Inclusive</option>
-                  <option value="No Tax">No Tax</option>
-                </select>
-              </div>
-
-              <div className="col-md-6 col-12 mb-2">
-                <lable className="form-lable">Attention</lable>
                 <div className="mb-3">
                   <input
                     type="text"
+                    name="phone"
+                    {...formik.getFieldProps("phone")}
+                    className={`form-control  ${
+                      formik.touched.phone && formik.errors.phone
+                        ? "is-invalid"
+                        : ""
+                    }`}
+                  />
+                  {formik.touched.phone && formik.errors.phone && (
+                    <div className="invalid-feedback">
+                      {formik.errors.phone}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="col-md-6 col-12 mb-2">
+                <lable className="form-lable">Street</lable>
+                <span className="text-danger">*</span>
+                <div className="mb-3">
+                  <input
+                    type="text"
+                    name="street"
+                    {...formik.getFieldProps("street")}
+                    className={`form-control  ${
+                      formik.touched.street && formik.errors.street
+                        ? "is-invalid"
+                        : ""
+                    }`}
+                  />
+                  {formik.touched.street && formik.errors.street && (
+                    <div className="invalid-feedback">
+                      {formik.errors.street}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="col-md-6 col-12 mb-2">
+                <lable className="form-lable">City</lable>
+                <span className="text-danger">*</span>
+                <div className="mb-3">
+                  <input
+                    type="text"
+                    name="city"
+                    {...formik.getFieldProps("city")}
+                    className={`form-control  ${
+                      formik.touched.city && formik.errors.city
+                        ? "is-invalid"
+                        : ""
+                    }`}
+                  />
+                  {formik.touched.city && formik.errors.city && (
+                    <div className="invalid-feedback">{formik.errors.city}</div>
+                  )}
+                </div>
+              </div>
+
+              <div className="col-md-6 col-12 mb-2">
+                <lable className="form-lable">State</lable>
+                <span className="text-danger">*</span>
+                <div className="mb-3">
+                  <input
+                    type="text"
+                    name="state"
+                    {...formik.getFieldProps("state")}
+                    className={`form-control  ${
+                      formik.touched.state && formik.errors.state
+                        ? "is-invalid"
+                        : ""
+                    }`}
+                  />
+                  {formik.touched.state && formik.errors.state && (
+                    <div className="invalid-feedback">
+                      {formik.errors.state}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="col-md-6 col-12 mb-2">
+                <lable className="form-lable">Zip Code</lable>
+                <span className="text-danger">*</span>
+                <div className="mb-3">
+                  <input
+                    type="text"
+                    name="zipCode"
+                    {...formik.getFieldProps("zipCode")}
+                    className={`form-control  ${
+                      formik.touched.zipCode && formik.errors.zipCode
+                        ? "is-invalid"
+                        : ""
+                    }`}
+                  />
+                  {formik.touched.zipCode && formik.errors.zipCode && (
+                    <div className="invalid-feedback">
+                      {formik.errors.zipCode}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="col-md-6 col-12 mb-2">
+                <lable className="form-lable">Country</lable>
+                <span className="text-danger">*</span>
+                <div className="mb-3">
+                  <input
+                    type="text"
+                    name="country"
+                    {...formik.getFieldProps("country")}
+                    className={`form-control  ${
+                      formik.touched.country && formik.errors.country
+                        ? "is-invalid"
+                        : ""
+                    }`}
+                  />
+                  {formik.touched.country && formik.errors.country && (
+                    <div className="invalid-feedback">
+                      {formik.errors.country}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="col-md-6 col-12 mb-2">
+                <lable className="form-lable">Attachment</lable>
+                <span className="text-danger">*</span>
+                <div className="mb-3">
+                  <input
+                    type="file"
+                    name="file"
+                    {...formik.getFieldProps("file")}
+                    className={`form-control  ${
+                      formik.touched.file && formik.errors.file
+                        ? "is-invalid"
+                        : ""
+                    }`}
+                  />
+                  {formik.touched.file && formik.errors.file && (
+                    <div className="invalid-feedback">{formik.errors.file}</div>
+                  )}
+                </div>
+              </div>
+
+              <div className="col-md-6 col-12 mb-2">
+                <lable className="form-lable">Delivery Instructions</lable>
+                <div className="mb-3">
+                  <textarea
+                    type="text"
                     name="attention"
+                    rows="4"
                     className="form-control"
                     {...formik.getFieldProps("attention")}
                   />
                 </div>
               </div>
-
-              <div className="col-md-6 col-12 mb-2">
-                <lable className="form-lable">Subject</lable>
-                <div className="mb-3">
-                  <input
-                    type="text"
-                    name="subject"
-                    className="form-control"
-                    {...formik.getFieldProps("subject")}
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="border-0 mb-5">
-              {rowss.map((row, index) => (
-                <div className="border-0 mb-5" key={index}>
-                  <div className="container-fluid p-0 mb-5">
-                    <div className="row py-4">
-                      <div className="col-12 mb-4">
-                        <div className="text-start">
-                          <label htmlFor="" className=" mb-1 fw-medium">
-                            <small>Title</small>&nbsp;
-                          </label>
-                          <br />
-                          <input
-                            className="form-control mb-2"
-                            type="text"
-                            placeholder="Title"
-                            value={row.title || ""}
-                            onChange={(e) => {
-                              const newRows = [...rowss];
-                              newRows[index].title = e.target.value;
-                              setRowss(newRows);
-                            }}
-                          />
-                        </div>
-                        <div className="text-start">
-                          <label htmlFor="" className="mb-1 fw-medium">
-                            <small>Summary</small>&nbsp;
-                          </label>
-                          <br />
-                          <input
-                            className="form-control mb-4"
-                            type="text"
-                            placeholder="summery"
-                            value={row.summery || ""}
-                            onChange={(e) => {
-                              const newRows = [...rowss];
-                              newRows[index].summery = e.target.value;
-                              setRowss(newRows);
-                            }}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-              <div className="row">
-                <div className="col-12 mb-4">
-                  {rowss.length === 0 && (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setRowss((prev) => [
-                          ...prev,
-                          { title: "", summery: "" },
-                        ]); // Add a new row with empty title and summary
-                      }}
-                      className="btn btn-border btn-sm btn-button"
-                    >
-                      <i className="bx bx-plus"></i> Add Title & Summary
-                    </button>
-                  )}
-                  {rowss.length > 0 && (
-                    <button
-                      type="button"
-                      onClick={() => setRowss((prev) => prev.slice(0, -1))}
-                      className="btn btn-danger btn-sm "
-                    >
-                      <MdDeleteSweep className="mb-1 mx-1" />
-                      Delete Title & Summary
-                    </button>
-                  )}
-                </div>
-              </div>
             </div>
             <div className="col-12 mb-3 d-flex align-items-end justify-content-end">
               <label className="col-form-label">
-                Amount<span className="text-danger">*</span>&nbsp;&nbsp;
+                Amounts<span className="text-danger">*</span>&nbsp;&nbsp;
               </label>
               <div className="overflow-x-auto">
                 <select
-                  {...formik.getFieldProps("tax")}
-                  className="form-select"
+                  {...formik.getFieldProps("amountsAre")}
+                  className={`form-select  ${
+                    formik.touched.amountsAre && formik.errors.amountsAre
+                      ? "is-invalid"
+                      : ""
+                  }`}
                   style={{ width: "100%" }}
                 >
                   <option></option>
@@ -310,10 +446,12 @@ const PurchaseAdd = () => {
                   <option value="TAX_INCLUSIVE">Tax Inclusive</option>
                   <option value="NO_TAX">No Tax</option>
                 </select>
+                {formik.touched.amountsAre && formik.errors.amountsAre && (
+                  <div className="invalid-feedback">
+                    {formik.errors.amountsAre}
+                  </div>
+                )}
               </div>
-              {formik.touched.tax && formik.errors.tax && (
-                <div className="invalid-feedback">{formik.errors.tax}</div>
-              )}
             </div>
             <div className="row">
               <div className="">
@@ -329,11 +467,13 @@ const PurchaseAdd = () => {
                   <thead>
                     <tr>
                       <th scope="col">S.NO</th>
-                      <th scope="col">ITEM DETAILS</th>
-                      <th scope="col">QUANTITY</th>
-                      <th scope="col">RATE</th>
-                      <th scope="col">DISCOUNT</th>
-                      <th scope="col">TAX</th>
+                      <th scope="col">ITEM</th>
+                      <th scope="col">Description</th>
+                      <th scope="col">Quantity</th>
+                      <th scope="col">Unit Price</th>
+                      <th scope="col">Disc %</th>
+                      <th scope="col">Account</th>
+                      <th scope="col">Tax Rate</th>
                       <th scope="col">AMOUNT</th>
                     </tr>
                   </thead>
@@ -343,9 +483,9 @@ const PurchaseAdd = () => {
                         <th scope="row">{index + 1}</th>
                         <td>
                           <select
-                            name={`items[${index}].itemDetails${index}`}
+                            name={`items[${index}].itemId${index}`}
                             {...formik.getFieldProps(
-                              `items[${index}].itemDetails${index}`
+                              `items[${index}].itemId${index}`
                             )}
                             className="form-select"
                           >
@@ -357,45 +497,75 @@ const PurchaseAdd = () => {
                         <td>
                           <input
                             type="text"
-                            name={`items[${index}].quantity${index}`}
+                            name={`items[${index}].description${index}`}
                             className="form-control"
                             {...formik.getFieldProps(
-                              `items[${index}].quantity${index}`
+                              `items[${index}].description${index}`
                             )}
                           />
                         </td>
                         <td>
                           <input
                             type="text"
-                            name={`items[${index}].rate${index}`}
+                            name={`items[${index}].qty${index}`}
                             className="form-control"
                             {...formik.getFieldProps(
-                              `items[${index}].rate${index}`
+                              `items[${index}].qty${index}`
                             )}
                           />
                         </td>
                         <td>
                           <input
                             type="text"
-                            name={`items[${index}].discount${index}`}
+                            name={`items[${index}].unitPrice${index}`}
                             className="form-control"
                             {...formik.getFieldProps(
-                              `items[${index}].discount${index}`
+                              `items[${index}].unitPrice${index}`
                             )}
                           />
                         </td>
-                        <td>
+                        {/* <td>
                           <select
-                            name={`items[${index}].tax${index}`}
+                            name={`items[${index}].disc${index}`}
                             {...formik.getFieldProps(
-                              `items[${index}].tax${index}`
+                              `items[${index}].disc${index}`
                             )}
                             className="form-select"
                           >
                             <option></option>
-                            <option value="Commission">Commission</option>
-                            <option value="Brokerage">Brokerage</option>
+                            <option value="5 %">5 %</option>
+                            <option value="10 %">10 %</option>
                           </select>
+                        </td> */}
+                         <td>
+                          <input
+                            type="text"
+                            name={`items[${index}].disc${index}`}
+                            className="form-control"
+                            {...formik.getFieldProps(
+                              `items[${index}].disc${index}`
+                            )}
+                          />
+                        </td>
+                        <td>
+                          <input
+                            type="text"
+                            name={`items[${index}].account${index}`}
+                            className="form-control"
+                            {...formik.getFieldProps(
+                              `items[${index}].account${index}`
+                            )}
+                          />
+                        </td>
+                        <td>
+                          <input
+                            type="text"
+                            name={`items[${index}].taxRate${index}`}
+                            className="form-control"
+                            {...formik.getFieldProps(
+                              `items[${index}].taxRate${index}`
+                            )}
+                          />
                         </td>
                         <td>
                           <input
@@ -432,7 +602,10 @@ const PurchaseAdd = () => {
               </button>
             )}
             <div className="row mt-5 pt-0">
-              <div className="col-md-6 col-12 mb-2 mt-2">
+              <div
+                className="col-md-6 col-12 mb-2 mt-2"
+                style={{ visibility: "hidden" }}
+              >
                 <lable className="form-lable">Customer Notes</lable>
                 <div className="mb-3">
                   <input
@@ -478,20 +651,6 @@ const PurchaseAdd = () => {
                       className="form-control form-control-sm"
                     />
                   </div>
-                </div>
-              </div>
-              <hr />
-              <div className="col-12">
-                <lable className="form-lable">Terms & Conditions</lable>
-                <div className="mb-3">
-                  <textarea
-                    {...formik.getFieldProps("terms")}
-                    placeholder="Enter the terms and conditions of your business in your transaction"
-                    type="text"
-                    name="terms"
-                    className="form-control "
-                    style={{ width: "65%", height: "5rem" }}
-                  />
                 </div>
               </div>
             </div>

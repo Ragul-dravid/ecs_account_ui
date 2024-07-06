@@ -59,9 +59,6 @@ const DeliveryView = () => {
                 <button type="submit" className="btn btn-button rounded-pill p-2">
                   <IoCloudDownloadSharp size={18} />
                 </button>
-                <button type="submit" className="btn btn-sm btn-button rounded">
-                  Save
-                </button>
               </div>
             </div>
           </div>
