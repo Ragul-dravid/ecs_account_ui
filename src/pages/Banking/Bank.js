@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from "react";
 import "datatables.net-dt";
 import "datatables.net-responsive-dt";
@@ -7,8 +6,6 @@ import { Link } from "react-router-dom";
 import DeleteModel from "../../components/common/DeleteModel";
 import api from "../../config/URL";
 import toast from "react-hot-toast";
-
-
 
 const Bank = () => {
   const tableRef = useRef(null);
@@ -27,20 +24,19 @@ const Bank = () => {
     }
     setLoading(false);
   };
+
   const getData = async () => {
-  
     try {
       const response = await api.get("/getAllTxnBank");
       if (response.status === 200) {
-        setDatas(response.data)
+        setDatas(response.data);
         setLoading(false);
       }
-    }
-    catch (e) {
+    } catch (e) {
       toast.error("Error fetching data: ", e?.response?.data?.message);
-
     }
-  }
+  };
+
   const initializeDataTable = () => {
     if ($.fn.DataTable.isDataTable(tableRef.current)) {
       // DataTable already initialized, no need to initialize again
@@ -57,6 +53,7 @@ const Bank = () => {
       table.destroy();
     }
   };
+
   useEffect(() => {
     if (!loading) {
       initializeDataTable();
@@ -65,8 +62,6 @@ const Bank = () => {
       destroyDataTable();
     };
   }, [loading]);
-
-
 
   useEffect(() => {
     getData();
@@ -85,7 +80,7 @@ const Bank = () => {
             <div className="col-auto">
               <div className="hstack gap-2 justify-content-end">
                 <Link to="/bank/add">
-                <button type="submit" className="btn btn-sm btn-button">
+                  <button type="submit" className="btn btn-sm btn-button">
                     <span>Add +</span>
                   </button>
                 </Link>
@@ -96,53 +91,66 @@ const Bank = () => {
 
         <hr className="removeHrMargin"></hr>
         <div className="table-responsive p-2 minHeight">
-          <table ref={tableRef} className="display table ">
-            <thead className="thead-light">
-              <tr>
-                <th scope="col" style={{ whiteSpace: "nowrap" }}>
-                  S.NO
-                </th>
-                <th scope="col" className="text-center">ACCOUNT NUMBER</th>
-                <th scope="col" className="text-center">BANK NAME</th>
-                <th scope="col" className="text-center">BANK TYPE</th>
-                <th scope="col" className="text-center">CURRENCY</th>
-                {/* <th scope="col">DEPARTMENT NAME</th>
+          {loading ? (
+            <div className="loader">Loading</div>
+          ) : (
+            <table ref={tableRef} className="display table ">
+              <thead className="thead-light">
+                <tr>
+                  <th scope="col" style={{ whiteSpace: "nowrap" }}>
+                    S.NO
+                  </th>
+                  <th scope="col" className="text-center">
+                    ACCOUNT NUMBER
+                  </th>
+                  <th scope="col" className="text-center">
+                    BANK NAME
+                  </th>
+                  <th scope="col" className="text-center">
+                    BANK TYPE
+                  </th>
+                  <th scope="col" className="text-center">
+                    CURRENCY
+                  </th>
+                  {/* <th scope="col">DEPARTMENT NAME</th>
                 <th scope="col">WORK LOCATION</th> */}
-                <th scope="col" className="text-center">
-                  ACTION
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {datas?.map((data, index) => (
-                <tr key={index}>
-                  <td className="text-center">{index + 1}</td>
-                  <td className="text-center">{data.accountNumber}</td>
-                  <td className="text-center">{data.bankName}</td>
-                  <td className="text-center">{data.bankType}</td>
-                  <td className="text-center">{data.currency}</td>
-                  <td className="text-center">
-                    <div className="gap-2">
-                      <Link to={`/bank/view/${data.id}`} >
-                        <button className="btn btn-light btn-sm  shadow-none border-none">
-                          View
-                        </button>
-                      </Link>
-                      <Link to={`/bank/edit/${data.id}`} className="px-2">
-                        <button className="btn btn-light  btn-sm shadow-none border-none">
-                          Edit
-                        </button>
-                      </Link>
-                      <DeleteModel  
-                      path={`/deleteTxnBank/${data.id}`} onSuccess={refreshData}/>
-                    </div>
-                  </td>
+                  <th scope="col" className="text-center">
+                    ACTION
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {datas?.map((data, index) => (
+                  <tr key={index}>
+                    <td className="text-center">{index + 1}</td>
+                    <td className="text-center">{data.accountNumber}</td>
+                    <td className="text-center">{data.bankName}</td>
+                    <td className="text-center">{data.bankType}</td>
+                    <td className="text-center">{data.currency}</td>
+                    <td className="text-center">
+                      <div className="gap-2">
+                        <Link to={`/bank/view/${data.id}`}>
+                          <button className="btn btn-light btn-sm  shadow-none border-none">
+                            View
+                          </button>
+                        </Link>
+                        <Link to={`/bank/edit/${data.id}`} className="px-2">
+                          <button className="btn btn-light  btn-sm shadow-none border-none">
+                            Edit
+                          </button>
+                        </Link>
+                        <DeleteModel
+                          path={`/deleteTxnBank/${data.id}`}
+                          onSuccess={refreshData}
+                        />
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
         </div>
-
         <div className="card-footer border-0 py-5"></div>
       </div>
     </div>
