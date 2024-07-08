@@ -3,29 +3,14 @@ import "datatables.net-dt";
 import "datatables.net-responsive-dt";
 import $ from "jquery";
 import { Link } from "react-router-dom";
-import { FaPlus } from "react-icons/fa";
 import DeleteModel from "../../../components/common/DeleteModel";
-import api from "../../../config/URL"
+import api from "../../../config/URL";
+import toast from "react-hot-toast";
 
 const Vendor = () => {
   const tableRef = useRef(null);
-  // const storedScreens = JSON.parse(sessionStorage.getItem("screens") || "{}");
   const [datas, setDatas] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const getData = async () => {
-      try {
-        const response = await api.get("/getAllMstrVendors");
-        setDatas(response.data);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    getData();
-  }, []);
 
   useEffect(() => {
     if (!loading) {
@@ -41,9 +26,7 @@ const Vendor = () => {
       // DataTable already initialized, no need to initialize again
       return;
     }
-    $(tableRef.current).DataTable({
-      responsive: true,
-    });
+    $(tableRef.current).DataTable();
   };
 
   const destroyDataTable = () => {
@@ -57,21 +40,28 @@ const Vendor = () => {
     destroyDataTable();
     setLoading(true);
     try {
-      const response = await api.get("/getAllMstrVendors");
+      const response = await api.get("getAllMstrVendors");
       setDatas(response.data);
-      initializeDataTable(); // Reinitialize DataTable after successful data update
+      initializeDataTable();
     } catch (error) {
-      console.error("Error refreshing data:", error);
+      toast.error("Error refreshing data:", error?.response?.data?.message);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   useEffect(() => {
-    const table = $(tableRef.current).DataTable();
-
-    return () => {
-      table.destroy();
+    const getVendorData = async () => {
+      try {
+        const resposnse = await api.get("getAllMstrVendors");
+        setDatas(resposnse.data);
+      } catch (error) {
+        toast.error("Error fetching data: ", error?.response?.data?.message);
+      } finally {
+        setLoading(false);
+      }
     };
+    getVendorData();
   }, []);
 
   return (
@@ -88,7 +78,7 @@ const Vendor = () => {
               <div className="hstack gap-2 justify-content-end">
                 <Link to="/vendor/add">
                   <button type="submit" className="btn btn-sm btn-button">
-                    <span cla>Add <FaPlus className="pb-1" /></span>
+                    <span>Add +</span>
                   </button>
                 </Link>
               </div>
@@ -96,60 +86,68 @@ const Vendor = () => {
           </div>
         </div>
         <hr className="removeHrMargin"></hr>
-
-
-        <div className="table-responsive p-2 minHeight">
-          <table ref={tableRef} className="display table ">
-            <thead className="thead-light">
-              <tr>
-                <th scope="col" style={{ whiteSpace: "nowrap" }}>
-                  S.NO
-                </th>
-                {/* <th scope="col">EMPLOYEE ID</th> */}
-                <th scope="col">NAME</th>
-                <th scope="col">CONTACT NAME</th>
-                <th scope="col">EMAIL</th>
-                <th scope="col">PHONE</th>
-                <th scope="col" className="text-center ">
-                  ACTION
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {datas.map((data, index) => (
-                <tr key={index}>
-                  <td className="text-center">{index + 1}</td>
-                  {/* <td>{data.empId}</td> */}
-                  <td>{data.contactName}</td>
-                  <td>{data.companyName}</td>
-                  <td>{data.email}</td>
-                  <td>{data.phone}</td>
-                  <td className="text-center">
-                    <div>
-                      <Link to={`/vendor/view/${data.id}`}>
-                        <button className="btn btn-light btn-sm  shadow-none border-none">
-                          View
-                        </button>
-                      </Link>
-                      <Link to={`/vendor/edit/${data.id}`} className="px-2">
-                        <button className="btn btn-light  btn-sm shadow-none border-none">
-                          Edit
-                        </button>
-                      </Link>
-                      <DeleteModel
-                        onSuccess={refreshData}
-                        path={`/deleteMstrVendor/${data.id}`}
-                      />
-                    </div>
-                  </td>
+        {loading ? (
+          <div className="loader">Loading</div>
+        ) : (
+          <div className="table-responsive p-2 minHeight">
+            <table ref={tableRef} className="display table ">
+              <thead className="thead-light">
+                <tr>
+                  <th scope="col" style={{ whiteSpace: "nowrap" }}>
+                    S.NO
+                  </th>
+                  <th scope="col" className="text-center">
+                    NAME
+                  </th>
+                  <th scope="col" className="text-center">
+                    ACCOUNT NAME
+                  </th>
+                  <th scope="col" className="text-center">
+                    EMAIL
+                  </th>
+                  <th scope="col" className="text-center">
+                    PHONE
+                  </th>
+                  {/* <th scope="col">DEPARTMENT NAME</th>
+                <th scope="col">WORK LOCATION</th> */}
+                  <th scope="col" className="text-center">
+                    ACTION
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-
-
-          <div className="card-footer border-0 py-5"></div>
-        </div>
+              </thead>
+              <tbody>
+                {datas?.map((data, index) => (
+                  <tr key={index}>
+                    <td className="text-center">{index + 1}</td>
+                    <td className="text-center">{data.contactName}</td>
+                    <td className="text-center">{data.bankAccName}</td>
+                    <td className="text-center">{data.email}</td>
+                    <td className="text-center">{data.phone}</td>
+                    <td className="text-center">
+                      <div className="gap-2">
+                        <Link to={`/vendor/view/${data.id}`}>
+                          <button className="btn btn-light btn-sm  shadow-none border-none">
+                            View
+                          </button>
+                        </Link>
+                        <Link to={`/vendor/edit/${data.id}`} className="px-2">
+                          <button className="btn btn-light  btn-sm shadow-none border-none">
+                            Edit
+                          </button>
+                        </Link>
+                        <DeleteModel
+                          path={`/deleteMstrVendor/${data.id}`}
+                          onSuccess={refreshData}
+                        />
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+        <div className="card-footer border-0 py-5"></div>
       </div>
     </div>
   );

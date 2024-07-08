@@ -9,6 +9,7 @@ function ExpensesEdit() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [file, setFile] = useState(null);
 
   const validationSchema = Yup.object({
     expenseAcc: Yup.string().required("*Expense Account is required"),
@@ -30,7 +31,7 @@ function ExpensesEdit() {
       paidThrough: "",
       vendor: "",
       description: "",
-      attachment: "",
+      // attachment: "",
       // subTotalIncluding: "",
       // subTotalExcluding: "",
       tax: "",
@@ -41,13 +42,17 @@ function ExpensesEdit() {
     onSubmit: async (values) => {
       setLoading(true)
       try {
+        const formData = new FormData();
+        Object.keys(values).forEach(key => formData.append(key, values[key]));
+        if (file) formData.append('attachment', file);
+
         const response = await api.put(`/updateTxnExpenses/${id}`,values, {
           headers: {
             "Content-Type": "application/json",
           },
         })
         if (response.status === 200) {
-          toast.success("Banking created successfully")
+          toast.success(response.data.message)
           navigate("/expenses");
           
         }
@@ -74,6 +79,10 @@ function ExpensesEdit() {
     getData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const handleFileChange = (event) => {
+    setFile(event.target.files[0]);
+  };
 
   return (
     <form onSubmit={formik.handleSubmit}>
@@ -296,26 +305,17 @@ function ExpensesEdit() {
                 </div>
               </div>
 
-              <div className="col-md-6 col-12 mb-2">
+             <div className="col-md-6 col-12 mb-2">
                 <lable className="form-lable">
-                Attachment
+                  Attachment
                 </lable>
                 <div className="mb-3">
                   <input
                     type="file"
                     name="attachment"
-                    className={`form-control  ${
-                      formik.touched.attachment && formik.errors.attachment
-                        ? "is-invalid"
-                        : ""
-                    }`}
-                    {...formik.getFieldProps("attachment")}
+                    className="form-control"
+                    onChange={handleFileChange}
                   />
-                  {formik.touched.attachment && formik.errors.attachment && (
-                    <div className="invalid-feedback">
-                      {formik.errors.attachment}
-                    </div>
-                  )}
                 </div>
               </div>
 
