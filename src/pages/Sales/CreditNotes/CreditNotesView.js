@@ -3,12 +3,13 @@ import { Link, useParams } from "react-router-dom";
 import Logo from "../../../assets/AccountsLogo.png";
 import toast from "react-hot-toast";
 import api from "../../../config/URL"
+import fetchAllCustomerWithIds from "../../List/CustomerList";
+import fetchAllItemWithIds from "../../List/ItemList";
 
 function CreditNotesView() {
-    const { id } = useParams();
-    const [data, setData] = useState([]);
+    const { id } = useParams();;
     const [items, setItems] = useState([]);
-    const [error, setError] = useState(null);
+    const [customerData, setCustomerData] = useState([]);
     const [creditNotes, setcreditNotes] = useState(null);
 
     useEffect(() => {
@@ -16,19 +17,31 @@ function CreditNotesView() {
             try {
                 const response = await api.get(`/getTxnCreditNotesById/${id}`);
                 setcreditNotes(response.data);
-            } catch (error) {
-                setError(error.message || "Failed to fetch data");
-                toast.error("Error fetching data: " + error.message);
+            } catch (e) {
+                toast.error("Error fetching data: " + e.message);
             }
         };
 
         fetchCreditNotes();
     }, [id]);
-
-    if (error) {
-        return <div>Error: {error}</div>;
-    }
-
+    const fetchData = async () => {
+        try {
+          const customerData = await fetchAllCustomerWithIds();
+          const itemData = await fetchAllItemWithIds();
+          setCustomerData(customerData);
+          setItems(itemData);
+        } catch (error) {
+          toast.error(error);
+        }
+      };
+    
+      useEffect(() => {
+        fetchData();
+      }, []);
+      const itemName =(id)=>{
+        const name= items.find((item)=>(item.id == id))
+        return name?.itemName
+      }
     return (
         <div className="container-fluid px-2 minHeight">
             <div className="card shadow border-0 mb-2 top-header">
@@ -52,7 +65,7 @@ function CreditNotesView() {
                 </div>
             </div>
             <div className="card shadow border-0 mb-2 minHeight">
-                <div className="container">
+                <div className="container mb-3">
                     <div className="row">
                         <div className="col-md-6 col-12">
                             <div className="d-flex justify-content-center flex-column align-items-start">
@@ -81,7 +94,7 @@ function CreditNotesView() {
                                     <h1>CREDIT NOTES</h1>
                                     <h3>{creditNotes.creditNote || "--"}</h3>
                                     <span className="text-muted mt-4">Date</span>
-                                    <h3>{creditNotes.date || "N/A"}</h3>
+                                    <h3>{creditNotes.date.split("-").reverse().join("-") || "N/A"}</h3>
                                 </>
                             )}
                         </div>
@@ -144,7 +157,7 @@ function CreditNotesView() {
                                         creditNotes.creditNoteItemsModels.map((item, index) => (
                                             <tr key={index}>
                                                 <th scope="row">{index + 1}</th>
-                                                <td>{item.item}</td>
+                                                <td>{itemName(item.itemId)}</td>
                                                 <td>{item.qty}</td>
                                                 <td>{item.price}</td>
                                                 <td>{item.taxRate}</td>
@@ -178,7 +191,7 @@ function CreditNotesView() {
                             )}
                         </div>
                     </div>
-                    <div className="row mt-5">
+                    <div className="row mt-5 mb-5">
                         {creditNotes && (
                             <>
                                 <div className="col-md-6 col-12">
@@ -193,7 +206,7 @@ function CreditNotesView() {
                                 <div className="col-md-6 col-12">
                                     <div className="d-flex justify-content-center flex-column align-items-start">
                                         <h3>Customer Notes</h3>
-                                        <p className="fw-small">{creditNotes.cusNotes || ""}</p>
+                                        <p className="fw-small">{creditNotes.creditNote || ""}</p>
                                     </div>
                                 </div>
                             </>

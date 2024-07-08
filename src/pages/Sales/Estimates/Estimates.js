@@ -13,10 +13,12 @@ const Estimates = () => {
   const [datas, setDatas] = useState();
   const [loading, setLoading] = useState(true);
   const tableRef = useRef(null);
+  const [customerData, setCustomerData] = useState([]);
+  
   const getData = async () => {
-
     try {
       const response = await api.get("/getAllTxnQuotes");
+      setCustomerData(response.data);
       if (response.status === 200) {
         setDatas(response.data)
         setLoading(false);
@@ -65,7 +67,11 @@ const Estimates = () => {
     setLoading(false);
   };
 
-
+  const contactName =(id)=>{
+    const name= customerData.find((item)=>(item.id == id))
+    return name?.contactName
+  }
+  
   useEffect(() => {
     getData();
   }, []);
@@ -113,7 +119,7 @@ const Estimates = () => {
               {datas?.map((data, index) => (
                 <tr key={index}>
                   <td className="text-center">{index + 1}</td>
-                  <td className="text-center">{data.customerName}</td>
+                  <td className="text-center">{contactName(data.customerId)}</td>
                   <td className="text-center">
                     {new Date(data.issueDate).toLocaleDateString('en-GB')}
                   </td>

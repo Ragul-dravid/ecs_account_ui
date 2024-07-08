@@ -152,7 +152,7 @@ function ExpensesView() {
                   </p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: {data.amount || ""} </p>
+                  <p className="text-muted text-sm">: {data.total || ""} </p>
                 </div>
               </div>
             </div>

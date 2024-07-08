@@ -29,6 +29,7 @@ const RecurringInvoice = () => {
     };
     getData();  
   }, []);
+  
   const fetchCustamerData = async () => {
     try {
       const response = await api.get("getAllCustomerWithIds");

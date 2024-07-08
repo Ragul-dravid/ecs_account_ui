@@ -6,12 +6,14 @@ import { Link } from "react-router-dom";
 import { FaPlus } from "react-icons/fa";
 import DeleteModel from "../../../components/common/DeleteModel";
 import api from "../../../config/URL"
+import toast from "react-hot-toast";
 
 const CreditNotes = () => {
   const tableRef = useRef(null);
   // const storedScreens = JSON.parse(sessionStorage.getItem("screens") || "{}");
   const [datas, setDatas] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [customerData, setCustomerData] = useState([]);
 
   useEffect(() => {
     const getData = async () => {
@@ -73,6 +75,22 @@ const CreditNotes = () => {
       table.destroy();
     };
   }, []);
+  const fetchCustamerData = async () => {
+    try {
+      const response = await api.get("getAllCustomerWithIds");
+      setCustomerData(response.data);
+    } catch (error) {
+      toast.error("Error fetching tax data:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCustamerData();
+  }, []);
+  const customer =(id)=>{
+    const name= customerData.find((item)=>(item.id == id))
+    return name?.contactName
+  }
   return (
     <div>
       {loading ? (
@@ -119,6 +137,9 @@ const CreditNotes = () => {
                       S.NO
                     </th>
                     <th scope="col" className="text-center">
+                    Customer Name
+                    </th>
+                    <th scope="col" className="text-center">
                     Credit Note
                     </th>
                     <th scope="col" className="text-center">
@@ -136,6 +157,7 @@ const CreditNotes = () => {
                   {datas.map((data, index) => (
                     <tr key={index}>
                       <td className="text-center">{index + 1}</td>
+                      <td className="text-center">{customer(data.customerId)}</td>
                       <td className="text-center">{data.creditNote}</td>
                       <td className="text-center">{data.reference}</td>
                       <td className="text-center">{data.amountsAre}</td>

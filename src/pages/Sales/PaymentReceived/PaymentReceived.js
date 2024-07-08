@@ -5,15 +5,15 @@ import $ from "jquery";
 import { Link } from "react-router-dom";
 import DeleteModel from "../../../components/common/DeleteModel";
 import api from "../../../config/URL";
+import { FaPlus } from "react-icons/fa6";
 import toast from "react-hot-toast";
-
+import fetchAllCustomerWithIds from "../../List/CustomerList";
 
 const PaymentReceived = () => {
   const tableRef = useRef(null);
-
+  const [customerData, setCustomerData] = useState(null);
   const [datas, setDatas] = useState();
   const [loading, setLoading] = useState(true);
-
 
   const refreshData = async () => {
     destroyDataTable();
@@ -28,18 +28,16 @@ const PaymentReceived = () => {
     setLoading(false);
   };
   const getPaymentData = async () => {
-
     try {
       const response = await api.get("/getAllTxnPaymentsReceived");
       if (response.status === 200) {
-        setDatas(response.data)
+        setDatas(response.data);
         setLoading(false);
       }
-    }
-    catch (e) {
+    } catch (e) {
       toast.error("Error fetching data: ", e);
     }
-  }
+  };
   const initializeDataTable = () => {
     if ($.fn.DataTable.isDataTable(tableRef.current)) {
       // DataTable already initialized, no need to initialize again
@@ -65,12 +63,24 @@ const PaymentReceived = () => {
     };
   }, [loading]);
 
-
-
   useEffect(() => {
     getPaymentData();
   }, []);
-
+  const fetchData = async () => {
+    try {
+      const customerData = await fetchAllCustomerWithIds();
+      setCustomerData(customerData);
+    } catch (error) {
+      toast.error(error);
+    }
+  };
+  useEffect(() => {
+    fetchData();
+  }, []);
+  const customer =(id)=>{
+    const name= customerData?.find((item)=>(item.id == id))
+    return name?.contactName
+  }
   return (
     <div className="container-fluid px-2 minHeight">
       <div className="card shadow border-0 my-2">
@@ -79,6 +89,17 @@ const PaymentReceived = () => {
             <div className="col">
               <div className="d-flex align-items-center gap-4">
                 <h1 className="h4 ls-tight headingColor ">Payment Received</h1>
+              </div>
+            </div>
+            <div className="col-auto">
+              <div className="hstack gap-2 justify-content-end">
+                <Link to="/paymentReceived/add">
+                  <button type="submit" className="btn btn-sm btn-button">
+                    <span>
+                      Add <FaPlus />
+                    </span>
+                  </button>
+                </Link>
               </div>
             </div>
           </div>
@@ -92,13 +113,28 @@ const PaymentReceived = () => {
                 <th scope="col" style={{ whiteSpace: "nowrap" }}>
                   S.NO
                 </th>
-                <th scope="col" className="text-center">PAYMENT DATE</th>
-                <th scope="col" className="text-center">PAYMENT NUMBER</th>
-                <th scope="col" className="text-center">REFERENCE NUMBER</th>
-                <th scope="col" className="text-center">CUSTOMER NAME</th>
-                <th scope="col" className="text-center">INVOICE NUMBER</th>
-                <th scope="col" className="text-center">AMOUNT</th>
-                <th scope="col" className="text-center">MODE</th>
+                <th scope="col" className="text-center">
+                  CUSTOMER NAME
+                </th>
+                <th scope="col" className="text-center">
+                  PAYMENT DATE
+                </th>
+                {/* <th scope="col" className="text-center">
+                  PAYMENT NUMBER
+                </th> */}
+                <th scope="col" className="text-center">
+                  REFERENCE NUMBER
+                </th>
+                
+                {/* <th scope="col" className="text-center">
+                  INVOICE NUMBER
+                </th> */}
+                <th scope="col" className="text-center">
+                  AMOUNT
+                </th>
+                {/* <th scope="col" className="text-center">
+                  MODE
+                </th> */}
                 <th scope="col" className="text-center">
                   ACTION
                 </th>
@@ -108,24 +144,30 @@ const PaymentReceived = () => {
               {datas?.map((data, index) => (
                 <tr key={index}>
                   <td className="text-center">{index + 1}</td>
+                  <td className="text-center">{customer(data.customerName)}</td>
                   <td className="text-center">
-                    {({ data }) => <>{data.paymentDate.substring(0, 10)}</>}
+                    {data?.paymentDate.split('-').reverse().join('-')}
                   </td>
 
-                  <td className="text-center">{data.paymentNumber}</td>
+                  {/* <td className="text-center">{data.paymentNumber}</td> */}
                   <td className="text-center">{data.reference}</td>
-                  <td className="text-center">{data.customerName}</td>
-                  <td className="text-center">{data.invoiceNumber}</td>
-                  <td className="text-center">{data.amount}</td>
-                  <td className="text-center">{data.mode}</td>
+                  {/* <td className="text-center">{data.invoiceNumber}</td> */}
+                  <td className="text-center">{data.amountReceived}</td>
+                  {/* <td className="text-center">{data.mode}</td> */}
                   <td className="text-center">
                     <div>
-                      <Link to={`/paymentReceived/view/${data.id}`} className="px-2">
+                      <Link
+                        to={`/paymentReceived/view/${data.id}`}
+                        className="px-2"
+                      >
                         <button className="btn btn-light btn-sm  shadow-none border-none">
                           View
                         </button>
                       </Link>
-                      <DeleteModel path={`/deleteTxnPaymentsReceived/${data.id}`} onSuccess={refreshData} />
+                      <DeleteModel
+                        path={`/deleteTxnPaymentsReceived/${data.id}`}
+                        onSuccess={refreshData}
+                      />
                     </div>
                   </td>
                 </tr>
