@@ -1,11 +1,30 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
 import { IoCloudDownloadSharp } from "react-icons/io5";
 import { FaTelegramPlane } from "react-icons/fa";
 import Logo from "../../../assets/AccountsLogo.png";
+import api from "../../../config/URL";
+import toast from "react-hot-toast";
 
 
 const PaymentMadeView = () => {
+
+  const { id } = useParams();
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    const getItemData = async () => {
+      try {
+        const response = await api.get(
+          `getTxnBillPaymentMadeById/${id}`
+        );
+        setData(response.data);
+      } catch (error) {
+        toast.error("Error fetching data: ", error?.response?.data?.message);
+      }
+    };
+    getItemData();
+  }, [id]);
   return (
     <div className="container-fluid px-2 minHeight">
       <div className="card shadow border-0 mb-2 top-header">
