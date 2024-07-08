@@ -1,75 +1,74 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "datatables.net-dt";
 import "datatables.net-responsive-dt";
 import $ from "jquery";
 import { Link } from "react-router-dom";
 import { FaEye } from "react-icons/fa";
 import DeleteModel from "../../../components/common/DeleteModel";
+import api from "../../../config/URL";
+import toast from "react-hot-toast";
 // import DeleteModel from "../../components/common/DeleteModel";
 
 const Paymentmade = () => {
   const tableRef = useRef(null);
+  const [datas, setDatas] = useState();
+  const [loading, setLoading] = useState(false);
 
-  const datas = [
-    {
-      id: 1,
-      date: "01.02.2024",
-      paymentNumber: "B1-018",
-      referenceNumber: "500",
-      vendorNumber: "Antony",
-      billNumber: "$5340",
-      amount: "$0.00",
-      mode: "Cash",
-    },
-    {
-      id: 2,
-      date: "01.02.2024",
-      paymentNumber: "B1-018",
-      referenceNumber: "500",
-      vendorNumber: "Antony",
-      billNumber: "$5340",
-      amount: "$0.00",
-      mode: "Cash",
-    },
-    {
-      id: 3,
-      date: "01.02.2024",
-      paymentNumber: "B1-018",
-      referenceNumber: "500",
-      vendorNumber: "Antony",
-      billNumber: "$5340",
-      amount: "$0.00",
-      mode: "Cash",
-    },
-    {
-      id: 4,
-      date: "01.02.2024",
-      paymentNumber: "B1-018",
-      referenceNumber: "500",
-      vendorNumber: "Antony",
-      billNumber: "$5340",
-      amount: "$0.00",
-      mode: "Cash",
-    },
-    {
-      id: 5,
-      date: "01.02.2024",
-      paymentNumber: "B1-018",
-      referenceNumber: "500",
-      vendorNumber: "Antony",
-      billNumber: "$5340",
-      amount: "$0.00",
-      mode: "Cash",
-    },
-  ];
+  const refreshData = async () => {
+    destroyDataTable();
+    setLoading(true);
+    try {
+      const response = await api.get("/getAllTxnBillPaymentMade");
+      setDatas(response.data);
+      initializeDataTable(); // Reinitialize DataTable after successful data update
+    } catch (error) {
+      console.error("Error refreshing data:", error.message);
+    }
+    setLoading(false);
+  };
+
+  const getData = async () => {
+    try {
+      const response = await api.get("/getAllTxnBillPaymentMade");
+      if (response.status === 200) {
+        setDatas(response.data);
+        setLoading(false);
+      }
+    } catch (e) {
+      toast.error("Error fetching data: ", e?.response?.data?.message);
+    }
+  };
+
+  const initializeDataTable = () => {
+    if ($.fn.DataTable.isDataTable(tableRef.current)) {
+      // DataTable already initialized, no need to initialize again
+      return;
+    }
+    $(tableRef.current).DataTable({
+      responsive: true,
+    });
+  };
+
+  const destroyDataTable = () => {
+    const table = $(tableRef.current).DataTable();
+    if (table && $.fn.DataTable.isDataTable(tableRef.current)) {
+      table.destroy();
+    }
+  };
 
   useEffect(() => {
-    const table = $(tableRef.current).DataTable();
-
+    if (!loading) {
+      initializeDataTable();
+    }
     return () => {
-      table.destroy();
+      destroyDataTable();
     };
+  }, [loading]);
+
+  useEffect(() => {
+    getData();
   }, []);
+
 
   return (
     <div className="container-fluid minHeight px-2">
@@ -102,25 +101,25 @@ const Paymentmade = () => {
                 <th scope="col">PAYMENT NUMBER</th>
                 <th scope="col">REFERENCE NUMBER</th>
                 <th scope="col">VENDOR NUMBER</th>
-                <th scope="col">BILL NUMBER</th>
+                {/* <th scope="col">BILL NUMBER</th>
                 <th scope="col">AMOUNT</th>
-                <th scope="col">MODE</th>
+                <th scope="col">MODE</th> */}
                 <th scope="col" className="text-center">
                   ACTION
                 </th>
               </tr>
             </thead>
             <tbody>
-              {datas.map((data, index) => (
+              {datas?.map((data, index) => (
                 <tr key={index}>
                   <td className="text-center">{index + 1}</td>
-                  <td className="text-center">{data.date}</td>
+                  <td className="text-center">{data.paymentDate}</td>
                   <td className="text-center">{data.paymentNumber}</td>
-                  <td className="text-center">{data.referenceNumber}</td>
-                  <td className="text-center">{data.vendorNumber}</td>
-                  <td className="text-center">{data.billNumber}</td>
+                  <td className="text-center">{data.reference}</td>
+                  <td className="text-center">{data.paymentNumber}</td>
+                  {/* <td className="text-center">{data.billNumber}</td>
                   <td className="text-center">{data.amount}</td>
-                  <td className="text-center">{data.mode}</td>
+                  <td className="text-center">{data.mode}</td> */}
                   <td>
                     <div>
                       <Link to="/paymentmade/view" className="px-2">
@@ -129,7 +128,10 @@ const Paymentmade = () => {
                         </button>
                       </Link>
                      
-                      <DeleteModel />
+                      <DeleteModel
+                       path={`/deleteTxnBillPaymentMade/${data.id}`}
+                       onSuccess={refreshData}
+                      />
                     </div>
                   </td>
                 </tr>

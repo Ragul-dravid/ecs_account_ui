@@ -245,7 +245,7 @@ const RecurringBillAdd = () => {
             </div>
             <div className="col-auto">
               <div className="hstack gap-2 justify-content-end">
-                <Link to="/recurringinvoice">
+                <Link to="/recurringbill">
                   <button type="submit" className="btn btn-sm btn-light">
                     <span>Back</span>
                   </button>
