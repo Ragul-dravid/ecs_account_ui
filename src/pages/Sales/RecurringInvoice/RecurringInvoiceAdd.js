@@ -4,7 +4,8 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import api from "../../../config/URL";
 import toast from "react-hot-toast";
-import Items from "../../Items/Items";
+import fetchAllCustomerWithIds from "../../List/CustomerList";
+import fetchAllItemWithIds from "../../List/ItemList";
 
 const validationSchema = Yup.object().shape({
   customerId: Yup.string().required("*Customer Name is required"),
@@ -28,16 +29,16 @@ const validationSchema = Yup.object().shape({
         .min(1, "*Quantity must be a min 1")
         .typeError("*Quantity must be a number")
         .required("*Quantity is required"),
-      taxRate: Yup.number()
+      price: Yup.number()
         .typeError("*Rate must be a number")
-        .required("*Rate is required"),
+        .notRequired(),
       disc: Yup.number()
         .typeError("*Discount must be a number")
         .required("*Discount is required"),
       tax: Yup.string().required("*Tax is required"),
       amount: Yup.number()
         .typeError("*Amount must be a number")
-        .required("*Amount is required"),
+        .notRequired(),
     })
   ),
   notes: Yup.string().required("*Notes is required"),
@@ -75,7 +76,7 @@ const RecurringInvoiceAdd = () => {
         {
           item: "",
           qty: "",
-          taxRate: "",
+          price: "",
           disc: "",
           tax: "",
           amount: "",
@@ -103,8 +104,14 @@ const RecurringInvoiceAdd = () => {
       items.forEach((item) => {
         formData.append("qty", item.qty);
         formData.append("disc", item.disc);
+        formData.append("price", item.price);
+        formData.append("taxRate", item.tax);
         formData.append("amount", item.amount);
+        formData.append("description"," item.description");
+        formData.append("account"," item.account");
         formData.append("mstrItemsId", item.item);
+        formData.append("item", item.item);
+        formData.append("itemId", item.item);
       });
       if (file) {
         formData.append("files", file);
@@ -129,7 +136,7 @@ const RecurringInvoiceAdd = () => {
   const addRow = () => {
     formik.setFieldValue("items", [
       ...formik.values.items,
-      { item: "", qty: "", taxRate: "", disc: "", tax: "", amount: "" },
+      { item: "", qty: "", price: "", disc: "", tax: "", amount: "" },
     ]);
   };
 
@@ -141,26 +148,19 @@ const RecurringInvoiceAdd = () => {
     }
   };
 
-  const fetchItemsData = async () => {
+  const fetchData = async () => {
     try {
-      const response = await api.get("getAllItemNameWithIds");
-      setItems(response.data);
+      const customerData = await fetchAllCustomerWithIds();
+      const itemData = await fetchAllItemWithIds();
+      setCustomerData(customerData);
+      setItems(itemData);
     } catch (error) {
-      toast.error("Error fetching tax data:", error);
-    }
-  };
-  const fetchCustamerData = async () => {
-    try {
-      const response = await api.get("getAllCustomerWithIds");
-      setCustomerData(response.data);
-    } catch (error) {
-      toast.error("Error fetching tax data:", error);
+      toast.error(error);
     }
   };
 
   useEffect(() => {
-    fetchItemsData();
-    fetchCustamerData();
+    fetchData();
   }, []);
 
   useEffect(() => {
@@ -178,11 +178,11 @@ const RecurringInvoiceAdd = () => {
             if (item.item) {
               try {
                 const response = await api.get(`getMstrItemsById/${item.item}`);
-                const updatedItem = { ...item, taxRate: response.data.salesPrice };
-                const amount = calculateAmount(updatedItem.qty, updatedItem.taxRate, updatedItem.disc, updatedItem.tax);
-                const itemTotalRate = updatedItem.qty * updatedItem.taxRate;
+                const updatedItem = { ...item, price: response.data.salesPrice };
+                const amount = calculateAmount(updatedItem.qty, updatedItem.price, updatedItem.disc, updatedItem.tax);
+                const itemTotalRate = updatedItem.qty * updatedItem.price;
                 const itemTotalTax = itemTotalRate * (updatedItem.tax / 100);
-                totalRate += updatedItem.taxRate;
+                totalRate += updatedItem.price;
                 totalAmount += amount;
                 totalTax += itemTotalTax;
                 return { ...updatedItem, amount };
@@ -191,11 +191,11 @@ const RecurringInvoiceAdd = () => {
               }
             }
           
-            if (item.qty && item.taxRate && item.disc !== undefined && item.tax !== undefined) {
-              const amount = calculateAmount(item.qty, item.taxRate, item.disc, item.tax);
-              const itemTotalRate = item.qty * item.taxRate;
+            if (item.qty && item.price && item.disc !== undefined && item.tax !== undefined) {
+              const amount = calculateAmount(item.qty, item.price, item.disc, item.tax);
+              const itemTotalRate = item.qty * item.price;
               const itemTotalTax = itemTotalRate * (item.tax / 100);
-              totalRate += item.taxRate;
+              totalRate += item.price;
               totalAmount += amount;
               totalTax += itemTotalTax;
               return { ...item, amount,};
@@ -216,13 +216,13 @@ const RecurringInvoiceAdd = () => {
   }, [
     formik.values.items.map((item) => item.item).join(""),
     formik.values.items.map((item) => item.qty).join(","),
-    formik.values.items.map((item) => item.taxRate).join(""),
+    formik.values.items.map((item) => item.price).join(""),
     formik.values.items.map((item) => item.disc).join(""),
     formik.values.items.map((item) => item.tax).join(""),
   ]);
 
-  const calculateAmount = (qty, taxRate, disc, tax) => {
-    const totalRate = qty * taxRate;
+  const calculateAmount = (qty, price, disc, tax) => {
+    const totalRate = qty * price;
     const discountAmount = totalRate * (disc / 100);
     const taxableAmount = totalRate * (tax / 100);
     const totalAmount = totalRate + taxableAmount - discountAmount;
@@ -606,19 +606,19 @@ const RecurringInvoiceAdd = () => {
                             <input readOnly
                               type="text"
                               className={`form-control ${
-                                formik.touched.items?.[index]?.taxRate &&
-                                formik.errors.items?.[index]?.taxRate
+                                formik.touched.items?.[index]?.price &&
+                                formik.errors.items?.[index]?.price
                                   ? "is-invalid"
                                   : ""
                               }`}
                               {...formik.getFieldProps(
-                                `items[${index}].taxRate`
+                                `items[${index}].price`
                               )}
                             />
-                            {formik.touched.items?.[index]?.taxRate &&
-                              formik.errors.items?.[index]?.taxRate && (
+                            {formik.touched.items?.[index]?.price &&
+                              formik.errors.items?.[index]?.price && (
                                 <div className="invalid-feedback">
-                                  {formik.errors.items[index].taxRate}
+                                  {formik.errors.items[index].price}
                                 </div>
                               )}
                           </td>
