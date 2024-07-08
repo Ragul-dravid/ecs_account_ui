@@ -604,19 +604,16 @@ const RecurringInvoiceEdit = () => {
                               )}
                           </td>
                           <td>
-                            <select
+                            <input
                               {...formik.getFieldProps(`items[${index}].tax`)}
-                              className={`form-select ${
+                              className={`form-control ${
                                 formik.touched.items?.[index]?.tax &&
                                 formik.errors.items?.[index]?.tax
                                   ? "is-invalid"
                                   : ""
                               }`}
-                            >
-                              <option value=""></option>
-                              <option value="Commission">Commission</option>
-                              <option value="Brokerage">Brokerage</option>
-                            </select>
+                            />
+
                             {formik.touched.items?.[index]?.tax &&
                               formik.errors.items?.[index]?.tax && (
                                 <div className="invalid-feedback">

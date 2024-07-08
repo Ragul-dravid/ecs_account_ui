@@ -18,7 +18,14 @@ function EstimateAdd() {
   const AddRowContent = () => {
     setRows((prevRows) => [...prevRows, { id: prevRows.length + 1 }]);
   };
-console.log("object",customerData)
+  const resetAndDeleteRows = () => {
+    setRows((prevRows) => {
+      const resetRows = prevRows.slice();
+      return resetRows.slice(0, -1);
+    });
+  };
+
+  console.log("object", customerData)
   const validationSchema = Yup.object({
     customerId: Yup.string().required("* Customer name is required"),
     issuesDate: Yup.string().required("*Date is required"),
@@ -33,8 +40,10 @@ console.log("object",customerData)
       expiryDate: "",
       projects: "",
       files: "",
-      currency: "",
-      amountsAre: "",
+      files: "",
+      status: "",
+      title: "",
+      tax: "",
       subTotal: "",
       total: "",
       customerNote: "",
@@ -62,13 +71,18 @@ console.log("object",customerData)
         formData.append("reference", values.reference);
         formData.append("issuesDate", values.issuesDate);
         formData.append("expiryDate", values.expiryDate);
-        formData.append("projects", values.projects);
-        formData.append("currency", values.currency);
-        formData.append("amountsAre", values.amountsAre);
+        formData.append("projects", values.projects);;
+        formData.append("status", values.status);
+        if (values.title && values.summery) {
+          formData.append("title", values.title);
+          formData.append("summery", values.summery);
+        }
+        formData.append("tax", values.tax);
         formData.append("subTotal", values.subTotal);
         formData.append("total", values.total);
         formData.append("customerNote", "test");
-        
+        formData.append("terms", values.terms);
+
         values.txnQuotesItems.forEach((item) => {
           formData.append("item", item.item);
           formData.append("qty", item.qty);
@@ -80,8 +94,9 @@ console.log("object",customerData)
           formData.append("taxRate", item.taxRate);
           formData.append("itemId", item.item);
         });
-
-        formData.append("files", values.files);
+        if (values.files) (
+          formData.append("files", values.files)
+        )
 
         const response = await api.post(
           "/createQuoteWithQuoteItems",
@@ -173,7 +188,7 @@ console.log("object",customerData)
         formik.setValues({ ...formik.values, txnQuotesItems: updatedItems });
         formik.setFieldValue("subTotal", totalRate);
         formik.setFieldValue("total", totalAmount);
-        formik.setFieldValue("tax", totalTax);
+        formik.setFieldValue("totalTax", totalTax);
       } catch (error) {
         toast.error("Error updating items: " + error.message);
       }
@@ -471,46 +486,18 @@ console.log("object",customerData)
             </div>
 
             <div className="row">
-              <div className="col-md-6 col-12 mb-3 d-flex align-items-start justify-content-start">
-                <label className="col-form-label">
-                  Currency<span className="text-danger">*</span>&nbsp;&nbsp;
-                </label>
-                <div className="overflow-x-auto">
-                  <select
-                    name="currency"
-                    className={`form-select  ${formik.touched.currency && formik.errors.currency
-                      ? "is-invalid"
-                      : ""
-                      }`}
-                    {...formik.getFieldProps("currency")}
-                    style={{ width: "100%" }}
-                  >
-                    <option></option>
-                    <option value="INR">INR</option>
-                    <option value="SGD">SGD</option>
-                    <option value="USD">USD</option>
-                  </select>
-                </div>
-                {formik.touched.currency &&
-                  formik.errors.currency && (
-                    <div className="invalid-feedback">
-                      {formik.errors.currency}
-                    </div>
-                  )}
-              </div>
-
-              <div className="col-md-6 col-12 mb-3 d-flex align-items-end justify-content-end">
+              <div className="col-12 mb-3 d-flex align-items-end justify-content-end">
                 <label className="col-form-label">
                   Amount Are<span className="text-danger">*</span>&nbsp;&nbsp;
                 </label>
                 <div className="overflow-x-auto">
                   <select
-                    name="amountsAre"
-                    className={`form-select  ${formik.touched.amountsAre && formik.errors.amountsAre
+                    name="tax"
+                    className={`form-select  ${formik.touched.tax && formik.errors.tax
                       ? "is-invalid"
                       : ""
                       }`}
-                    {...formik.getFieldProps("amountsAre")}
+                    {...formik.getFieldProps("tax")}
                     style={{ width: "100%" }}
                   >
                     <option></option>
@@ -519,10 +506,10 @@ console.log("object",customerData)
                     <option value="NO_TAX">No Tax</option>
                   </select>
                 </div>
-                {formik.touched.amountsAre &&
-                  formik.errors.amountsAre && (
+                {formik.touched.tax &&
+                  formik.errors.tax && (
                     <div className="invalid-feedback">
-                      {formik.errors.amountsAre}
+                      {formik.errors.tax}
                     </div>
                   )}
               </div>
@@ -629,7 +616,7 @@ console.log("object",customerData)
                   className="btn btn-sm my-4 mx-1 delete border-danger bg-white text-danger"
                   onClick={(e) => {
                     e.preventDefault();
-                    setRows((prevRows) => prevRows.slice(0, -1));
+                    resetAndDeleteRows();
                   }}
                 >
                   Delete
@@ -691,16 +678,16 @@ console.log("object",customerData)
                   <div className="col-sm-4">
                     <input
                       type="text"
-                      className={`form-control ${formik.touched.tax && formik.errors.tax
+                      className={`form-control ${formik.touched.totalTax && formik.errors.totalTax
                         ? "is-invalid"
                         : ""
                         }`}
-                      {...formik.getFieldProps("tax")}
+                      {...formik.getFieldProps("totalTax")}
                       readOnly
                     />
-                    {formik.touched.tax && formik.errors.tax && (
+                    {formik.touched.totalTax && formik.errors.totalTax && (
                       <div className="invalid-feedback">
-                        {formik.errors.tax}
+                        {formik.errors.totalTax}
                       </div>
                     )}
                   </div>

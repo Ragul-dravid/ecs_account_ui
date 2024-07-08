@@ -46,7 +46,8 @@ function ExpensesAdd() {
           },
         });
         if (response.status === 201) {
-          toast.success("Banking created successfully");
+          console.log(response);
+          toast.success(response.data.message);
           navigate("/expenses");
         }
       } catch (error) {
