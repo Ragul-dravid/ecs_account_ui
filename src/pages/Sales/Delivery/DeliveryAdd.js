@@ -10,10 +10,8 @@ import fetchAllItemWithIds from "../../List/ItemList";
 const validationSchema = yup.object().shape({
   challansItemsModels: yup.array().of(
     yup.object().shape({
-      tax: yup.number()
-        .min(0, "Tax must be at least 0")
-        .max(100, "Tax cannot exceed 100")
-        .required("Tax is required"),
+      item: yup.string()
+        .required("item is required"),
       // other validations as needed
     })
   ),
@@ -113,36 +111,35 @@ const DeliveryAdd = () => {
     },
   });
 
-  const calculateAmount = (index) => {
-    const { qty, rate, tax } = formik.values.challansItemsModels[index];
-    const discountPercentage = formik.values.discount || 0;
-
-    const discountedAmount =
-      qty * rate * (1 - discountPercentage / 100) + (tax / 100) * qty * rate;
-
-    const amount = Math.round(discountedAmount * 100) / 100;
-
-    formik.setFieldValue(`challansItemsModels[${index}].amount`, amount);
-
-    return amount;
-  };
-
-  const calculateTotals = () => {
+   const calculateTotals = () => {
     let subTotal = 0;
     let totalTax = 0;
     let totalDiscount = 0;
-
+  
     formik.values.challansItemsModels.forEach((item, index) => {
-      const amount = calculateAmount(index);
-      subTotal += amount;
-      totalTax += (item.tax / 100) * (item.qty * item.rate);
-      totalDiscount += item.discount || 0;
+      const qty = item.qty || 0;
+      const rate = item.rate || 0;
+      const tax = item.tax || 0;
+      const discountPercentage = formik.values.discount || 0;
+  
+      // Calculate the amount for each item
+      const itemDiscount = qty * rate * (discountPercentage / 100);
+      const discountedAmount = qty * rate - itemDiscount + (tax / 100) * qty * rate;
+      
+      // Update amount field
+      formik.setFieldValue(`challansItemsModels[${index}].amount`, discountedAmount.toFixed(2));
+  
+      subTotal += qty * rate;
+      totalTax += (tax / 100) * (qty * rate);
+      totalDiscount += itemDiscount;
     });
-
+  
+    const totalAmount = subTotal + totalTax - totalDiscount;
+  
     formik.setFieldValue("subTotal", subTotal.toFixed(2));
-    formik.setFieldValue("tax", totalTax.toFixed(2));
-    formik.setFieldValue("total", (subTotal + totalTax).toFixed(2));
+    formik.setFieldValue("Tax", totalTax.toFixed(2));
     formik.setFieldValue("totalDiscount", totalDiscount.toFixed(2));
+    formik.setFieldValue("total", totalAmount.toFixed(2));
   };
 
   useEffect(() => {
@@ -177,20 +174,6 @@ const DeliveryAdd = () => {
   };
 
 
-  const handleInputChange = (event, index, field) => {
-    const value = event.target.value;
-
-    formik.setFieldValue(`challansItemsModels[${index}].${field}`, value);
-
-    if (field === 'qty' || field === 'rate') {
-      const qty = field === 'qty' ? value : formik.values.challansItemsModels[index].qty;
-      const rate = field === 'rate' ? value : formik.values.challansItemsModels[index].rate;
-      const taxRate = formik.values.challansItemsModels[index].taxRate || 0;
-      const amount = calculateAmount(qty, rate, taxRate);
-
-      formik.setFieldValue(`challansItemsModels[${index}].amount`, amount);
-    }
-  };
 
   const fetchData = async () => {
     try {
@@ -352,6 +335,17 @@ const DeliveryAdd = () => {
                     name="salesPerson"
                     className="form-control"
                     {...formik.getFieldProps("salesPerson")}
+                  />
+                </div>
+              </div>
+              <div className="col-md-6 col-12 mb-2">
+                <label className="form-label">Discount</label>
+                <div className="mb-3">
+                  <input
+                    type="text"
+                    name="discount"
+                    className="form-control"
+                    {...formik.getFieldProps("discount")}
                   />
                 </div>
               </div>

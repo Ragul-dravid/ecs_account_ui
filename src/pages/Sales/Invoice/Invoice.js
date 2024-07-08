@@ -106,7 +106,7 @@ const Invoice = () => {
           </div>
           <hr className="removeHrMargin"></hr>
           <div className="table-responsive p-2 minHeight">
-            <table ref={tableRef} className="display table ">
+            <table ref={tableRef} className="display">
               <thead className="thead-light">
                 <tr>
                   <th scope="col" style={{ whiteSpace: "nowrap" }}>
@@ -114,9 +114,7 @@ const Invoice = () => {
                   </th>
                   <th scope="col" className="text-center">DATE</th>
                   <th scope="col" className="text-center">INVOICE NUMBER</th>
-                  <th scope="col" className="text-center">ORDER NUMBER</th>
-                  <th scope="col" className="text-center">CUSTOMER NAME</th>
-                  <th scope="col" className="text-center">BALANCE DUE</th>
+                  <th scope="col" className="text-center">Reference</th>
                   <th scope="col" className="text-center">AMOUNT</th>
                   <th scope="col" className="text-center">STATUS</th>
                   <th scope="col" className="text-center">
@@ -128,12 +126,10 @@ const Invoice = () => {
                 {datas.map((data, index) => (
                   <tr key={index}>
                     <td className="text-start">{index + 1}</td>
-                    <td className="text-start">{data.dueDates}</td>
+                    <td className="text-start">{data.issuesDate}</td>
                     <td className="text-start">{data.invoiceNumber}</td>
-                    <td className="text-start">{data.orderNumber}</td>
-                    <td className="text-start">{data.customerName}</td>
-                    <td className="text-start">{data.balanceDue}</td>
-                    <td className="text-start">{data.amount}</td>
+                    <td className="text-start">{data.reference}</td>
+                    <td className="text-start">{data.amountsAre}</td>
                     <td className="text-start">
                       {data.status === "PAID" ? (
                         <span className="badge badge-lg badge-dot">

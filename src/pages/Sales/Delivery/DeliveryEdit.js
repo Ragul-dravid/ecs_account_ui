@@ -12,10 +12,8 @@ const DeliveryEdit = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [items, setItems] = useState([]);
   const [customerData, setCustomerData] = useState([]);
   const [itemData, setItemData] = useState(null);
-  const [rows, setRows] = useState([{}]);
 
   const addRow = () => {
     formik.setFieldValue("challansItemsModels", [
@@ -52,7 +50,7 @@ const DeliveryEdit = () => {
     },
     // validationSchema: validationSchema,
     onSubmit: async (values) => {
-      const { items, file, challanDate, ...value } = values;
+      const { challansItemsModels, file, challanDate, ...value } = values;
       const formData = new FormData();
 
       Object.entries(value).forEach(([key, value]) => {
@@ -60,8 +58,9 @@ const DeliveryEdit = () => {
           formData.append(key, value);
         }
       });
-      items.forEach((item) => {
-        formData.append("itemId", item.id);
+      challansItemsModels.forEach((item) => {
+        formData.append("itemId", "1");
+        formData.append("mstrItemsId", item.item);
         formData.append("qty", item.qty);
         formData.append("rate", item.rate);
         formData.append("amount", item.amount);
@@ -71,7 +70,7 @@ const DeliveryEdit = () => {
       }
       setLoading(true);
       try {
-        const response = await api.put(`/updateDeliveryChallanWithDeliveryItems/${id}`, values, {
+        const response = await api.put(`/updateDeliveryChallanWithDeliveryItems/${id}`, formData, {
           headers: {
             "Content-Type": "application/json",
           },
@@ -94,7 +93,7 @@ const DeliveryEdit = () => {
         formik.setValues(response.data);
         formik.setFieldValue("challansItemsModels", response.data.challansItemsModels);
       } catch (error) {
-        toast.error("Error Fetch Data ", error);
+        toast.error("Error Fetch Data ", error.message);
       }
     };
 
@@ -119,39 +118,39 @@ const DeliveryEdit = () => {
       setCustomerData(customerData);
       setItemData(itemData);
     } catch (error) {
-      toast.error(error);
+      toast.error(error.message);
     }
-  };
-  const calculateAmount = (index) => {
-    const { qty, rate, tax } = formik.values.challansItemsModels[index];
-    const discountPercentage = formik.values.discount || 0;
-
-    const discountedAmount =
-      qty * rate * (1 - discountPercentage / 100) + (tax / 100) * qty * rate;
-
-    const amount = Math.round(discountedAmount * 100) / 100;
-
-    formik.setFieldValue(`challansItemsModels[${index}].amount`, amount);
-
-    return amount;
   };
 
   const calculateTotals = () => {
     let subTotal = 0;
     let totalTax = 0;
     let totalDiscount = 0;
-
-    formik.values.challansItemsModels?.forEach((item, index) => {
-      const amount = calculateAmount(index);
-      subTotal += amount;
-      totalTax += (item.tax / 100) * (item.qty * item.rate);
-      totalDiscount += item.discount || 0;
+  
+    formik.values.challansItemsModels.forEach((item, index) => {
+      const qty = item.qty || 0;
+      const rate = item.rate || 0;
+      const tax = item.tax || 0;
+      const discountPercentage = formik.values.discount || 0;
+  
+      // Calculate the amount for each item
+      const itemDiscount = qty * rate * (discountPercentage / 100);
+      const discountedAmount = qty * rate - itemDiscount + (tax / 100) * qty * rate;
+      
+      // Update amount field
+      formik.setFieldValue(`challansItemsModels[${index}].amount`, discountedAmount.toFixed(2));
+  
+      subTotal += qty * rate;
+      totalTax += (tax / 100) * (qty * rate);
+      totalDiscount += itemDiscount;
     });
-
+  
+    const totalAmount = subTotal + totalTax - totalDiscount;
+  
     formik.setFieldValue("subTotal", subTotal.toFixed(2));
-    formik.setFieldValue("tax", totalTax.toFixed(2));
-    formik.setFieldValue("total", (subTotal + totalTax).toFixed(2));
+    formik.setFieldValue("Tax", totalTax.toFixed(2));
     formik.setFieldValue("totalDiscount", totalDiscount.toFixed(2));
+    formik.setFieldValue("total", totalAmount.toFixed(2));
   };
 
   useEffect(() => {
@@ -184,24 +183,6 @@ const DeliveryEdit = () => {
     }
   };
 
-
-  const handleInputChange = (event, index, field) => {
-    const value = event.target.value;
-
-    formik.setFieldValue(`challansItemsModels[${index}].${field}`, value);
-
-    if (field === 'qty' || field === 'rate') {
-      const qty = field === 'qty' ? value : formik.values.challansItemsModels[index].qty;
-      const rate = field === 'rate' ? value : formik.values.challansItemsModels[index].rate;
-      const taxRate = formik.values.challansItemsModels[index].taxRate || 0;
-      const amount = calculateAmount(qty, rate, taxRate);
-
-      formik.setFieldValue(`challansItemsModels[${index}].amount`, amount);
-    }
-  };
-
-
-
   useEffect(() => {
     formik.values.challansItemsModels?.forEach((_, index) => {
       if (
@@ -224,6 +205,7 @@ const DeliveryEdit = () => {
 
   return (
     <div className="container-fluid p-2 minHeight m-0">
+       <form onSubmit={formik.handleSubmit}>
       <div className="card shadow border-0 mb-2 top-header">
         <div className="container-fluid py-4">
           <div className="row align-items-center">
@@ -254,14 +236,14 @@ const DeliveryEdit = () => {
                   ) : (
                     <span></span>
                   )}
-                  &nbsp;<span>Save</span>
+                  &nbsp;<span>Update</span>
                 </button>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <form onSubmit={formik.handleSubmit}>
+     
         <div className="card shadow border-0 my-2">
           <div className="container mb-5">
             <div className="row py-4">

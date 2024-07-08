@@ -23,13 +23,7 @@ function SalesOrderAdd() {
         qty: Yup.number()
           .min(1, "*must be min 1")
           .required("*Quantity is required"),
-        rate: Yup.number()
-          .min(1, "*must be min 1")
-          .required("*Rate is required"),
-        tax: Yup.number()
-          .min(1, "*must be min 1")
-          .max(100, "*must be max 100")
-          .required("*Tax is required"),
+       
       })
     ),
   });
@@ -164,38 +158,38 @@ function SalesOrderAdd() {
   }, [
     formik.values.txnSalesOrderItemsModels.map((item) => item.item).join(","),
   ]);
-
-  const calculateAmount = (index) => {
-    const { qty, rate, tax } = formik.values.txnSalesOrderItemsModels[index];
-    const discountPercentage = formik.values.discount || 0;
-
-    const discountedAmount =
-      qty * rate * (1 - discountPercentage / 100) + (tax / 100) * qty * rate;
-
-    const amount = Math.round(discountedAmount * 100) / 100;
-
-    formik.setFieldValue(`txnSalesOrderItemsModels[${index}].amount`, amount);
-
-    return amount;
-  };
-
+  
   const calculateTotals = () => {
     let subTotal = 0;
     let totalTax = 0;
     let totalDiscount = 0;
-
+  
     formik.values.txnSalesOrderItemsModels.forEach((item, index) => {
-      const amount = calculateAmount(index);
-      subTotal += amount || 0;
-      totalTax += (item.tax / 100) * (item.qty * item.rate) || 0;
-      totalDiscount = (subTotal * (formik.values.discount || 0)) / 100;
+      const qty = item.qty || 0;
+      const rate = item.rate || 0;
+      const tax = item.tax || 0;
+      const discountPercentage = formik.values.discount || 0;
+  
+      // Calculate the amount for each item
+      const itemDiscount = qty * rate * (discountPercentage / 100);
+      const discountedAmount = qty * rate - itemDiscount + (tax / 100) * qty * rate;
+      
+      // Update amount field
+      formik.setFieldValue(`txnSalesOrderItemsModels[${index}].amount`, discountedAmount.toFixed(2));
+  
+      subTotal += qty * rate;
+      totalTax += (tax / 100) * (qty * rate);
+      totalDiscount += itemDiscount;
     });
-
+  
+    const totalAmount = subTotal + totalTax - totalDiscount;
+  
     formik.setFieldValue("subTotal", subTotal.toFixed(2));
     formik.setFieldValue("totalTax", totalTax.toFixed(2));
-    formik.setFieldValue("total", (subTotal + totalTax).toFixed(2));
-    formik.setFieldValue("discountAmount", totalDiscount);
+    formik.setFieldValue("discountAmount", totalDiscount.toFixed(2));
+    formik.setFieldValue("total", totalAmount.toFixed(2));
   };
+  
 
   useEffect(() => {
     calculateTotals();

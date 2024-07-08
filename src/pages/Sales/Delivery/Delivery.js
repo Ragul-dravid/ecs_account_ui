@@ -95,7 +95,7 @@ const Delivery = () => {
 
         <hr className="removeHrMargin"></hr>
         <div className="table-responsive p-2 minHeight">
-          <table ref={tableRef} className="display table ">
+          <table ref={tableRef} className="display">
             <thead className="thead-light">
               <tr>
                 <th scope="col" style={{ whiteSpace: "nowrap" }}>
