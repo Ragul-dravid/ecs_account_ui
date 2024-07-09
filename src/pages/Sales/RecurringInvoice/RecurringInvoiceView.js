@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import api from "../../../config/URL";
 import toast from "react-hot-toast";
-import { IoCloudDownloadSharp } from "react-icons/io5";
-import { FaTelegramPlane } from "react-icons/fa";
 import Logo from "../../../assets/AccountsLogo.png";
+import fetchAllCustomerWithIds from "../../List/CustomerList";
+import fetchAllItemWithIds from "../../List/ItemList";
 
 const RecurringInvoiceView = () => {
     const { id } = useParams();
     const [datas, setData] = useState([]);
+    const [items, setItems] = useState([]);
     const [customerData, setCustomerData] = useState([]);
 
     useEffect(() => {
@@ -22,29 +23,41 @@ const RecurringInvoiceView = () => {
         }
       };
       getData();
-      fetchCustamerData();
+      fetchData();
     }, [id]);
 
-    const fetchCustamerData = async () => {
-        try {
-          const response = await api.get("getAllCustomerWithIds");
-          setCustomerData(response.data);
-        } catch (error) {
-          toast.error("Error fetching tax data:", error);
-        }
-      };
+    const fetchData = async () => {
+      try {
+        const customerData = await fetchAllCustomerWithIds();
+        const itemData = await fetchAllItemWithIds();
+        setCustomerData(customerData);
+        setItems(itemData);
+      } catch (error) {
+        toast.error(error);
+      }
+    };
+  
+    useEffect(() => {
+      fetchData();
+    }, [datas]);
+
     const customer =(id)=>{
         const name= customerData.find((item)=>(item.id == id))
         return name?.contactName
       }
+    const itemName =(id)=>{
+        const name= items.find((item)=>(item.id == id))
+        return name?.itemName
+      }
+
     return (
-        <div className="container-fluid px-2 minHeight">
+        <div className="container-fluid px-2 minHeight ">
           <div className="card shadow border-0 mb-2 top-header">
             <div className="container-fluid py-4">
               <div className="row align-items-center">
                 <div className="col">
                   <div className="d-flex align-items-center gap-4">
-                    <h1 className="h4 ls-tight headingColor">View Sales Order</h1>
+                    <h1 className="h4 ls-tight headingColor">View Recurring Invoice</h1>
                   </div>
                 </div>
                 <div className="col-auto">
@@ -59,12 +72,12 @@ const RecurringInvoiceView = () => {
               </div>
             </div>
           </div>
-          <div className="card shadow border-0 mb-2 minHeight">
-            <div className="container">
-              <div className="row">
+          <div className="card shadow border-0 mb-2 minHeight ">
+            <div className="container mb-5">
+              <div className="row mt-3">
                 <div className="col-md-6 col-12">
                   <div className="d-flex justify-content-center flex-column align-items-start">
-                    <div className="d-flex">
+                    <div className="d-flex my-2">
                       <img
                         src={Logo}
                         alt="Company Logo"
@@ -87,9 +100,9 @@ const RecurringInvoiceView = () => {
                   {datas && (
                     <>
                       <h1>Recurring Invoice</h1>
-                      <h3>{datas.datas || "--"}</h3>
+                      <h3>{datas.invoiceFrom || "--"}</h3>
                       <span className="text-muted mt-4">Order Date</span>
-                      <h3>{datas.orderDate || "N/A"}</h3>
+                      <h3>{datas?.invoiceDate?.split("-").reverse().join("-") || "N/A"}</h3>
                     </>
                   )}
                 </div>
@@ -161,7 +174,7 @@ const RecurringInvoiceView = () => {
                   </div>
                 </div>
               </div>
-              <div className="row mt-5">
+              <div className="row mt-5 ">
                 <h3 style={{ background: "#4066D5" }} className="text-light p-2">
                   Item Table
                 </h3>
@@ -185,11 +198,11 @@ const RecurringInvoiceView = () => {
                         datas.txnRecurringInvoiceItemsModels.map((item, index) => (
                           <tr key={index}>
                             <th scope="row">{index + 1}</th>
-                            <td>{item.item}</td>
+                            <td>{itemName(item.item)}</td>
                             <td>{item.qty}</td>
-                            <td>{item.rate}</td>
-                            <td>{item.discount}</td>
-                            <td>{item.tax}</td>
+                            <td>{item.price}</td>
+                            <td>{item.disc}</td>
+                            <td>{item.taxRate}</td>
                             <td>{item.amount}</td>
                           </tr>
                         ))}
@@ -207,9 +220,9 @@ const RecurringInvoiceView = () => {
                         </div>
                       </div>
                       <div className="row mb-3">
-                        <label className="col-sm-6 col-form-label">Discount</label>
+                        <label className="col-sm-6 col-form-label">Tax</label>
                         <div className="col-sm-6">
-                          ₹{datas.discount || "0"}
+                          ₹{datas.tax || "0"}
                         </div>
                       </div>
                       <div className="row mb-3">
@@ -220,7 +233,7 @@ const RecurringInvoiceView = () => {
                   )}
                 </div>
               </div>
-              <div className="row mt-5">
+              <div className="row mt-5 mb-5">
                 {datas && (
                   <>
                     <div className="col-md-6 col-12">

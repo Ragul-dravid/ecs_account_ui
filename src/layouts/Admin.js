@@ -92,6 +92,7 @@ import RecurringBill from "../pages/Purchase/RecurringBills/RecurringBill";
 import RecurringBillEdit from "../pages/Purchase/RecurringBills/RecurringBillEdit";
 import RecurringBillView from "../pages/Purchase/RecurringBills/RecurringBillView";
 import PaymentReceivedAdd from "../pages/Sales/PaymentReceived/PaymentReceivedAdd";
+import PaymentReceivedEdit from "../pages/Sales/PaymentReceived/PaymentReceivedEdit";
 
 function Admin({ handleLogout }) {
   return (
@@ -250,10 +251,8 @@ function Admin({ handleLogout }) {
               {/* {/ Payment Received /} */}
               <Route path="/paymentReceived" element={<PaymentReceived />} />
               <Route path="/paymentReceived/add" element={<PaymentReceivedAdd />} />
-              <Route
-                path="/paymentReceived/view/:id"
-                element={<PaymentReceivedView />}
-              />
+              <Route path="/paymentReceived/view/:id" element={<PaymentReceivedView />}/>
+              <Route path="/paymentReceived/edit/:id" element={<PaymentReceivedEdit />}/>
 
               {/* {/ Department /} */}
               <Route path="/department" element={<Department />} />

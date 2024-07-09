@@ -173,18 +173,10 @@ function CreditNotesEdit() {
               try {
                 const response = await api.get(`getMstrItemsById/${item.item}`);
                 console.log("object", response.data);
-                const updatedItem = {
-                  ...item,
-                  price: response.data.salesPrice,
-                };
+                const updatedItem = {...item,price: response.data.salesPrice,};
 
                 const qty = updatedItem.qty || 1;
-                const amount = calculateAmount(
-                  qty,
-                  updatedItem.taxRate,
-                  updatedItem.discount,
-                  updatedItem.price
-                );
+                const amount = calculateAmount(qty,updatedItem.taxRate,updatedItem.discount,updatedItem.price);
                 const itemTotalRate = qty * updatedItem.price;
                 const itemTotalTax =
                   itemTotalRate * (updatedItem.taxRate / 100);
@@ -205,12 +197,7 @@ function CreditNotesEdit() {
             const qty = item.qty;
             // Calculate amount if all necessary values are present
             if (item.price !== undefined &&item.discount !== undefined &&item.taxRate !== undefined) {
-              const amount = calculateAmount(
-                qty,
-                item.taxRate,
-                item.discount,
-                item.price
-              );
+              const amount = calculateAmount(qty,item.taxRate,item.discount,item.price);
               const itemTotalRate = qty * item.price;
               const itemTotalTax = itemTotalRate * (item.taxRate / 100);
 
@@ -225,10 +212,7 @@ function CreditNotesEdit() {
           })
         );
 
-        formik.setValues({
-          ...formik.values,
-          txnCreditNoteItems: updatedItems,
-        });
+        formik.setValues({...formik.values,txnCreditNoteItems: updatedItems,});
         formik.setFieldValue("subTotal", totalRate);
         formik.setFieldValue("total", totalAmount);
         formik.setFieldValue("tax", totalTax);
@@ -262,7 +246,7 @@ function CreditNotesEdit() {
             <div className="row align-items-center">
               <div className="col">
                 <div className="d-flex align-items-center gap-4">
-                  <h1 className="h4 ls-tight headingColor">Add Sales Order</h1>
+                  <h1 className="h4 ls-tight headingColor">Edit Credit Notes</h1>
                 </div>
               </div>
               <div className="col-auto">
