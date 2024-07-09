@@ -87,6 +87,7 @@ const CreditNotes = () => {
   useEffect(() => {
     fetchCustamerData();
   }, []);
+  
   const customer =(id)=>{
     const name= customerData.find((item)=>(item.id == id))
     return name?.contactName
