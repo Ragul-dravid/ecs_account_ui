@@ -18,10 +18,7 @@ function InvoiceEdit() {
     customerId: Yup.string().required("* Customer name is required"),
     txnInvoiceOrderItemsModels: Yup.array().of(
       Yup.object({
-        item: Yup.string().required("*item is required"),
-        qty: Yup.number()
-          .min(1, "*must be min 1")
-          .required("*Quantity is required"),
+        item: Yup.string().required("item is required"),
         })
     ),
   });

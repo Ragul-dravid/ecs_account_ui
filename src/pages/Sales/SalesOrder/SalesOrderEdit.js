@@ -20,11 +20,8 @@ function SalesOrderEdit() {
     shipmentDate: Yup.string().required("* Shipment Date is required"),
     txnSalesOrderItemsModels: Yup.array().of(
       Yup.object({
-        item: Yup.string().required("*item is required"),
-        qty: Yup.number()
-          .min(1, "*must be min 1")
-          .required("*Quantity is required"),
-      })
+        item: Yup.string().required("item is required"),
+        })
     ),
   });
 
@@ -75,7 +72,7 @@ function SalesOrderEdit() {
       formData.append("cusNotes", values.cusNotes);
       formData.append("termsConditions", values.termsConditions);
       formData.append("files", values.files);
-      values.txnSalesOrderItemsModels.forEach((item) => {
+      values.txnSalesOrderItemsModels?.forEach((item) => {
         formData.append("item", item.item);
         formData.append("qty", item.qty);
         formData.append("rate", item.rate);
@@ -156,6 +153,7 @@ function SalesOrderEdit() {
       itemAmt(value, index);
     }
   };
+  
 
   useEffect(() => {
     fetchData();
@@ -593,6 +591,7 @@ function SalesOrderEdit() {
                               {...formik.getFieldProps(
                                 `txnSalesOrderItemsModels[${index}].rate`
                               )}
+                              readOnly
                             />
                             {formik.touched.txnSalesOrderItemsModels &&
                               formik.touched.txnSalesOrderItemsModels[index] &&

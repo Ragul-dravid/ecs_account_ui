@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useFormik } from "formik";
-import { MdDeleteSweep } from "react-icons/md";
 import toast from "react-hot-toast";
 import api from "../../../config/URL";
 import fetchAllCustomerWithIds from "../../List/CustomerList";
 import fetchAllItemWithIds from "../../List/ItemList";
-
 
 const DeliveryEdit = () => {
   const { id } = useParams();
@@ -24,6 +22,7 @@ const DeliveryEdit = () => {
 
   const formik = useFormik({
     initialValues: {
+      deliveryId: id,
       customerId: "",
       reference: "",
       challanDate: "",
@@ -44,37 +43,47 @@ const DeliveryEdit = () => {
           // tax: "",
           amount: "",
           itemId: "",
+          mstrItemsId: "",
         },
       ],
       file: null,
     },
     // validationSchema: validationSchema,
     onSubmit: async (values) => {
-      const { challansItemsModels, file, challanDate, ...value } = values;
       const formData = new FormData();
-
-      Object.entries(value).forEach(([key, value]) => {
-        if (value !== undefined) {
-          formData.append(key, value);
-        }
-      });
-      challansItemsModels.forEach((item) => {
-        formData.append("itemId", "1");
-        formData.append("mstrItemsId", item.item);
+      formData.append("deliveryId", id);
+      formData.append("customerId", values.customerId);
+      formData.append("salesPerson", values.salesPerson);
+      formData.append("reference", values.reference);
+      formData.append("challanDate", values.challanDate);
+      formData.append("challanType", values.challanType);
+      formData.append("paymentTerms", values.paymentTerms);
+      formData.append("discount", values.discount);
+      formData.append("subTotal", values.subTotal);
+      formData.append("adjustment", values.adjustment);
+      formData.append("total", values.total);
+      formData.append("cusNotes", values.cusNotes);
+      formData.append("termsConditions", values.termsConditions);
+      formData.append("files", values.files);
+      values.challansItemsModels?.forEach((item) => {
+        formData.append("item", item.item);
         formData.append("qty", item.qty);
         formData.append("rate", item.rate);
         formData.append("amount", item.amount);
+        formData.append("itemId", item.id);
+        formData.append("mstrItemsId", item.item);
       });
-      if (file) {
-        formData.append("files", file);
-      }
       setLoading(true);
       try {
-        const response = await api.put(`/updateDeliveryChallanWithDeliveryItems/${id}`, formData, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+        const response = await api.put(
+          `/updateDeliveryChallanWithDeliveryItems/${id}`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
         if (response.status === 200) {
           toast.success("Delivery created successfully");
           navigate("/delivery");
@@ -91,7 +100,10 @@ const DeliveryEdit = () => {
       try {
         const response = await api.get(`/getTxnDeliveryChallansById/${id}`);
         formik.setValues(response.data);
-        formik.setFieldValue("challansItemsModels", response.data.challansItemsModels);
+        formik.setFieldValue(
+          "challansItemsModels",
+          response.data.challansItemsModels
+        );
       } catch (error) {
         toast.error("Error Fetch Data ", error.message);
       }
@@ -101,7 +113,6 @@ const DeliveryEdit = () => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  
 
   const removeRow = () => {
     const items = [...formik.values.challansItemsModels];
@@ -126,27 +137,31 @@ const DeliveryEdit = () => {
     let subTotal = 0;
     let totalTax = 0;
     let totalDiscount = 0;
-  
+
     formik.values.challansItemsModels.forEach((item, index) => {
       const qty = item.qty || 0;
       const rate = item.rate || 0;
       const tax = item.tax || 0;
       const discountPercentage = formik.values.discount || 0;
-  
+
       // Calculate the amount for each item
       const itemDiscount = qty * rate * (discountPercentage / 100);
-      const discountedAmount = qty * rate - itemDiscount + (tax / 100) * qty * rate;
-      
+      const discountedAmount =
+        qty * rate - itemDiscount + (tax / 100) * qty * rate;
+
       // Update amount field
-      formik.setFieldValue(`challansItemsModels[${index}].amount`, discountedAmount.toFixed(2));
-  
+      formik.setFieldValue(
+        `challansItemsModels[${index}].amount`,
+        discountedAmount.toFixed(2)
+      );
+
       subTotal += qty * rate;
       totalTax += (tax / 100) * (qty * rate);
       totalDiscount += itemDiscount;
     });
-  
+
     const totalAmount = subTotal + totalTax - totalDiscount;
-  
+
     formik.setFieldValue("subTotal", subTotal.toFixed(2));
     formik.setFieldValue("Tax", totalTax.toFixed(2));
     formik.setFieldValue("totalDiscount", totalDiscount.toFixed(2));
@@ -155,8 +170,9 @@ const DeliveryEdit = () => {
 
   useEffect(() => {
     calculateTotals();
-  }, [
-    formik.values.challansItemsModels?.map((item) => `${item.qty}-${item.rate}-${item.tax}-${item.amount}`)
+  },[
+    formik.values.challansItemsModels
+      ?.map((item) => `${item.qty}-${item.rate}-${item.tax}-${item.amount}`)
       .join(","),
     formik.values.discount,
   ]);
@@ -172,8 +188,6 @@ const DeliveryEdit = () => {
       toast.error(error.message);
     }
   };
-
-
 
   const handleSelectChange = (event, index) => {
     const { value } = event.target;
@@ -194,56 +208,53 @@ const DeliveryEdit = () => {
         formik.setFieldValue(`challansItemsModels[${index}].tax`, 0);
       }
     });
-  }, [
-    formik.values.challansItemsModels?.map((item) => item.item).join(","),
-  ]);
+  }, [formik.values.challansItemsModels?.map((item) => item.item).join(",")]);
 
   useEffect(() => {
     fetchData();
-
   }, []);
 
   return (
     <div className="container-fluid p-2 minHeight m-0">
-       <form onSubmit={formik.handleSubmit}>
-      <div className="card shadow border-0 mb-2 top-header">
-        <div className="container-fluid py-4">
-          <div className="row align-items-center">
-            <div className="col">
-              <div className="d-flex align-items-center gap-4">
-                <h1 className="h4 ls-tight headingColor">Edit Delivery</h1>
+      <form onSubmit={formik.handleSubmit}>
+        <div className="card shadow border-0 mb-2 top-header">
+          <div className="container-fluid py-4">
+            <div className="row align-items-center">
+              <div className="col">
+                <div className="d-flex align-items-center gap-4">
+                  <h1 className="h4 ls-tight headingColor">Edit Delivery</h1>
+                </div>
               </div>
-            </div>
-            <div className="col-auto">
-              <div className="hstack gap-2 justify-content-end">
-                <Link to="/delivery">
-                  <button type="submit" className="btn btn-sm btn-light">
-                    <span>Back</span>
-                  </button>
-                </Link>
+              <div className="col-auto">
+                <div className="hstack gap-2 justify-content-end">
+                  <Link to="/delivery">
+                    <button type="submit" className="btn btn-sm btn-light">
+                      <span>Back</span>
+                    </button>
+                  </Link>
 
-                <button
-                  type="submit"
-                  onClick={formik.handleSubmit}
-                  className="btn btn-sm btn-button"
-                  disabled={loading}
-                >
-                  {loading ? (
-                    <span
-                      className="spinner-border spinner-border-sm"
-                      aria-hidden="true"
-                    ></span>
-                  ) : (
-                    <span></span>
-                  )}
-                  &nbsp;<span>Update</span>
-                </button>
+                  <button
+                    type="submit"
+                    onClick={formik.handleSubmit}
+                    className="btn btn-sm btn-button"
+                    disabled={loading}
+                  >
+                    {loading ? (
+                      <span
+                        className="spinner-border spinner-border-sm"
+                        aria-hidden="true"
+                      ></span>
+                    ) : (
+                      <span></span>
+                    )}
+                    &nbsp;<span>Update</span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-     
+
         <div className="card shadow border-0 my-2">
           <div className="container mb-5">
             <div className="row py-4">
@@ -252,10 +263,11 @@ const DeliveryEdit = () => {
                 <div className="mb-3">
                   <select
                     {...formik.getFieldProps("customerId")}
-                    className={`form-select    ${formik.touched.customerId && formik.errors.customerId
+                    className={`form-select    ${
+                      formik.touched.customerId && formik.errors.customerId
                         ? "is-invalid"
                         : ""
-                      }`}
+                    }`}
                   >
                     <option value=""> </option>
                     {customerData &&
@@ -337,6 +349,17 @@ const DeliveryEdit = () => {
                   />
                 </div>
               </div>
+              <div className="col-md-6 col-12 mb-2">
+                <label className="form-label">Discount</label>
+                <div className="mb-3">
+                  <input
+                    type="text"
+                    name="discount"
+                    className="form-control"
+                    {...formik.getFieldProps("discount")}
+                  />
+                </div>
+              </div>
             </div>
             <div className="row">
               <div className="">
@@ -348,110 +371,174 @@ const DeliveryEdit = () => {
                 </h3>
               </div>
               <div className="table-responsive">
-                <table className="table ">
+                <table className="table table-sm table-nowrap">
                   <thead>
                     <tr>
-                      {/* <th scope="col">S.NO</th> */}
-                      <th scope="col">ITEM DETAILS</th>
-                      <th scope="col">QUANTITY</th>
-                      <th scope="col">RATE</th>
-                      <th scope="col">TAX</th>
-                      <th scope="col">AMOUNT</th>
+                      <th style={{ width: "35%" }}>Item</th>
+                      <th style={{ width: "15%" }}>Quantity</th>
+                      <th style={{ width: "15%" }}>Rate</th>
+                      <th style={{ width: "15%" }}>Tax (%)</th>
+                      <th style={{ width: "15%" }}>Amount</th>
+                      <th style={{ width: "5%" }}></th>
                     </tr>
                   </thead>
                   <tbody>
-                    {formik.values.challansItemsModels?.map(
-                      (item, index) => (
-                        <tr key={index}>
-                          <td>
-                            <select
-                              className={`form-select ${formik.touched.challansItemsModels &&
-                                formik.errors.challansItemsModels
+                    {formik.values.challansItemsModels.map((item, index) => (
+                      <tr key={index}>
+                        <td>
+                          <select
+                            className={`form-select ${
+                              formik.touched.challansItemsModels &&
+                              formik.touched.challansItemsModels[index] &&
+                              formik.errors.challansItemsModels &&
+                              formik.errors.challansItemsModels[index] &&
+                              formik.errors.challansItemsModels[index].item
                                 ? "is-invalid"
                                 : ""
-                                }`}
-                              onChange={(e) => handleSelectChange(e, index)}
-                              value={item.item}
-                            >
-                              <option value=""></option>
-                              {itemData &&
-                                itemData.map((itemId) => (
-                                  <option
-                                    key={itemId.id}
-                                    value={itemId.id}
-                                    disabled={formik.values.challansItemsModels.some(
-                                      (existingItem) =>
-                                        existingItem.item === itemId.id
-                                    )}
-                                  >
-                                    {itemId.itemName}
-                                  </option>
-                                ))}
-                            </select>
-                          </td>
-                          <td>
-                            <input
-                              type="number"
-                              min="0"
-
-                              className={`form-control ${formik.touched.challansItemsModels &&
-                                formik.errors.challansItemsModels
+                            }`}
+                            onChange={(e) => handleSelectChange(e, index)}
+                            value={item.item}
+                          >
+                            <option value=""></option>
+                            {itemData &&
+                              itemData.map((itemId) => (
+                                <option
+                                  key={itemId.id}
+                                  value={itemId.id}
+                                  disabled={formik.values.challansItemsModels.some(
+                                    (existingItem) =>
+                                      existingItem.item === itemId.id
+                                  )}
+                                >
+                                  {itemId.itemName}
+                                </option>
+                              ))}
+                          </select>
+                          {formik.touched.challansItemsModels &&
+                            formik.touched.challansItemsModels[index] &&
+                            formik.errors.challansItemsModels &&
+                            formik.errors.challansItemsModels[index] &&
+                            formik.errors.challansItemsModels[index].item && (
+                              <div className="invalid-feedback">
+                                {formik.errors.challansItemsModels[index].item}
+                              </div>
+                            )}
+                        </td>
+                        <td>
+                          <input
+                            type="number"
+                            min="1"
+                            className={`form-control ${
+                              formik.touched.challansItemsModels &&
+                              formik.touched.challansItemsModels[index] &&
+                              formik.errors.challansItemsModels &&
+                              formik.errors.challansItemsModels[index] &&
+                              formik.errors.challansItemsModels[index].qty
                                 ? "is-invalid"
                                 : ""
-                                }`}
-                              {...formik.getFieldProps(
-                                `challansItemsModels[${index}].qty`
-                              )}
-                            />
-                          </td>
-                          <td>
-                            <input
-                              type="text"
-                              min="0"
-
-                              className={`form-control ${formik.touched.challansItemsModels &&
-                                formik.errors.challansItemsModels
+                            }`}
+                            {...formik.getFieldProps(
+                              `challansItemsModels[${index}].qty`
+                            )}
+                          />
+                          {formik.touched.challansItemsModels &&
+                            formik.touched.challansItemsModels[index] &&
+                            formik.errors.challansItemsModels &&
+                            formik.errors.challansItemsModels[index] &&
+                            formik.errors.challansItemsModels[index].qty && (
+                              <div className="invalid-feedback">
+                                {formik.errors.challansItemsModels[index].qty}
+                              </div>
+                            )}
+                        </td>
+                        <td>
+                          <input
+                            type="number"
+                            min="1"
+                            className={`form-control ${
+                              formik.touched.challansItemsModels &&
+                              formik.touched.challansItemsModels[index] &&
+                              formik.errors.challansItemsModels &&
+                              formik.errors.challansItemsModels[index] &&
+                              formik.errors.challansItemsModels[index].rate
                                 ? "is-invalid"
                                 : ""
-                                }`}
-                              {...formik.getFieldProps(
-                                `challansItemsModels[${index}].rate`
-                              )}
-                            />
-                          </td>
-                          <td>
-                            <input
-                              type="number"
-                              min="0"
-                              max="100"  // Add max attribute here
-                              className={`form-control ${formik.touched.challansItemsModels &&
-                                formik.errors.challansItemsModels
+                            }`}
+                            {...formik.getFieldProps(
+                              `challansItemsModels[${index}].rate`
+                            )}
+                            readOnly
+                          />
+                          {formik.touched.challansItemsModels &&
+                            formik.touched.challansItemsModels[index] &&
+                            formik.errors.challansItemsModels &&
+                            formik.errors.challansItemsModels[index] &&
+                            formik.errors.challansItemsModels[index].rate && (
+                              <div className="invalid-feedback">
+                                {formik.errors.challansItemsModels[index].rate}
+                              </div>
+                            )}
+                        </td>
+                        <td>
+                          <input
+                            type="number"
+                            className={`form-control ${
+                              formik.touched.challansItemsModels &&
+                              formik.touched.challansItemsModels[index] &&
+                              formik.errors.challansItemsModels &&
+                              formik.errors.challansItemsModels[index] &&
+                              formik.errors.challansItemsModels[index].tax
                                 ? "is-invalid"
                                 : ""
-                                }`}
-                              {...formik.getFieldProps(
-                                `challansItemsModels[${index}].tax`
-                              )}
-                            />
-                          </td>
-
-                          <td>
-                            <input
-                              type="number"
-                              min="0"
-
-                              className={`form-control ${formik.touched.challansItemsModels &&
-                                formik.errors.challansItemsModels
+                            }`}
+                            value={
+                              formik.values.challansItemsModels[index].tax || 0
+                            }
+                            {...formik.getFieldProps(
+                              `challansItemsModels[${index}].tax`
+                            )}
+                          />
+                          {formik.touched.challansItemsModels &&
+                            formik.touched.challansItemsModels[index] &&
+                            formik.errors.challansItemsModels &&
+                            formik.errors.challansItemsModels[index] &&
+                            formik.errors.challansItemsModels[index].tax && (
+                              <div className="invalid-feedback">
+                                {formik.errors.challansItemsModels[index].tax}
+                              </div>
+                            )}
+                        </td>
+                        <td>
+                          <input
+                            type="number"
+                            min="0"
+                            className={`form-control ${
+                              formik.touched.challansItemsModels &&
+                              formik.touched.challansItemsModels[index] &&
+                              formik.errors.challansItemsModels &&
+                              formik.errors.challansItemsModels[index] &&
+                              formik.errors.challansItemsModels[index].amount
                                 ? "is-invalid"
                                 : ""
-                                }`}
-                              readOnly
-                              value={item.amount}
-                            />
-                          </td>
-                        </tr>
-                      )
-                    )}
+                            }`}
+                            readOnly
+                            value={item.amount}
+                          />
+                          {formik.touched.challansItemsModels &&
+                            formik.touched.challansItemsModels[index] &&
+                            formik.errors.challansItemsModels &&
+                            formik.errors.challansItemsModels[index] &&
+                            formik.errors.challansItemsModels[index].amount && (
+                              <div className="invalid-feedback">
+                                {
+                                  formik.errors.challansItemsModels[index]
+                                    .amount
+                                }
+                              </div>
+                            )}
+                        </td>
+                      </tr>
+                    ))}
                   </tbody>
                 </table>
               </div>
