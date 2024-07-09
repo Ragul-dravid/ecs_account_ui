@@ -10,11 +10,12 @@ import toast from "react-hot-toast";
 
 
 const Estimates = () => {
-  const [datas, setDatas] = useState();
-  const [loading, setLoading] = useState(true);
   const tableRef = useRef(null);
+  // const storedScreens = JSON.parse(sessionStorage.getItem("screens") || "{}");
+  const [datas, setDatas] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [customerData, setCustomerData] = useState([]);
-  
+  console.log("object",customerData)
   const getData = async () => {
     try {
       const response = await api.get("/getAllTxnQuotes");
@@ -45,14 +46,11 @@ const Estimates = () => {
       table.destroy();
     }
   };
-  useEffect(() => {
-    if (!loading) {
-      initializeDataTable();
-    }
-    return () => {
-      destroyDataTable();
-    };
-  }, [loading]);
+
+  const customer =(id)=>{
+    const name= customerData.find((item)=>(item.id === id))
+    return name?.customerName
+  }
 
   const refreshData = async () => {
     destroyDataTable();
@@ -67,10 +65,15 @@ const Estimates = () => {
     setLoading(false);
   };
 
-  const contactName =(id)=>{
-    const name= customerData.find((item)=>(item.id == id))
-    return name?.contactName
-  }
+  useEffect(() => {
+    if (!loading) {
+      initializeDataTable();
+    }
+    return () => {
+      destroyDataTable();
+    };
+  }, [loading]);
+
   
   useEffect(() => {
     getData();
@@ -119,7 +122,7 @@ const Estimates = () => {
               {datas?.map((data, index) => (
                 <tr key={index}>
                   <td className="text-center">{index + 1}</td>
-                  <td className="text-center">{contactName(data.customerId)}</td>
+                  <td className="text-center">{customer(data.id)}</td>
                   <td className="text-center">
                     {new Date(data.issueDate).toLocaleDateString('en-GB')}
                   </td>

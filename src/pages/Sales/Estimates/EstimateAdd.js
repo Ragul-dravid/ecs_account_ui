@@ -15,20 +15,42 @@ function EstimateAdd() {
   const [itemData, setItemData] = useState(null);
   const [rows, setRows] = useState([{}]);
   const [rowss, setRowss] = useState([]);
-  const AddRowContent = () => {
-    setRows((prevRows) => [...prevRows, { id: prevRows.length + 1 }]);
+  const addRow = () => {
+    formik.setFieldValue("txnQuotesItems", [
+      ...formik.values.txnQuotesItems,
+      { item: "", qty: "", price: "", disc: "", taxRate: "", taxAmount: "" },
+    ]);
   };
-  const resetAndDeleteRows = () => {
-    setRows((prevRows) => {
-      const resetRows = prevRows.slice();
-      return resetRows.slice(0, -1);
-    });
+
+  const removeRow = () => {
+    const txnQuotesItems = [...formik.values.txnQuotesItems];
+    if (txnQuotesItems.length > 1) {
+      txnQuotesItems.pop();
+      formik.setFieldValue("txnQuotesItems", txnQuotesItems);
+    }
   };
 
   console.log("object", customerData)
   const validationSchema = Yup.object({
     customerId: Yup.string().required("* Customer name is required"),
     issuesDate: Yup.string().required("*Date is required"),
+    txnQuotesItems: Yup.array().of(
+      Yup.object().shape({
+        item: Yup.string().required("*Item Details is required"),
+        qty: Yup.number()
+          .min(1, "*Quantity must be a min 1")
+          .typeError("*Quantity must be a number")
+          .required("*Quantity is required"),
+        price: Yup.number().typeError("*Rate must be a number").notRequired(),
+        disc: Yup.number()
+          .typeError("*Discount must be a number")
+          .required("*Discount is required"),
+        taxRate: Yup.string().required("*Tax is required"),
+        taxAmount: Yup.number()
+          .typeError("*Amount must be a number")
+          .notRequired(),
+      })
+    ),
   });
 
   const formik = useFormik({
@@ -40,9 +62,9 @@ function EstimateAdd() {
       expiryDate: "",
       projects: "",
       files: "",
-      files: "",
       status: "",
       title: "",
+      summery: "",
       tax: "",
       subTotal: "",
       total: "",
@@ -54,7 +76,7 @@ function EstimateAdd() {
           item: "",
           qty: "",
           price: "",
-          discount: "",
+          disc: "",
           taxRate: "",
           taxAmount: "",
           itemId: "",
@@ -73,10 +95,8 @@ function EstimateAdd() {
         formData.append("expiryDate", values.expiryDate);
         formData.append("projects", values.projects);;
         formData.append("status", values.status);
-        if (values.title && values.summery) {
-          formData.append("title", values.title);
-          formData.append("summery", values.summery);
-        }
+        formData.append("title", values.title);
+        formData.append("summery", values.summery);
         formData.append("tax", values.tax);
         formData.append("subTotal", values.subTotal);
         formData.append("total", values.total);
@@ -529,23 +549,29 @@ function EstimateAdd() {
                   <thead>
                     <tr>
                       <th scope="col">S.NO</th>
-                      <th scope="col">ITEM </th>
-                      <th scope="col">QUANTITY</th>
+                      <th scope="col">ITEM <span className="text-danger">*</span></th>
+                      <th scope="col">QUANTITY<span className="text-danger">*</span></th>
                       <th scope="col">PRICE</th>
                       <th scope="col">DISCOUNT</th>
-                      <th scope="col">TAX RATE</th>
+                      <th scope="col">TAX RATE<span className="text-danger">*</span></th>
                       <th scope="col">AMOUNT</th>
                     </tr>
                   </thead>
                   <tbody className="table-group">
-                    {rows.map((row, index) => (
+                    {formik.values.txnQuotesItems.map((item, index) => (
                       <tr key={index}>
                         <th scope="row">{index + 1}</th>
                         <td>
                           <select
                             name={`txnQuotesItems[${index}].item`}
-                            {...formik.getFieldProps(`txnQuotesItems[${index}].item`)}
-                            className="form-select"
+                            {...formik.getFieldProps(
+                              `txnQuotesItems[${index}].item`
+                            )}
+                            className={`form-select ${formik.touched.txnQuotesItems?.[index]?.item &&
+                              formik.errors.txnQuotesItems?.[index]?.item
+                              ? "is-invalid"
+                              : ""
+                              }`}
                           >
                             <option selected> </option>
                             {itemData &&
@@ -555,47 +581,113 @@ function EstimateAdd() {
                                 </option>
                               ))}
                           </select>
+                          {formik.touched.txnQuotesItems?.[index]?.item &&
+                            formik.errors.txnQuotesItems?.[index]?.item && (
+                              <div className="invalid-feedback">
+                                {formik.errors.txnQuotesItems[index].item}
+                              </div>
+                            )}
                         </td>
                         <td>
                           <input
                             type="number"
                             min={1}
                             name={`txnQuotesItems[${index}].qty`}
-                            className="form-control"
-                            {...formik.getFieldProps(`txnQuotesItems[${index}].qty`)}
+                            className={`form-control ${formik.touched.txnQuotesItems?.[index]?.qty &&
+                              formik.errors.txnQuotesItems?.[index]?.qty
+                              ? "is-invalid"
+                              : ""
+                              }`}
+                            {...formik.getFieldProps(
+                              `txnQuotesItems[${index}].qty`
+                            )}
                           />
+                          {formik.touched.txnQuotesItems?.[index]?.qty &&
+                            formik.errors.txnQuotesItems?.[index]?.qty && (
+                              <div className="invalid-feedback">
+                                {formik.errors.txnQuotesItems[index].qty}
+                              </div>
+                            )}
                         </td>
                         <td>
                           <input
                             type="text"
                             name={`txnQuotesItems[${index}].price`}
-                            className="form-control"
-                            {...formik.getFieldProps(`txnQuotesItems[${index}].price`)}
+                            className={`form-control ${formik.touched.txnQuotesItems?.[index]?.price &&
+                              formik.errors.txnQuotesItems?.[index]?.price
+                              ? "is-invalid"
+                              : ""
+                              }`}
+                            {...formik.getFieldProps(
+                              `txnQuotesItems[${index}].price`
+                            )}
                           />
+                          {formik.touched.items?.[index]?.price &&
+                            formik.errors.items?.[index]?.price && (
+                              <div className="invalid-feedback">
+                                {formik.errors.items[index].price}
+                              </div>
+                            )}
                         </td>
                         <td>
                           <input
                             type="text"
                             name={`txnQuotesItems[${index}].disc`}
-                            className="form-control"
-                            {...formik.getFieldProps(`txnQuotesItems[${index}].disc`)}
+                            className={`form-control ${formik.touched.txnQuotesItems?.[index]?.disc &&
+                              formik.errors.txnQuotesItems?.[index]?.disc
+                              ? "is-invalid"
+                              : ""
+                              }`}
+                            {...formik.getFieldProps(
+                              `txnQuotesItems[${index}].disc`
+                            )}
                           />
+                          {formik.touched.txnQuotesItems?.[index]?.disc &&
+                            formik.errors.txnQuotesItems?.[index]?.disc && (
+                              <div className="invalid-feedback">
+                                {formik.errors.txnQuotesItems[index].disc}
+                              </div>
+                            )}
                         </td>
                         <td>
                           <input
                             type="text"
                             name={`txnQuotesItems[${index}].taxRate`}
-                            className="form-control"
-                            {...formik.getFieldProps(`txnQuotesItems[${index}].taxRate`)}
+                            className={`form-control ${formik.touched.txnQuotesItems?.[index]?.taxRate &&
+                              formik.errors.txnQuotesItems?.[index]?.taxRate
+                              ? "is-invalid"
+                              : ""
+                              }`}
+                            {...formik.getFieldProps(
+                              `txnQuotesItems[${index}].taxRate`
+                            )}
                           />
+                          {formik.touched.txnQuotesItems?.[index]?.taxRate &&
+                            formik.errors.txnQuotesItems?.[index]?.taxRate && (
+                              <div className="invalid-feedback">
+                                {formik.errors.txnQuotesItems[index].taxRate}
+                              </div>
+                            )}
                         </td>
                         <td>
                           <input
                             type="text"
                             name={`txnQuotesItems[${index}].taxAmount`}
-                            className="form-control"
-                            {...formik.getFieldProps(`txnQuotesItems[${index}].taxAmount`)}
+                            className={`form-control ${formik.touched.txnQuotesItems?.[index]?.taxAmount &&
+                              formik.errors.txnQuotesItems?.[index]?.taxAmount
+                              ? "is-invalid"
+                              : ""
+                              }`}
+                            {...formik.getFieldProps(
+                              `txnQuotesItems[${index}].taxAmount`
+                            )}
                           />
+                          {formik.touched.txnQuotesItems?.[index]?.taxAmount &&
+                            formik.errors.txnQuotesItems?.[index]?.taxAmount && (
+                              <div className="invalid-feedback">
+                                {formik.errors.txnQuotesItems[index].taxAmount}
+                              </div>
+                            )}
                         </td>
                       </tr>
                     ))}
@@ -603,26 +695,25 @@ function EstimateAdd() {
                 </table>
               </div>
             </div>
+
             <div>
               <button
                 className="btn btn-button btn-sm my-4 mx-1"
                 type="button"
-                onClick={AddRowContent}
+                onClick={addRow}
               >
                 Add row
               </button>
-              {rows.length > 1 && (
+              {formik.values.txnQuotesItems.length > 1 && (
                 <button
                   className="btn btn-sm my-4 mx-1 delete border-danger bg-white text-danger"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    resetAndDeleteRows();
-                  }}
+                  onClick={removeRow}
                 >
                   Delete
                 </button>
               )}
             </div>
+
             <div className="row mt-5 pt-0">
               <div className="col-md-6 col-12 mb-3 pt-0">
                 <lable className="form-lable">
