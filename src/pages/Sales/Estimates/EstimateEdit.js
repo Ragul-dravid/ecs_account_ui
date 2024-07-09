@@ -16,16 +16,46 @@ const EstimateEdit = () => {
   const [itemData, setItemData] = useState(null);
   const [rows, setRows] = useState([{ id: 1 }]);
   const [rowss, setRowss] = useState([]);
-  const AddRowContent = () => {
-    setRows((prevRows) => [...prevRows, { id: prevRows.length + 1 }]);
+  const addRow = () => {
+    formik.setFieldValue("quotesItemsModels", [
+      ...formik.values.quotesItemsModels,
+      { item: "", qty: "", price: "", disc: "", taxRate: "", taxAmount: "" },
+    ]);
   };
+
+  const removeRow = () => {
+    const quotesItemsModels = [...formik.values.quotesItemsModels];
+    if (quotesItemsModels.length > 1) {
+      quotesItemsModels.pop();
+      formik.setFieldValue("quotesItemsModels", quotesItemsModels);
+    }
+  };
+
   console.log("object", customerData)
   const validationSchema = Yup.object({
     customerId: Yup.string().required("* Customer name is required"),
     issueDate: Yup.string().required("*Date is required"),
+    quotesItemsModels: Yup.array().of(
+      Yup.object().shape({
+        item: Yup.string().required("*Item Details is required"),
+        qty: Yup.number()
+          .min(1, "*Quantity must be a min 1")
+          .typeError("*Quantity must be a number")
+          .required("*Quantity is required"),
+        price: Yup.number().typeError("*Rate must be a number").notRequired(),
+        disc: Yup.number()
+          .typeError("*Discount must be a number")
+          .required("*Discount is required"),
+        taxRate: Yup.string().required("*Tax is required"),
+        taxAmount: Yup.number()
+          .typeError("*Amount must be a number")
+          .notRequired(),
+      })
+    ),
   });
   const formik = useFormik({
     initialValues: {
+      qoutesId: id,
       customerId: "",
       quoteNumber: "",
       reference: "",
@@ -47,18 +77,18 @@ const EstimateEdit = () => {
           item: "",
           qty: "",
           price: "",
-          discount: "",
+          disc: "",
           taxRate: "",
-          amount: "",
-          itemId: "",
+          taxAmount: "",
         },
       ],
     },
-    // validationSchema: validationSchema,
+    validationSchema: validationSchema,
     onSubmit: async (values) => {
       setLoadIndicator(true);
 
       const formData = new FormData();
+      formData.append("qoutesId", id);
       formData.append("customerId", values.customerId);
       formData.append("quoteNumber", values.quoteNumber);
       formData.append("reference", values.reference);
@@ -66,8 +96,10 @@ const EstimateEdit = () => {
       formData.append("expiryDate", values.expiryDate);
       formData.append("project", values.project);
       formData.append("status", values.status);
-      formData.append("title", values.title);
-      formData.append("summery", values.summery);
+      if (values.title && values.summery) {
+        formData.append("title", values.title);
+        formData.append("summery", values.summery);
+      }
       formData.append("tax", values.tax);
       formData.append("subTotal", values.subTotal);
       formData.append("total", values.total);
@@ -75,13 +107,14 @@ const EstimateEdit = () => {
       formData.append("terms", values.terms);
 
       values.quotesItemsModels.forEach((item) => {
+        formData.append("itemId", item.id);
         formData.append("item", item.item);
         formData.append("qty", item.qty);
         formData.append("price", item.price);
         formData.append("description", "test");
         formData.append("account", "test");
         formData.append("disc", item.disc);
-        formData.append("amount", item.amount);
+        formData.append("taxAmount", item.taxAmount);
         formData.append("taxRate", item.taxRate);
         formData.append("mstrItemsId", item.item);
       });
@@ -100,7 +133,7 @@ const EstimateEdit = () => {
 
         if (response.status === 200) {
           toast.success(response.data.message);
-          navigate("/creditNotes");
+          navigate("/estimates");
         } else {
           toast.error(response.data.message);
         }
@@ -156,15 +189,15 @@ const EstimateEdit = () => {
                 const updatedItem = { ...item, price: response.data.salesPrice };
 
                 const qty = updatedItem.qty || 1;
-                const amount = calculateAmount(qty, updatedItem.taxRate, updatedItem.disc, updatedItem.price);
+                const taxAmount = calculateAmount(qty, updatedItem.taxRate, updatedItem.disc, updatedItem.price);
                 const itemTotalRate = qty * updatedItem.price;
                 const itemTotalTax = itemTotalRate * (updatedItem.taxRate / 100);
 
                 totalRate += updatedItem.price * qty;
-                totalAmount += amount;
+                totalAmount += taxAmount;
                 totalTax += itemTotalTax;
 
-                return { ...updatedItem, qty, amount };
+                return { ...updatedItem, qty, taxAmount };
               } catch (error) {
                 toast.error("Error fetching data: " + (error?.response?.data?.message || error.message));
               }
@@ -173,15 +206,15 @@ const EstimateEdit = () => {
             const qty = item.qty;
             // Calculate amount if all necessary values are present
             if (item.price !== undefined && item.disc !== undefined && item.taxRate !== undefined) {
-              const amount = calculateAmount(qty, item.taxRate, item.disc, item.price);
+              const taxAmount = calculateAmount(qty, item.taxRate, item.disc, item.price);
               const itemTotalRate = qty * item.price;
               const itemTotalTax = itemTotalRate * (item.taxRate / 100);
 
               totalRate += item.price * qty;
-              totalAmount += amount;
+              totalAmount += taxAmount;
               totalTax += itemTotalTax;
 
-              return { ...item, qty, amount };
+              return { ...item, qty, taxAmount };
             }
 
             return item;
@@ -222,7 +255,7 @@ const EstimateEdit = () => {
             <div className="row align-items-center">
               <div className="col">
                 <div className="d-flex align-items-center gap-4">
-                  <h1 className="h4 ls-tight headingColor">Add Estimates</h1>
+                  <h1 className="h4 ls-tight headingColor">Edit Estimates</h1>
                 </div>
               </div>
               <div className="col-auto">
@@ -318,7 +351,7 @@ const EstimateEdit = () => {
 
               <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">
-                Estimate Date<span className="text-danger">*</span>
+                  Estimate Date<span className="text-danger">*</span>
                 </label>
                 <input
                   type="date"
@@ -415,7 +448,6 @@ const EstimateEdit = () => {
             <div className="border-0 mb-5">
               {rowss.map((row, index) => (
                 <div className="border-0 mb-5" key={index}>
-
                   <div className="container-fluid p-0 mb-5">
                     <div className="row py-4">
                       <div className="col-12 mb-4">
@@ -532,100 +564,196 @@ const EstimateEdit = () => {
                   <thead>
                     <tr>
                       <th scope="col">S.NO</th>
-                      <th scope="col">ITEM </th>
-                      <th scope="col">QUANTITY</th>
+                      <th scope="col">
+                        ITEM <span className="text-danger">*</span>
+                      </th>
+                      <th scope="col">
+                        QUANTITY<span className="text-danger">*</span>
+                      </th>
                       <th scope="col">PRICE</th>
                       <th scope="col">DISCOUNT</th>
-                      <th scope="col">TAX RATE</th>
+                      <th scope="col">
+                        TAX RATE<span className="text-danger">*</span>
+                      </th>
                       <th scope="col">AMOUNT</th>
                     </tr>
                   </thead>
                   <tbody className="table-group">
-                    {rows.map((row, index) => (
-                      <tr key={index}>
-                        <th scope="row">{index + 1}</th>
-                        <td>
-                          <select
-                            name={`quotesItemsModels[${index}].item`}
-                            {...formik.getFieldProps(`quotesItemsModels[${index}].item`)}
-                            className="form-select"
-                          >
-                            <option selected> </option>
-                            {itemData &&
-                              itemData.map((itemId) => (
-                                <option key={itemId.id} value={itemId.id}>
-                                  {itemId.itemName}
-                                </option>
-                              ))}
-                          </select>
-                        </td>
-                        <td>
-                          <input
-                            type="number"
-                            min={1}
-                            name={`quotesItemsModels[${index}].qty`}
-                            className="form-control"
-                            {...formik.getFieldProps(`quotesItemsModels[${index}].qty`)}
-                          />
-                        </td>
-                        <td>
-                          <input
-                            type="text"
-                            name={`quotesItemsModels[${index}].price`}
-                            className="form-control"
-                            {...formik.getFieldProps(`quotesItemsModels[${index}].price`)}
-                          />
-                        </td>
-                        <td>
-                          <input
-                            type="text"
-                            name={`quotesItemsModels[${index}].disc`}
-                            className="form-control"
-                            {...formik.getFieldProps(`quotesItemsModels[${index}].disc`)}
-                          />
-                        </td>
-                        <td>
-                          <input
-                            type="text"
-                            name={`quotesItemsModels[${index}].taxRate`}
-                            className="form-control"
-                            {...formik.getFieldProps(`quotesItemsModels[${index}].taxRate`)}
-                          />
-                        </td>
-                        <td>
-                          <input
-                            type="text"
-                            name={`quotesItemsModels[${index}].amount`}
-                            className="form-control"
-                            {...formik.getFieldProps(`quotesItemsModels[${index}].amount`)}
-                          />
-                        </td>
-                      </tr>
-                    ))}
+                    {(formik.values.quotesItemsModels || []).map(
+                      (item, index) => (
+                        <tr key={index}>
+                          <th scope="row">{index + 1}</th>
+                          <td>
+                            <select
+                              name={`quotesItemsModels[${index}].item`}
+                              {...formik.getFieldProps(
+                                `quotesItemsModels[${index}].item`
+                              )}
+                              className={`form-select ${formik.touched.quotesItemsModels?.[index]
+                                ?.item &&
+                                formik.errors.quotesItemsModels?.[index]?.item
+                                ? "is-invalid"
+                                : ""
+                                }`}
+                            >
+                              <option selected> </option>
+                              {itemData &&
+                                itemData.map((itemId) => (
+                                  <option key={itemId.id} value={itemId.id}>
+                                    {itemId.itemName}
+                                  </option>
+                                ))}
+                            </select>
+                            {formik.touched.quotesItemsModels?.[index]?.item &&
+                              formik.errors.quotesItemsModels?.[index]
+                                ?.item && (
+                                <div className="invalid-feedback">
+                                  {formik.errors.quotesItemsModels[index].item}
+                                </div>
+                              )}
+                          </td>
+                          <td>
+                            <input
+                              type="number"
+                              min={1}
+                              name={`quotesItemsModels[${index}].qty`}
+                              className={`form-control ${formik.touched.quotesItemsModels?.[index]
+                                ?.qty &&
+                                formik.errors.quotesItemsModels?.[index]?.qty
+                                ? "is-invalid"
+                                : ""
+                                }`}
+                              {...formik.getFieldProps(
+                                `quotesItemsModels[${index}].qty`
+                              )}
+                            />
+                            {formik.touched.quotesItemsModels?.[index]?.qty &&
+                              formik.errors.quotesItemsModels?.[index]
+                                ?.qty && (
+                                <div className="invalid-feedback">
+                                  {formik.errors.quotesItemsModels[index].qty}
+                                </div>
+                              )}
+                          </td>
+                          <td>
+                            <input
+                              type="text"
+                              name={`quotesItemsModels[${index}].price`}
+                              className={`form-control ${formik.touched.quotesItemsModels?.[index]
+                                ?.price &&
+                                formik.errors.quotesItemsModels?.[index]?.price
+                                ? "is-invalid"
+                                : ""
+                                }`}
+                              {...formik.getFieldProps(
+                                `quotesItemsModels[${index}].price`
+                              )}
+                            />
+                            {formik.touched.items?.[index]?.price &&
+                              formik.errors.items?.[index]?.price && (
+                                <div className="invalid-feedback">
+                                  {formik.errors.items[index].price}
+                                </div>
+                              )}
+                          </td>
+                          <td>
+                            <input
+                              type="text"
+                              name={`quotesItemsModels[${index}].disc`}
+                              className={`form-control ${formik.touched.quotesItemsModels?.[index]
+                                ?.disc &&
+                                formik.errors.quotesItemsModels?.[index]
+                                  ?.disc
+                                ? "is-invalid"
+                                : ""
+                                }`}
+                              {...formik.getFieldProps(
+                                `quotesItemsModels[${index}].disc`
+                              )}
+                            />
+                            {formik.touched.quotesItemsModels?.[index]?.disc &&
+                              formik.errors.quotesItemsModels?.[index]
+                                ?.disc && (
+                                <div className="invalid-feedback">
+                                  {formik.errors.quotesItemsModels[index].disc}
+                                </div>
+                              )}
+                          </td>
+                          <td>
+                            <input
+                              type="text"
+                              name={`quotesItemsModels[${index}].taxRate`}
+                              className={`form-control ${formik.touched.quotesItemsModels?.[index]
+                                ?.taxRate &&
+                                formik.errors.quotesItemsModels?.[index]
+                                  ?.taxRate
+                                ? "is-invalid"
+                                : ""
+                                }`}
+                              {...formik.getFieldProps(
+                                `quotesItemsModels[${index}].taxRate`
+                              )}
+                            />
+                            {formik.touched.quotesItemsModels?.[index]
+                              ?.taxRate &&
+                              formik.errors.quotesItemsModels?.[index]
+                                ?.taxRate && (
+                                <div className="invalid-feedback">
+                                  {
+                                    formik.errors.quotesItemsModels[index]
+                                      .taxRate
+                                  }
+                                </div>
+                              )}
+                          </td>
+                          <td>
+                            <input
+                              type="text"
+                              name={`quotesItemsModels[${index}].taxAmount`}
+                              className={`form-control ${formik.touched.quotesItemsModels?.[index]
+                                ?.taxAmount &&
+                                formik.errors.quotesItemsModels?.[index]
+                                  ?.taxAmount
+                                ? "is-invalid"
+                                : ""
+                                }`}
+                              {...formik.getFieldProps(
+                                `quotesItemsModels[${index}].taxAmount`
+                              )}
+                            />
+                            {formik.touched.quotesItemsModels?.[index]?.taxAmount &&
+                              formik.errors.quotesItemsModels?.[index]?.taxAmount && (
+                                <div className="invalid-feedback">
+                                  {formik.errors.quotesItemsModels[index].taxAmount}
+                                </div>
+                              )}
+                          </td>
+                        </tr>
+                      )
+                    )}
                   </tbody>
                 </table>
               </div>
             </div>
+
             <div>
               <button
                 className="btn btn-button btn-sm my-4 mx-1"
                 type="button"
-                onClick={AddRowContent}
+                onClick={addRow}
               >
                 Add row
               </button>
-              {rows.length > 1 && (
+              {formik.values.quotesItemsModels?.length > 1 && (
                 <button
                   className="btn btn-sm my-4 mx-1 delete border-danger bg-white text-danger"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setRows((prevRows) => prevRows.slice(0, -1));
-                  }}
+                  onClick={removeRow}
                 >
                   Delete
                 </button>
               )}
             </div>
+
             <div className="row mt-5 pt-0">
               <div className="col-md-6 col-12 mb-3 pt-0">
                 <lable className="form-lable">
