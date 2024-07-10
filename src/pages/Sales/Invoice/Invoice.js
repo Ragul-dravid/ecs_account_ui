@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import { FaPlus } from "react-icons/fa6";
 import DeleteModel from "../../../components/common/DeleteModel";
 import api from "../../../config/URL"
+import toast from "react-hot-toast";
 
 const Invoice = () => {
   const tableRef = useRef(null);
@@ -14,6 +15,7 @@ const Invoice = () => {
 
   useEffect(() => {
     const getData = async () => {
+      setLoading(true);
       try {
         const response = await api.get("/getAllTxnInvoice");
         setDatas(response.data);
@@ -60,9 +62,12 @@ const Invoice = () => {
       setDatas(response.data);
       initializeDataTable(); // Reinitialize DataTable after successful data update
     } catch (error) {
-      console.error("Error refreshing data:", error);
+      toast.error("Error refreshing data:", error?.response?.data?.message);
+    }finally {
+      setLoading(false);
     }
-    setLoading(false);
+    
+    
   };
 
   useEffect(() => {
@@ -73,10 +78,10 @@ const Invoice = () => {
     };
   }, []);
   return (
-    <div className="container-fluid px-2 minHeight">
+    <div>
       {loading ? (
         <div className="loader-container">
-          <div class="loading">
+          <div class="loader">
             <span></span>
             <span></span>
             <span></span>
@@ -85,6 +90,7 @@ const Invoice = () => {
           </div>
         </div>
       ) : (
+        <div className="container-fluid px-2 minHeight">
         <div className="card shadow border-0 my-2">
           <div className="container-fluid py-4">
             <div className="row align-items-center justify-content-between ">
@@ -169,8 +175,10 @@ const Invoice = () => {
 
           <div className="card-footer border-0 py-5"></div>
         </div>
-      )}
+      
     </div>
+  )}
+  </div>
   );
 };
 

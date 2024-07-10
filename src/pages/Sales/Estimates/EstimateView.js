@@ -6,19 +6,22 @@ import api from "../../../config/URL"
 
 function EstimateView() {
     const { id } = useParams();
-    const [data, setData] = useState([]);
-    const [items, setItems] = useState([]);
+    const [loading, setLoading] = useState(true);
+    
     const [error, setError] = useState(null);
     const [quotes, setQuotes] = useState(null);
 
     useEffect(() => {
         const fetchCreditNotes = async () => {
+            setLoading(true);
             try {
                 const response = await api.get(`/getTxnQuotesById/${id}`);
                 setQuotes(response.data);
             } catch (error) {
                 setError(error.message || "Failed to fetch data");
                 toast.error("Error fetching data: " + error.message);
+            }finally{
+                setLoading(false);
             }
         };
 
@@ -30,6 +33,18 @@ function EstimateView() {
     }
 
     return (
+        <div>
+        {loading ? (
+          <div className="loader-container">
+            <div class="loader">
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          </div>
+        ) : (
         <div className="container-fluid px-2 minHeight">
             <div className="card shadow border-0 mb-2 top-header">
                 <div className="container-fluid py-4">
@@ -203,6 +218,8 @@ function EstimateView() {
                     </div>
                 </div>
             </div>
+        </div>
+        )}
         </div>
     );
 }

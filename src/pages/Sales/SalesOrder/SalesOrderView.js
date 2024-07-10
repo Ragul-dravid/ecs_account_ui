@@ -8,15 +8,19 @@ function SalesOrderView() {
   const { id } = useParams();
   const [salesOrder, setSalesOrder] = useState(null);
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchSalesOrder = async () => {
+      setLoading(true);
       try {
         const response = await api.get(`/getTxnSalesOrderById/${id}`);
         setSalesOrder(response.data);
       } catch (error) {
         setError(error.message || "Failed to fetch data");
         toast.error("Error fetching data: " + error.message);
+      }finally{
+        setLoading(false);
       }
     };
 
@@ -28,6 +32,18 @@ function SalesOrderView() {
   }
 
   return (
+    <div>
+    {loading ? (
+      <div className="loader-container">
+        <div class="loader">
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    ) : (
     <div className="container-fluid px-2 minHeight">
       <div className="card shadow border-0 mb-2 top-header">
         <div className="container-fluid py-4">
@@ -233,6 +249,8 @@ function SalesOrderView() {
           </div>
         </div>
       </div>
+    </div>
+    )}
     </div>
   );
 }

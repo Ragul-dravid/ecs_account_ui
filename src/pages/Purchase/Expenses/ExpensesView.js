@@ -6,20 +6,36 @@ import toast from "react-hot-toast";
 function ExpensesView() {
   const { id } = useParams();
   const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const getExpensesData = async () => {
+      setLoading(true);
       try {
         const response = await api.get(`getTxnExpensesById/${id}`);
         setData(response.data);
       } catch (error) {
         toast.error("Error fetching data: ", error?.response?.data?.message);
+      }finally{
+        setLoading(false);
       }
     };
     getExpensesData();
   }, [id]);
 
   return (
+    <div>
+    {loading ? (
+      <div className="loader-container">
+        <div class="loader">
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    ) : (
     <div className="container-fluid px-2 minHeight">
       <div className="card shadow border-0 mb-2 top-header">
         <div className="container-fluid py-4">
@@ -171,6 +187,8 @@ function ExpensesView() {
           </div>
         </div>
       </div>
+    </div>
+    )}
     </div>
   );
 }

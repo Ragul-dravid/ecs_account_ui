@@ -9,20 +9,35 @@ import toast from "react-hot-toast";
 const PurchaseView = () => {
   const { id } = useParams();
   const [data, setData] = useState([]);
-
+const [loading, setLoading] = useState(true);
   useEffect(() => {
     const fetchPurchase = async () => {
+      setLoading(true);
       try {
         const response = await api.get(`/getTxnPurchaseOrderById/${id}`);
         setData(response.data);
       } catch (error) {
         toast.error("Error Fetching Data", error);
+      }finally{
+        setLoading(false);
       }
     };
     fetchPurchase();
   }, [id]);
 
   return (
+    <div>
+    {loading ? (
+      <div className="loader-container">
+        <div class="loader">
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    ) : (
     <div className="container-fluid px-2 minHeight">
       <div className="card shadow border-0 mb-2 top-header">
         <div className="container-fluid py-4">
@@ -207,6 +222,8 @@ const PurchaseView = () => {
           </div>
         </div>
       </div>
+    </div>
+    )}
     </div>
   );
 };

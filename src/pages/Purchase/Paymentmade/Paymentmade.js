@@ -3,7 +3,7 @@ import "datatables.net-dt";
 import "datatables.net-responsive-dt";
 import $ from "jquery";
 import { Link } from "react-router-dom";
-import { FaEye } from "react-icons/fa";
+
 import DeleteModel from "../../../components/common/DeleteModel";
 import api from "../../../config/URL";
 import toast from "react-hot-toast";
@@ -12,7 +12,7 @@ import toast from "react-hot-toast";
 const Paymentmade = () => {
   const tableRef = useRef(null);
   const [datas, setDatas] = useState();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const refreshData = async () => {
     destroyDataTable();
@@ -71,6 +71,18 @@ const Paymentmade = () => {
 
 
   return (
+    <div>
+    {loading ? (
+      <div className="loader-container">
+        <div class="loader">
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    ) : (
     <div className="container-fluid minHeight px-2">
       <div className="card shadow border-0 my-2">
         <div className="container-fluid py-4">
@@ -142,6 +154,8 @@ const Paymentmade = () => {
         </div>
         <div className="card-footer border-0 py-5"></div>
       </div>
+    )}
+    </div>
     
   );
 };

@@ -68,6 +68,18 @@ const Bank = () => {
   }, []);
 
   return (
+    <div>
+    {loading ? (
+      <div className="loader-container">
+        <div class="loader">
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    ) : (
     <div className="container-fluid px-2 minHeight">
       <div className="card shadow border-0 my-2">
         <div className="container-fluid py-4">
@@ -91,9 +103,8 @@ const Bank = () => {
 
         <hr className="removeHrMargin"></hr>
         <div className="table-responsive p-2 minHeight">
-          {loading ? (
-            <div className="loader">Loading</div>
-          ) : (
+        
+  
             <table ref={tableRef} className="display table ">
               <thead className="thead-light">
                 <tr>
@@ -149,11 +160,13 @@ const Bank = () => {
                 ))}
               </tbody>
             </table>
-          )}
+          
         </div>
         <div className="card-footer border-0 py-5"></div>
       </div>
     </div>
+  )}
+  </div>
   );
 };
 

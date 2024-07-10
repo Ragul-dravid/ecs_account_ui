@@ -12,16 +12,17 @@ const RecurringBill = () => {
   const tableRef = useRef(null);
   const [datas, setDatas] = useState([{}]);
   const [loading, setLoading] = useState(true);
-  const [vendorData, setVendorData] = useState([]);
+  // const [vendorData, setVendorData] = useState([]);
 
   useEffect(() => {
     const getData = async () => {
+      setLoading(true);
       try {
         const response = await api.get("/getAllTxnRecurringBill");
         setDatas(response.data);
-        console.log("object", response.data);
+        // console.log("object", response.data);
       } catch (error) {
-        console.error("Error fetching data:", error);
+        toast.error("Error fetching data: ", error?.response?.data?.message);
       } finally {
         setLoading(false);
       }
@@ -76,18 +77,20 @@ const RecurringBill = () => {
   }, []);
 
   return (
-    <div className="container-fluid px-2 minHeight">
-      {loading ? (
-        <div className="loader-container">
-          <div class="loading">
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-          </div>
+    <div>
+    {loading ? (
+      <div className="loader-container">
+        <div class="loader">
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
         </div>
-      ) : (
+      </div>
+    ) : (
+    <div className="container-fluid px-2 minHeight">
+     
         <div className="card shadow border-0 my-2">
           <div className="container-fluid py-4">
             <div className="row align-items-center justify-content-between ">
@@ -146,7 +149,7 @@ const RecurringBill = () => {
                   <tr key={index}>
                     <td className="text-start">{index + 1}</td>
                     <td className="text-start">
-                      {data.vendorModel.contactName}
+                      {data.vendorModel?.contactName}
                     </td>
                     <td className="text-start">{data.transactionEvery}</td>
                     <td className="text-start">{data.transactionEveryNo}</td>
@@ -184,8 +187,10 @@ const RecurringBill = () => {
 
           <div className="card-footer border-0 py-5"></div>
         </div>
-      )}
+      
     </div>
+  )}
+  </div>
   );
 };
 

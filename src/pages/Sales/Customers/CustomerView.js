@@ -6,20 +6,36 @@ import toast from 'react-hot-toast';
 const CustomerView = () => {
   const { id } = useParams();
   const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const getData = async () => {
+      setLoading(true);
       try{
       const response = await api.get(`/getMstrCustomerById/${id}`);
       setData(response.data);
       }catch(e){
         toast.error("Error fetching data: ", e?.response?.data?.message);
+      }finally{
+        setLoading(false);
       }
     };
     getData();
   }, [id]);
 
   return (
+    <div>
+    {loading ? (
+      <div className="loader-container">
+        <div class="loader">
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    ) : (
     <div className="container-fluid px-2 minHeight">
       <div className="card shadow border-0 mb-2 top-header">
         <div className="container-fluid py-4">
@@ -318,6 +334,8 @@ const CustomerView = () => {
           </div>
         </div>
       </div>
+    </div>
+    )}
     </div>
   )
 }

@@ -11,9 +11,11 @@ const PaymentMadeView = () => {
 
   const { id } = useParams();
   const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const getItemData = async () => {
+      setLoading(true);
       try {
         const response = await api.get(
           `getTxnBillPaymentMadeById/${id}`
@@ -21,11 +23,25 @@ const PaymentMadeView = () => {
         setData(response.data);
       } catch (error) {
         toast.error("Error fetching data: ", error?.response?.data?.message);
+      }finally{
+        setLoading(false);
       }
     };
     getItemData();
   }, [id]);
   return (
+    <div>
+    {loading ? (
+      <div className="loader-container">
+        <div class="loader">
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    ) : (
     <div className="container-fluid px-2 minHeight">
       <div className="card shadow border-0 mb-2 top-header">
         <div className="container-fluid py-4">
@@ -170,6 +186,8 @@ const PaymentMadeView = () => {
           </div>
         </div>
       </div>
+    </div>
+    )}
     </div>
   );
 };

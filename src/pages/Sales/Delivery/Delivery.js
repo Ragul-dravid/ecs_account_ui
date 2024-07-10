@@ -68,10 +68,22 @@ const Delivery = () => {
     fetchCustamerData();
   }, []);
   const customer =(id)=>{
-    const name= customerData.find((item)=>(item.id==id))
+    const name= customerData.find((item)=>(item.id===id))
     return name?.contactName
   }
   return (
+    <div>
+    {loading ? (
+      <div className="loader-container">
+        <div class="loader">
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    ) : (
     <div className="container-fluid px-2 minHeight">
       <div className="card shadow border-0 my-2">
         <div className="container-fluid py-4">
@@ -158,6 +170,8 @@ const Delivery = () => {
 
         <div className="card-footer border-0 py-5"></div>
       </div>
+    </div>
+    )}
     </div>
   )
 }

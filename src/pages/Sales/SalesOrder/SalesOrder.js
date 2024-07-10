@@ -74,10 +74,10 @@ const SalesOrder = () => {
     };
   }, []);
   return (
-    <div className="container-fluid px-2 minHeight">
+    <div>
       {loading ? (
         <div className="loader-container">
-          <div class="loading">
+          <div class="loader">
             <span></span>
             <span></span>
             <span></span>
@@ -86,6 +86,7 @@ const SalesOrder = () => {
           </div>
         </div>
       ) : (
+        <div className="container-fluid px-2 minHeight">
         <div className="card shadow border-0 my-2">
           <div className="container-fluid py-4">
             <div className="row align-items-center justify-content-between ">
@@ -174,8 +175,10 @@ const SalesOrder = () => {
 
           <div className="card-footer border-0 py-5"></div>
         </div>
-      )}
+      
     </div>
+  )}
+  </div>
   );
 };
 

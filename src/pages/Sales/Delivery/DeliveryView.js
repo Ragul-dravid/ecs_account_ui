@@ -11,14 +11,18 @@ const DeliveryView = () => {
   const { id } = useParams();
   const [data, setData] = useState([]);
   const [customerData, setCustomerData] = useState([]);
+  const [loading, setLoading] = useState(true);
   
   useEffect(() => {
     const fetchDelivery = async () => {
+      setLoading(true);
       try {
         const response = await api.get(`/getTxnDeliveryChallansById/${id}`);
         setData(response.data);
       } catch (error) {
         toast.error("Error Fetching Data", error);
+      }finally{
+        setLoading(false);
       }
     };
     fetchDelivery();
@@ -33,10 +37,22 @@ const DeliveryView = () => {
     }
   };
   const customer =(id)=>{
-    const name= customerData.find((item)=>(item.id==id))
+    const name= customerData.find((item)=>(item.id===id))
     return name?.contactName
   }
   return (
+    <div>
+    {loading ? (
+      <div className="loader-container">
+        <div class="loader">
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    ) : (
     <div className="container-fluid px-2 minHeight">
       <div className="card shadow border-0 mb-2 top-header">
         <div className="container-fluid py-4">
@@ -205,6 +221,8 @@ const DeliveryView = () => {
           </div>
         </div>
       </div>
+    </div>
+    )}
     </div>
   );
 };

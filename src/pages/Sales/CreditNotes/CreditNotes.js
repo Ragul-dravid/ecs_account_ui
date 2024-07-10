@@ -88,14 +88,14 @@ const CreditNotes = () => {
     fetchCustamerData();
   }, []);
   const customer =(id)=>{
-    const name= customerData.find((item)=>(item.id == id))
+    const name= customerData.find((item)=>(item.id === id))
     return name?.contactName
   }
   return (
     <div>
       {loading ? (
         <div className="loader-container">
-          <div class="loading">
+          <div class="loader">
             <span></span>
             <span></span>
             <span></span>

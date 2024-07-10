@@ -6,22 +6,39 @@ import Logo from "../../../assets/AccountsLogo.png";
 
 const RecurringBillView = () => {
     const { id } = useParams();
-  const [data, setData] = useState([]);
+    const [loading,setLoading] = useState(true);
+  
   const [recurringBill, setRecurringBill] = useState(null);
 
   useEffect(() => {
     const getBillData = async () => {
+      setLoading(true);
       try {
         const response = await api.get(`getTxnRecurringBillById/${id}`);
         setRecurringBill(response.data);
         console.log("object",response.data)
       } catch (error) {
         toast.error("Error fetching data: ", error?.response?.data?.message);
+      }finally{
+        setLoading(false);
       }
     };
     getBillData();
   }, [id]);
   return (
+    <div>
+    {loading ? (
+      <div className="loader-container">
+        <div class="loader">
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    ) : (
+
     <div className="container-fluid px-2 minHeight">
       <div className="card shadow border-0 mb-2 top-header">
         <div className="container-fluid py-4">
@@ -227,6 +244,8 @@ const RecurringBillView = () => {
           </div>
         </div>
       </div>
+    </div>
+    )}
     </div>
   );
 }

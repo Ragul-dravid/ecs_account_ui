@@ -1,24 +1,27 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import api from "../../../config/URL";
 import toast from "react-hot-toast";
-import { IoCloudDownloadSharp } from "react-icons/io5";
-import { FaTelegramPlane } from "react-icons/fa";
+
 import Logo from "../../../assets/AccountsLogo.png";
 
 const RecurringInvoiceView = () => {
     const { id } = useParams();
     const [datas, setData] = useState([]);
     const [customerData, setCustomerData] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
       const getData = async () => {
+        setLoading(true);
         try{
         const response = await api.get(`/getTxnRecurringInvoiceById/${id}`);
         setData(response.data);
         console.log("object",datas);
         }catch(e){
           toast.error("Error fetching data: ", e?.response?.data?.message);
+        }finally{
+          setLoading(false);
         }
       };
       getData();
@@ -34,17 +37,29 @@ const RecurringInvoiceView = () => {
         }
       };
     const customer =(id)=>{
-        const name= customerData.find((item)=>(item.id == id))
+        const name= customerData.find((item)=>(item.id === id))
         return name?.contactName
       }
     return (
+      <div>
+      {loading ? (
+        <div className="loader-container">
+          <div class="loader">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </div>
+      ) : (
         <div className="container-fluid px-2 minHeight">
           <div className="card shadow border-0 mb-2 top-header">
             <div className="container-fluid py-4">
               <div className="row align-items-center">
                 <div className="col">
                   <div className="d-flex align-items-center gap-4">
-                    <h1 className="h4 ls-tight headingColor">View Sales Order</h1>
+                    <h1 className="h4 ls-tight headingColor">View Recurring Invoice</h1>
                   </div>
                 </div>
                 <div className="col-auto">
@@ -244,6 +259,8 @@ const RecurringInvoiceView = () => {
             </div>
           </div>
         </div>
+      )}
+      </div>
       );
 }
 

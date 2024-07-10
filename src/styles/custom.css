@@ -120,7 +120,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 55vh;
+  height: 95vh;
 }
 .loading {
   --speed-of-animation: 0.9s;
@@ -310,4 +310,28 @@ color: white !important;
 
 .removeHrMargin{
   margin: 0;
+}
+
+.loader {
+  display: inline-flex;
+  gap: 5px;
+}
+.loader:before,
+.loader:after {
+  content: "";
+  width: 25px;
+  aspect-ratio: 1;
+  box-shadow: 0 0 0 3px inset #4066D5;
+  animation: l4 1.5s infinite;
+}
+.loader:after {
+  --s: -1;
+  animation-delay: 0.75s
+}
+@keyframes l4 {
+  0%     {transform:scaleX(var(--s,1)) translate(0) rotate(0)}
+  16.67% {transform:scaleX(var(--s,1)) translate(-50%) rotate(0)}
+  33.33% {transform:scaleX(var(--s,1)) translate(-50%) rotate(90deg)}
+  50%,
+  100%   {transform:scaleX(var(--s,1)) translate(0) rotate(90deg)}
 }
