@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { Link, useParams } from "react-router-dom";
+
 import api from "../../../config/URL";
 import toast from "react-hot-toast";
 
