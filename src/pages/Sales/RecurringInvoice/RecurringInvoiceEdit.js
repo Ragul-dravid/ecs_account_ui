@@ -99,6 +99,11 @@ const RecurringInvoiceEdit = () => {
         file,
         txnRecurringInvoiceItemsModels,
         uploadFile,
+        updatedBy,
+        updatedAt,
+        createdBy,
+        createdAt,
+        total,
         ...value
       } = values;
       const formData = new FormData();
@@ -118,7 +123,9 @@ const RecurringInvoiceEdit = () => {
         formData.append("description"," item.description");
         formData.append("account"," item.account");
         formData.append("item", item.item);
+        if (item.id !== undefined) {
         formData.append("itemId", item.id);
+        }
         formData.append("mstrItemsId",item.item)
       });
       if (file) {
@@ -533,7 +540,7 @@ const RecurringInvoiceEdit = () => {
                 </div>
               </div>
 
-              <div className="col-12 mb-3 ">
+              {/* <div className="col-12 mb-3 ">
                 <div className="d-flex align-items-end justify-content-end">
                   <label className="col-form-label">
                     Total<span className="text-danger">*</span>&nbsp;&nbsp;
@@ -550,13 +557,13 @@ const RecurringInvoiceEdit = () => {
                       style={{ width: "100%" }}
                     ></input>
                   </div>
-                  {/* {formik.touched.total && formik.errors.total && (
+                   {formik.touched.total && formik.errors.total && (
                   <div className="">
                     <small className="text-danger" >{formik.errors.total}</small>
                   </div>
-                )} */}
+                )} 
                 </div>
-              </div>
+              </div> */}
 
               <div className="row">
                 <div className="">

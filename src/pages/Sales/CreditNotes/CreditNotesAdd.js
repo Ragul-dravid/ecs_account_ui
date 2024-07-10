@@ -89,7 +89,7 @@ function CreditNotesAdd() {
         formData.append("total", values.total);
         formData.append("creditNote", values.creditNote);
         values.txnCreditNoteItems.forEach((item) => {
-          formData.append("itemId", item.item);
+          formData.append("mstrItemsId", item.item);
           formData.append("item", item.item);
           formData.append("qty", item.qty);
           formData.append("price", item.price);
