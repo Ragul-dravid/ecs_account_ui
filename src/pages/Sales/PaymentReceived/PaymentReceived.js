@@ -176,6 +176,14 @@ const PaymentReceived = () => {
                           View
                         </button>
                       </Link>
+                      <Link
+                        to={`/paymentReceived/edit/${data.id}`}
+                        className="px-2"
+                      >
+                        <button className="btn btn-light btn-sm  shadow-none border-none">
+                          Edit
+                        </button>
+                      </Link>
                       <DeleteModel
                         path={`/deleteTxnPaymentsReceived/${data.id}`}
                         onSuccess={refreshData}

@@ -14,17 +14,13 @@ function SalesOrderAdd() {
   const [itemData, setItemData] = useState(null);
 
   const validationSchema = Yup.object({
-    customerId: Yup.string().required("* Customer name is required"),
-    orderDate: Yup.string().required("* Order Date is required"),
-    shipmentDate: Yup.string().required("* Shipment Date is required"),
+    customerId: Yup.string().required("*Customer name is required"),
+    orderDate: Yup.string().required("*Order Date is required"),
+    shipmentDate: Yup.string().required("*Shipment Date is required"),
     txnSalesOrderItemsModels: Yup.array().of(
       Yup.object({
-        item: Yup.string().required("*item is required"),
-        qty: Yup.number()
-          .min(1, "*must be min 1")
-          .required("*Quantity is required"),
-       
-      })
+        item: Yup.string().required("item is required"),
+        })
     ),
   });
 
@@ -598,7 +594,7 @@ function SalesOrderAdd() {
                           <td>
                             <input
                               type="number"
-                              min="1"
+                              min="0"
                               max="100"
                               className={`form-control ${
                                 formik.touched.txnSalesOrderItemsModels &&
