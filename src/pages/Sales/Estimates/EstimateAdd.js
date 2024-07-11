@@ -14,7 +14,7 @@ function EstimateAdd() {
   const [customerData, setCustomerData] = useState(null);
   const [itemData, setItemData] = useState(null);
   const [rows, setRows] = useState([{}]);
-  const [rowss, setRowss] = useState([]);
+  const [rowss, setRowss] = useState(false);
   const addRow = () => {
     formik.setFieldValue("txnQuotesItems", [
       ...formik.values.txnQuotesItems,
@@ -61,14 +61,13 @@ function EstimateAdd() {
       issuesDate: "",
       expiryDate: "",
       projects: "",
-      files: "",
       status: "",
       title: "",
       summery: "",
-      tax: "",
+      amountsAre: "",
       subTotal: "",
       total: "",
-      customerNote: "",
+      cusNotes: "",
       terms: "",
       files: null,
       txnQuotesItems: [
@@ -97,10 +96,10 @@ function EstimateAdd() {
         formData.append("status", values.status);
         formData.append("title", values.title);
         formData.append("summery", values.summery);
-        formData.append("tax", values.tax);
+        formData.append("amountsAre", values.amountsAre);
         formData.append("subTotal", values.subTotal);
         formData.append("total", values.total);
-        formData.append("customerNote", "test");
+        formData.append("cusNotes", values.cusNotes);
         formData.append("terms", values.terms);
 
         values.txnQuotesItems.forEach((item) => {
@@ -112,7 +111,7 @@ function EstimateAdd() {
           formData.append("disc", item.disc);
           formData.append("taxAmount", item.taxAmount);
           formData.append("taxRate", item.taxRate);
-          formData.append("itemId", item.item);
+          formData.append("mstrItemsId", item.item);
         });
         if (values.files) (
           formData.append("files", values.files)
@@ -354,7 +353,7 @@ function EstimateAdd() {
 
               <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">
-                  Expriy Date<span className="text-danger">*</span>
+                  Expriy Date
                 </label>
                 <input
                   type="date"
@@ -401,8 +400,8 @@ function EstimateAdd() {
               </div>
 
               <div className="col-md-6 col-12 mb-3">
-                <label className="col-form-label">
-                  Status<span className="text-danger">*</span>&nbsp;&nbsp;
+                <label className="form-label">
+                  Status
                 </label>
                 <div className="overflow-x-auto">
                   <select
@@ -430,14 +429,13 @@ function EstimateAdd() {
             </div>
 
             <div className="border-0 mb-5">
-              {rowss.map((row, index) => (
-                <div className="border-0 mb-5" key={index}>
-
+              {rowss && (
+                <div className="border-0 mb-5">
                   <div className="container-fluid p-0 mb-5">
                     <div className="row py-4">
                       <div className="col-12 mb-4">
                         <div className="text-start">
-                          <label htmlFor="" className=" mb-1 fw-medium">
+                          <label htmlFor="" className="mb-1 fw-medium">
                             <small>Title</small>&nbsp;
                           </label>
                           <br />
@@ -445,12 +443,7 @@ function EstimateAdd() {
                             className="form-control mb-2"
                             type="text"
                             placeholder="Title"
-                            value={row.title || ""}
-                            onChange={(e) => {
-                              const newRows = [...rowss];
-                              newRows[index].title = e.target.value;
-                              setRowss(newRows);
-                            }}
+                            {...formik.getFieldProps(`title`)}
                           />
                         </div>
                         <div className="text-start">
@@ -461,44 +454,33 @@ function EstimateAdd() {
                           <input
                             className="form-control mb-4"
                             type="text"
-                            placeholder="summery"
-                            value={row.summery || ""}
-                            onChange={(e) => {
-                              const newRows = [...rowss];
-                              newRows[index].summery = e.target.value;
-                              setRowss(newRows);
-                            }}
+                            placeholder="Summary"
+                            {...formik.getFieldProps(`summery`)}
                           />
                         </div>
                       </div>
                     </div>
                   </div>
-
                 </div>
-              ))}
+              )}
               <div className="row">
                 <div className="col-12 mb-4">
-                  {rowss.length === 0 && (
+                  {rowss ? (
                     <button
                       type="button"
-                      onClick={() => {
-                        setRowss((prev) => [
-                          ...prev,
-                          { title: "", summery: "" },
-                        ]); // Add a new row with empty title and summary
-                      }}
+                      onClick={() => (setRowss(false))}
+                      className="btn btn-danger btn-sm"
+                    >
+                      <MdDeleteSweep className="mb-1 mx-1" /> Delete Title & Summary
+                    </button>
+
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => (setRowss(true))}
                       className="btn btn-border btn-sm btn-button"
                     >
                       <i className="bx bx-plus"></i> Add Title & Summary
-                    </button>
-                  )}
-                  {rowss.length > 0 && (
-                    <button
-                      type="button"
-                      onClick={() => setRowss((prev) => prev.slice(0, -1))}
-                      className="btn btn-danger btn-sm "
-                    >
-                      <MdDeleteSweep className="mb-1 mx-1" />Delete Title & Summary
                     </button>
                   )}
                 </div>
@@ -508,16 +490,16 @@ function EstimateAdd() {
             <div className="row">
               <div className="col-12 mb-3 d-flex align-items-end justify-content-end">
                 <label className="col-form-label">
-                  Amount Are<span className="text-danger">*</span>&nbsp;&nbsp;
+                  Amount Are
                 </label>
                 <div className="overflow-x-auto">
                   <select
-                    name="tax"
-                    className={`form-select  ${formik.touched.tax && formik.errors.tax
+                    name="amountsAre"
+                    className={`form-select  ${formik.touched.amountsAre && formik.errors.amountsAre
                       ? "is-invalid"
                       : ""
                       }`}
-                    {...formik.getFieldProps("tax")}
+                    {...formik.getFieldProps("amountsAre")}
                     style={{ width: "100%" }}
                   >
                     <option></option>
@@ -526,14 +508,13 @@ function EstimateAdd() {
                     <option value="NO_TAX">No Tax</option>
                   </select>
                 </div>
-                {formik.touched.tax &&
-                  formik.errors.tax && (
-                    <div className="invalid-feedback">
-                      {formik.errors.tax}
-                    </div>
-                  )}
               </div>
             </div>
+            {formik.touched.amountsAre && formik.errors.amountsAre && (
+              <div className="invalid-feedback">
+                {formik.errors.amountsAre}
+              </div>
+            )}
 
             <div className="row">
               <div className="">
@@ -717,20 +698,20 @@ function EstimateAdd() {
             <div className="row mt-5 pt-0">
               <div className="col-md-6 col-12 mb-3 pt-0">
                 <lable className="form-lable">
-                  Credit Notes<span className="text-danger">*</span>
+                  Credit Notes
                 </lable>
                 <div className="mb-3">
                   <input
                     type="text"
-                    className={`form-control  ${formik.touched.customerNote && formik.errors.customerNote
+                    className={`form-control  ${formik.touched.cusNotes && formik.errors.cusNotes
                       ? "is-invalid"
                       : ""
                       }`}
-                    {...formik.getFieldProps("customerNote")}
+                    {...formik.getFieldProps("cusNotes")}
                   />
-                  {formik.touched.customerNote && formik.errors.customerNote && (
+                  {formik.touched.cusNotes && formik.errors.cusNotes && (
                     <div className="invalid-feedback">
-                      {formik.errors.customerNote}
+                      {formik.errors.cusNotes}
                     </div>
                   )}
                 </div>
@@ -741,7 +722,7 @@ function EstimateAdd() {
               >
                 <div className="row mb-3 mt-2">
                   <label className="col-sm-4 col-form-label">
-                    Sub Total<span className="text-danger">*</span>
+                    Sub Total
                   </label>
                   <div className="col-sm-4"></div>
                   <div className="col-sm-4">
@@ -763,7 +744,7 @@ function EstimateAdd() {
                 </div>
                 <div className="row mb-3">
                   <label className="col-sm-4 col-form-label">
-                    Total Tax<span className="text-danger">*</span>
+                    Total Tax
                   </label>
                   <div className="col-sm-4"></div>
                   <div className="col-sm-4">
@@ -808,7 +789,7 @@ function EstimateAdd() {
               </div>
               <div className="col-md-6 col-12 mb-3">
                 <lable className="form-lable">
-                  Terms & Conditions<span className="text-danger">*</span>
+                  Terms & Conditions
                 </lable>
                 <div className="mb-3">
                   <textarea

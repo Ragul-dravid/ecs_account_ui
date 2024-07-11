@@ -122,7 +122,7 @@ const CustomerAdd = () => {
             <div className="row py-4">
               <div className="col-md-6 col-12 mb-2">
                 <lable className="form-lable">
-                  Contact Name<span className="text-danger">*</span>
+                  Customer Name<span className="text-danger">*</span>
                 </lable>
                 <div className="mb-3">
                   <input

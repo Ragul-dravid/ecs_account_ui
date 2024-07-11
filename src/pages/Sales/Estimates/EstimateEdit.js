@@ -62,14 +62,13 @@ const EstimateEdit = () => {
       issueDate: "",
       expiryDate: "",
       project: "",
-      files: "",
       status: "",
       title: "",
       summery: "",
-      tax: "",
+      amountsAre: "",
       subTotal: "",
       total: "",
-      customerNote: "",
+      cusNotes: "",
       terms: "",
       files: null,
       quotesItemsModels: [
@@ -100,10 +99,10 @@ const EstimateEdit = () => {
         formData.append("title", values.title);
         formData.append("summery", values.summery);
       }
-      formData.append("tax", values.tax);
+      formData.append("amountsAre", values.amountsAre);
       formData.append("subTotal", values.subTotal);
       formData.append("total", values.total);
-      formData.append("customerNote", "test");
+      formData.append("cusNotes", values.cusNotes);
       formData.append("terms", values.terms);
 
       values.quotesItemsModels.forEach((item) => {
@@ -417,7 +416,7 @@ const EstimateEdit = () => {
               </div>
 
               <div className="col-md-6 col-12 mb-3">
-                <label className="col-form-label">
+                <label className="form-label">
                   Status<span className="text-danger">*</span>&nbsp;&nbsp;
                 </label>
                 <div className="overflow-x-auto">
@@ -446,13 +445,13 @@ const EstimateEdit = () => {
             </div>
 
             <div className="border-0 mb-5">
-              {rowss.map((row, index) => (
-                <div className="border-0 mb-5" key={index}>
+              {rowss && (
+                <div className="border-0 mb-5">
                   <div className="container-fluid p-0 mb-5">
                     <div className="row py-4">
                       <div className="col-12 mb-4">
                         <div className="text-start">
-                          <label htmlFor="" className=" mb-1 fw-medium">
+                          <label htmlFor="" className="mb-1 fw-medium">
                             <small>Title</small>&nbsp;
                           </label>
                           <br />
@@ -460,12 +459,7 @@ const EstimateEdit = () => {
                             className="form-control mb-2"
                             type="text"
                             placeholder="Title"
-                            value={row.title || ""}
-                            onChange={(e) => {
-                              const newRows = [...rowss];
-                              newRows[index].title = e.target.value;
-                              setRowss(newRows);
-                            }}
+                            {...formik.getFieldProps(`title`)}
                           />
                         </div>
                         <div className="text-start">
@@ -476,44 +470,33 @@ const EstimateEdit = () => {
                           <input
                             className="form-control mb-4"
                             type="text"
-                            placeholder="summery"
-                            value={row.summery || ""}
-                            onChange={(e) => {
-                              const newRows = [...rowss];
-                              newRows[index].summery = e.target.value;
-                              setRowss(newRows);
-                            }}
+                            placeholder="Summary"
+                            {...formik.getFieldProps(`summery`)}
                           />
                         </div>
                       </div>
                     </div>
                   </div>
-
                 </div>
-              ))}
+              )}
               <div className="row">
                 <div className="col-12 mb-4">
-                  {rowss.length === 0 && (
+                  {rowss ? (
                     <button
                       type="button"
-                      onClick={() => {
-                        setRowss((prev) => [
-                          ...prev,
-                          { title: "", summery: "" },
-                        ]); // Add a new row with empty title and summary
-                      }}
+                      onClick={() => (setRowss(false))}
+                      className="btn btn-danger btn-sm"
+                    >
+                      <MdDeleteSweep className="mb-1 mx-1" /> Delete Title & Summary
+                    </button>
+
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => (setRowss(true))}
                       className="btn btn-border btn-sm btn-button"
                     >
                       <i className="bx bx-plus"></i> Add Title & Summary
-                    </button>
-                  )}
-                  {rowss.length > 0 && (
-                    <button
-                      type="button"
-                      onClick={() => setRowss((prev) => prev.slice(0, -1))}
-                      className="btn btn-danger btn-sm "
-                    >
-                      <MdDeleteSweep className="mb-1 mx-1" />Delete Title & Summary
                     </button>
                   )}
                 </div>
@@ -527,12 +510,12 @@ const EstimateEdit = () => {
                 </label>
                 <div className="overflow-x-auto">
                   <select
-                    name="tax"
-                    className={`form-select  ${formik.touched.tax && formik.errors.tax
+                    name="amountsAre"
+                    className={`form-select  ${formik.touched.amountsAre && formik.errors.amountsAre
                       ? "is-invalid"
                       : ""
                       }`}
-                    {...formik.getFieldProps("tax")}
+                    {...formik.getFieldProps("amountsAre")}
                     style={{ width: "100%" }}
                   >
                     <option></option>
@@ -541,10 +524,10 @@ const EstimateEdit = () => {
                     <option value="NO_TAX">No Tax</option>
                   </select>
                 </div>
-                {formik.touched.tax &&
-                  formik.errors.tax && (
+                {formik.touched.amountsAre &&
+                  formik.errors.amountsAre && (
                     <div className="invalid-feedback">
-                      {formik.errors.tax}
+                      {formik.errors.amountsAre}
                     </div>
                   )}
               </div>
@@ -762,15 +745,15 @@ const EstimateEdit = () => {
                 <div className="mb-3">
                   <input
                     type="text"
-                    className={`form-control  ${formik.touched.customerNote && formik.errors.customerNote
+                    className={`form-control  ${formik.touched.cusNotes && formik.errors.cusNotes
                       ? "is-invalid"
                       : ""
                       }`}
-                    {...formik.getFieldProps("customerNote")}
+                    {...formik.getFieldProps("cusNotes")}
                   />
-                  {formik.touched.customerNote && formik.errors.customerNote && (
+                  {formik.touched.cusNotes && formik.errors.cusNotes && (
                     <div className="invalid-feedback">
-                      {formik.errors.customerNote}
+                      {formik.errors.cusNotes}
                     </div>
                   )}
                 </div>
