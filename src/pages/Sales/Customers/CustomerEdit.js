@@ -82,7 +82,7 @@ const CustomerEdit = () => {
       }
     },
   });
-  
+
   useEffect(() => {
     const getData = async () => {
       try {
@@ -94,7 +94,7 @@ const CustomerEdit = () => {
     };
 
     getData();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -139,7 +139,7 @@ const CustomerEdit = () => {
             <div className="row py-4">
               <div className="col-md-6 col-12 mb-2">
                 <lable className="form-lable">
-                  Contact Name
+                  Customer Name
                 </lable>
                 <div className="mb-3">
                   <input

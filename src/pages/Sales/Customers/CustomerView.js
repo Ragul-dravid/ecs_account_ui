@@ -66,7 +66,7 @@ const CustomerView = () => {
               <div className="row mb-3">
                 <div className="col-6 d-flex justify-content-start align-items-center">
                   <p className="text-sm">
-                    <b>Contact Name</b>
+                    <b>Customer Name</b>
                   </p>
                 </div>
                 <div className="col-6">
