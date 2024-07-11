@@ -206,8 +206,8 @@ function Admin({ handleLogout }) {
               {/* Bills */}
               <Route path="/bills" element={<Bills />} />
               <Route path="/bills/add" element={<BillsAdd />} />
-              <Route path="/bills/edit" element={<BillsEdit />} />
-              <Route path="/bills/view" element={<BillView />} />
+              <Route path="/bills/edit/:id" element={<BillsEdit />} />
+              <Route path="/bills/view/:id" element={<BillView />} />
               <Route
                 path="/bills/view/recordpaymentmade"
                 element={<RecordPaymentMade />}

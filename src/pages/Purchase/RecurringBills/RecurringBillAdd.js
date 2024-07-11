@@ -99,6 +99,7 @@ const RecurringBillAdd = () => {
       });
       formData.append("total", 200);
       items.forEach((item) => {
+        formData.append("item", item.item);
         formData.append("qty", item.qty);
         formData.append("unitPrice", item.unitPrice);
         formData.append("taxRate", item.taxRate  );

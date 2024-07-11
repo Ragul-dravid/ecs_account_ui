@@ -87,10 +87,10 @@ const RecurringBillView = () => {
             <div className="col-md-6 col-12 d-flex justify-end flex-column align-items-end mt-2">
               {recurringBill && (
                 <>
-                  <h1>SALES ORDER</h1>
+                  <h1>RECURRING BILL</h1>
                   <h3>{recurringBill.contactName || "--"}</h3>
                   <span className="text-muted mt-4">Order Date</span>
-                  <h3>{recurringBill.dueDate || "N/A"}</h3>
+                  <h3>{recurringBill.dueDate?.split("-").reverse().join("-") || "N/A"}</h3>
                 </>
               )}
             </div>
@@ -122,7 +122,7 @@ const RecurringBillView = () => {
                     </div>
                     <div className="col-6">
                       <p className="text-muted text-sm">
-                        {recurringBill.billDate || "N/A"}
+                        {recurringBill.billDate?.split("-").reverse().join("-") || "N/A"}
                       </p>
                     </div>
                   </>
@@ -188,7 +188,7 @@ const RecurringBillView = () => {
                         <th scope="row">{index + 1}</th>
                         <td>{item.item}</td>
                         <td>{item.qty}</td>
-                        <td>{item.rate}</td>
+                        <td>{item.unitprice}</td>
                         <td>{item.discount}</td>
                         <td>{item.taxRate}</td>
                         <td>{item.amount}</td>
@@ -221,7 +221,7 @@ const RecurringBillView = () => {
               )}
             </div>
           </div>
-          <div className="row mt-5">
+          <div className="row mt-5 mb-5">
             {recurringBill && (
               <>
                 <div className="col-md-6 col-12">

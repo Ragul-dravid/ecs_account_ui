@@ -59,7 +59,7 @@ const RecurringBill = () => {
       destroyDataTable();
       setLoading(true);
     try {
-      const response = await api.get("/getAllTxnRecurringInvoice");
+      const response = await api.get("/getAllTxnRecurringBill");
       setDatas(response.data);
       initializeDataTable();
     } catch (error) {
@@ -154,7 +154,7 @@ const RecurringBill = () => {
                     <td className="text-start">{data.transactionEvery}</td>
                     <td className="text-start">{data.transactionEveryNo}</td>
                     <td className="text-start">
-                      {data.billDate.split("-").reverse().join("-")}
+                      {data?.billDate?.split("-").reverse().join("-")}
                     </td>
                     {/* <td className="text-start">{data.invoiceDate}</td> */}
                     <td className="text-start">{data.totalAmount}</td>

@@ -100,11 +100,13 @@ const RecurringBillEdit = () => {
       });
       
       items.forEach((item) => {
+        formData.append("item", item.item);
         formData.append("qty", item.qty);
         formData.append("unitPrice", 2000);
         formData.append("taxRate", item.taxRate  );
         formData.append("amount", 2333);
-        formData.append("itemId", item.item);
+        formData.append("itemId", item.id);
+        formData.append("mstrItemsId", item.item);
         formData.append("account", "item");
         formData.append("description", "test");
       });
@@ -117,7 +119,7 @@ const RecurringBillEdit = () => {
           `/updateTxnRecurringBill/${id}`,
           formData
         );
-        if (response.status === 201) {
+        if (response.status === 200) {
           toast.success(response.data.message);
           // navigate("/recurringinvoice");
         }

@@ -1,11 +1,47 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
 import Logo from "../../../assets/AccountsLogo.png"
 import { IoCloudDownloadSharp } from "react-icons/io5";
 import { FaTelegramPlane } from "react-icons/fa";
+import api from "../../../config/URL";
+import toast from "react-hot-toast";
 
 const BillView = () => {
+  const { id } = useParams();
+    const [loading, setLoading] = useState(true);
+    
+    
+    const [datas, setDatas] = useState(null);
+
+    useEffect(() => {
+        const fetchBill = async () => {
+            setLoading(true);
+            try {
+                const response = await api.get(`/getTxnBillById/${id}`);
+                setDatas(response.data);
+            } catch (error) {
+                
+                toast.error("Error fetching data: " + error.message);
+            }finally{
+                setLoading(false);
+            }
+        };
+
+        fetchBill();
+    }, [id]);
   return (
+    <div>
+    {loading ? (
+      <div className="loader-container">
+        <div class="loader">
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    ) : (
     <div className="container-fluid px-2 minHeight">
       <div className="card shadow border-0 mb-2 top-header">
         <div className="container-fluid py-4">
@@ -79,7 +115,7 @@ const BillView = () => {
                   </p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: 10.10.2023</p>
+                  <p className="text-muted text-sm">: {datas.date?.split("-").reverse().join("-")}</p>
                 </div>
               </div>
               <div className="row my-3">
@@ -89,7 +125,7 @@ const BillView = () => {
                   </p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: RI_231</p>
+                  <p className="text-muted text-sm">: {datas.reference}</p>
                 </div>
               </div>
               <div className="row my-3">
@@ -99,7 +135,7 @@ const BillView = () => {
                   </p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: 10.10.2023</p>
+                  <p className="text-muted text-sm">: {datas.dueDate?.split("-").reverse().join("-")}</p>
                 </div>
               </div>
             </div>
@@ -162,19 +198,19 @@ const BillView = () => {
                 <div className="col-6 ">
                   <p>Sub Total</p>
                 </div>
-                <div className="col-6">: 3500</div>
+                <div className="col-6">: {datas.subTotal}</div>
               </div>
               <div className="row text-center">
                 <div className="col-6">
                   <p>Total Tax</p>
                 </div>
-                <div className="col-6">: 0.00</div>
+                <div className="col-6">: {datas.tax}</div>
               </div>
               <div className="row text-center">
                 <div className="col-6">
                   <p>Total (₹)</p>
                 </div>
-                <div className="col-6">: 3500</div>
+                <div className="col-6">: {datas.total}</div>
               </div>
             </div>
             <div className="col-12 my-5">
@@ -183,6 +219,8 @@ const BillView = () => {
           </div>
         </div>
       </div>
+    </div>
+    )}
     </div>
   );
 };
