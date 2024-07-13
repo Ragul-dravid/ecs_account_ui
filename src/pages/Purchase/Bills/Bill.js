@@ -6,12 +6,15 @@ import { Link } from "react-router-dom";
 import { FaEye, FaEdit, FaPlus } from "react-icons/fa";
 import DeleteModel from "../../../components/common/DeleteModel";
 import api from "../../../config/URL";
+import fetchAllVendorNameWithIds from "../../List/VendorList";
+import toast from "react-hot-toast";
 // import DeleteModel from "../../components/common/DeleteModel";
 
 const Bills = () => {
   const tableRef = useRef(null);
   const [datas, setDatas] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [vendorData, setVendorData] = useState([]);
   console.log("datas",datas)
 
   useEffect(() => {
@@ -25,6 +28,7 @@ const Bills = () => {
         setLoading(false);
       }
     };
+    fetchData();
     getData();
   }, []);
 
@@ -75,7 +79,19 @@ const Bills = () => {
       table.destroy();
     };
   }, []);
+  const fetchData = async () => {
+    try {
+      const vendorData = await fetchAllVendorNameWithIds();
+      setVendorData(vendorData);
+    } catch (error) {
+      toast.error(error);
+    }
+  };
 
+  const vendorName =(id)=>{
+    const name= vendorData.find((item)=>(item.id === id))
+    return name?.contactName
+  }
   return (
     <div>
     {loading ? (
@@ -135,7 +151,7 @@ const Bills = () => {
               {datas.map((data, index) => (
                 <tr key={index}>
                   <td className="text-center">{index + 1}</td>
-                  <td className="text-center">{data.vendorName}</td>
+                  <td className="text-center">{vendorName(data.vendorId)}</td>
                   <td className="text-center">{data.date}</td>
                   {/* <td className="text-center">{data.billsNumber}</td>
                   <td className="text-center">{data.referenceNumber}</td>
@@ -173,7 +189,7 @@ const Bills = () => {
                           Edit
                         </button>
                       </Link>
-                      <DeleteModel />
+                      <DeleteModel onSuccess={refreshData} path={`/deleteTxnBill/${data.id}`}/>
                     </div>
                   </td>
                 </tr>

@@ -7,12 +7,13 @@ import { FaPlus } from "react-icons/fa6";
 import DeleteModel from "../../../components/common/DeleteModel";
 import api from "../../../config/URL";
 import toast from "react-hot-toast";
+import fetchAllVendorNameWithIds from "../../List/VendorList";
 
 const RecurringBill = () => {
   const tableRef = useRef(null);
   const [datas, setDatas] = useState([{}]);
   const [loading, setLoading] = useState(true);
-  // const [vendorData, setVendorData] = useState([]);
+  const [vendorData, setVendorData] = useState([]);
 
   useEffect(() => {
     const getData = async () => {
@@ -20,13 +21,13 @@ const RecurringBill = () => {
       try {
         const response = await api.get("/getAllTxnRecurringBill");
         setDatas(response.data);
-        // console.log("object", response.data);
       } catch (error) {
         toast.error("Error fetching data: ", error?.response?.data?.message);
       } finally {
         setLoading(false);
       }
     };
+    fetchData();
     getData();
   }, []);
 
@@ -75,7 +76,19 @@ const RecurringBill = () => {
       table.destroy();
     };
   }, []);
+  const fetchData = async () => {
+    try {
+      const vendorData = await fetchAllVendorNameWithIds();
+      setVendorData(vendorData);
+    } catch (error) {
+      toast.error(error);
+    }
+  };
 
+  const vendorName =(id)=>{
+    const name= vendorData.find((item)=>(item.id === id))
+    return name?.contactName
+  }
   return (
     <div>
     {loading ? (
@@ -149,7 +162,7 @@ const RecurringBill = () => {
                   <tr key={index}>
                     <td className="text-start">{index + 1}</td>
                     <td className="text-start">
-                      {data.vendorModel?.contactName}
+                      {vendorName(data.vendorId)}
                     </td>
                     <td className="text-start">{data.transactionEvery}</td>
                     <td className="text-start">{data.transactionEveryNo}</td>

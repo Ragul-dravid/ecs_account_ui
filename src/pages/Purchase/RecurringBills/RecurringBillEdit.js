@@ -6,7 +6,7 @@ import api from "../../../config/URL";
 import toast from "react-hot-toast";
 
 const validationSchema = Yup.object().shape({
-    // vendorId : Yup.string().required("*Vendor Name is required"),
+    vendorId : Yup.string().required("*Vendor Name is required"),
     transactionEveryNo: Yup.number()
       .typeError("*Transaction Every No must be a number")
       .required("*Transaction Every No is required"),
@@ -236,10 +236,10 @@ const RecurringBillEdit = () => {
     updateAndCalculate();
   }, [
     formik.values.items.map((item) => item.item).join(""),
-    formik.values.items.map((item) => item.qty).join(","),
+    formik.values.items.map((item) => item.qty).join(""),
     formik.values.items.map((item) => item.taxRate).join(""),
     formik.values.items.map((item) => item.unitPrice).join(""),
-    // formik.values.items.map((item) => item.tax).join(""),
+    formik.values.items.map((item) => item.tax).join(""),
   ]);
 
   const calculateAmount = (qty, taxRate, unitPrice, tax) => {

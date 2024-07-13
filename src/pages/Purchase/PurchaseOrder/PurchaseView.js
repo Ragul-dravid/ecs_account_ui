@@ -5,10 +5,14 @@ import { IoCloudDownloadSharp } from "react-icons/io5";
 import { FaTelegramPlane } from "react-icons/fa";
 import api from "../../../config/URL";
 import toast from "react-hot-toast";
+import fetchAllItemWithIds from "../../List/ItemList";
+import fetchAllVendorNameWithIds from "../../List/VendorList";
 
 const PurchaseView = () => {
   const { id } = useParams();
   const [data, setData] = useState([]);
+  const [vendorData, setVendorData] = useState([]);
+  const [items, setItems] = useState([]);
 const [loading, setLoading] = useState(true);
   useEffect(() => {
     const fetchPurchase = async () => {
@@ -22,8 +26,29 @@ const [loading, setLoading] = useState(true);
         setLoading(false);
       }
     };
+    fetchData();
     fetchPurchase();
   }, [id]);
+
+  const fetchData = async () => {
+    try {
+      const vendorData = await fetchAllVendorNameWithIds();
+      const itemData = await fetchAllItemWithIds();
+      setVendorData(vendorData);
+      setItems(itemData);
+    } catch (error) {
+      toast.error(error);
+    }
+  };
+
+  const vendorName =(id)=>{
+    const name= vendorData.find((item)=>(item.id === id))
+    return name?.contactName
+  }
+const itemName =(id)=>{
+    const name= items.find((item)=>(item.id == id))
+    return name?.itemName
+  }
 
   return (
     <div>
@@ -72,11 +97,11 @@ const [loading, setLoading] = useState(true);
         </div>
       </div>
       <div className="card shadow border-0 mb-2 minHeight">
-        <div className="container-fluid mt-5">
-          <div className="row mt-4 p-3">
+        <div className="container-fluid">
+          <div className="row p-3">
             <div className="col-md-6 col-12 ">
-              <div className=" d-flex align-items-center">
-                <img src={Logo} alt="" className="mt-3" width={130} />
+              <div className=" d-flex align-items-center my-2">
+                <img src={Logo} alt="" className="" width={130} />
               </div>
               <div className=""></div>
               <p>Cloud ECS Infotech Pte Ltd</p>
@@ -86,8 +111,14 @@ const [loading, setLoading] = useState(true);
             </div>
 
             <div className="col-md-6 col-12 d-flex flex-column align-items-end pt-5">
-              <h5>Order Number</h5>
-              <p>{data.orderNumber}</p>
+            {data && (
+                    <>
+                      <h1>Purchase</h1>
+                      <h3>{data.invoiceFrom || "--"}</h3>
+                      {/* <span className="text-muted mt-4">Order Date</span>
+                      <h3>{data?.invoiceDate?.split("-").reverse().join("-") || "N/A"}</h3> */}
+                    </>
+                  )}
             </div>
           </div>
           <div className="row mt-2 p-3">
@@ -95,7 +126,7 @@ const [loading, setLoading] = useState(true);
               <h3>Bill To</h3>
             </div>
             <div className="col-md-6 col-12">
-              <p className="text-info">{data.vendorName}</p>
+              <p className="text-info">{vendorName(data.vendorId)}</p>
               <p>{data.street}</p>
               <p>
                 {data.city}-{data.zipCode}
@@ -111,7 +142,7 @@ const [loading, setLoading] = useState(true);
                 </div>
                 <div className="col-6">
                   <p className="text-muted text-sm">
-                    : {data.date}
+                    : {data.date?.split("-").reverse().join("-")}
                   </p>
                 </div>
               </div>
@@ -132,7 +163,7 @@ const [loading, setLoading] = useState(true);
                   </p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: {data.deliveryDate}</p>
+                  <p className="text-muted text-sm">: {data.deliveryDate?.split("-").reverse().join("-")}</p>
                 </div>
               </div>
               <div className="row my-3">
@@ -163,11 +194,11 @@ const [loading, setLoading] = useState(true);
                   <tr>
                     <th scope="col">S.NO</th>
                     <th scope="col">ITEM</th>
-                    <th scope="col">Description</th>
+                    {/* <th scope="col">Description</th> */}
                     <th scope="col">Quantity</th>
                     <th scope="col">Unit Price</th>
                     <th scope="col">Disc %</th>
-                    <th scope="col">Account</th>
+                    {/* <th scope="col">Account</th> */}
                     <th scope="col">Tax Rate</th>
                     <th scope="col">AMOUNT</th>
                   </tr>
@@ -179,11 +210,11 @@ const [loading, setLoading] = useState(true);
                       <tr key={index}>
                         <th scope="row">{index + 1}</th>
                         <td>{item.item}</td>
-                        <td>{item.description}</td>
+                        {/* <td>{item.description}</td> */}
                         <td>{item.qty}</td>
                         <td>{item.unitPrice}</td>
                         <td>{item.disc}</td>
-                        <td>{item.account}</td>
+                        {/* <td>{item.account}</td> */}
                         <td>{item.taxRate}</td>
                         <td>{item.amount}</td>
                       </tr>
@@ -210,7 +241,7 @@ const [loading, setLoading] = useState(true);
                 <div className="col-6">
                   <p>Total Tax</p>
                 </div>
-                <div className="col-6">: </div>
+                <div className="col-6">: {data.taxTotal}</div>
               </div>
               <div className="row text-center">
                 <div className="col-6">

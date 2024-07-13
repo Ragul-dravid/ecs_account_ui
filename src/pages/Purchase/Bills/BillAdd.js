@@ -108,9 +108,8 @@ function BillsAdd() {
       formData.append("amountsAre", values.amountsAre);
       formData.append("tax", values.tax);
       formData.append("subTotal", values.subTotal);
-      // formData.append("total", values.total);
-      // formData.append("customerNote", "test");
-      // formData.append("terms", values.terms);
+      formData.append("customerNote", "test");
+      formData.append("status", "ISSUED");
 
       values.billItemsModels.forEach((item) => {
         formData.append("item", item.item);
@@ -118,7 +117,7 @@ function BillsAdd() {
         formData.append("price", item.price);
         formData.append("taxRate", item.taxRate  );
         formData.append("amount", item.amount);
-        formData.append("itemId", item.item);
+        formData.append("mstrItemsId", item.item);
         formData.append("account", "item");
         formData.append("description", "test");
       });
@@ -191,7 +190,7 @@ function BillsAdd() {
             if (item.item && !formik.values.billItemsModels[index].qty) {
               formik.values.billItemsModels[index].qty = 1;
             }
-            if (item.item) {
+            if (item.item ) {
               try {
                 const response = await api.get(`getMstrItemsById/${item.item}`);
                 const updatedItem = { ...item, price: response.data.salesPrice };
