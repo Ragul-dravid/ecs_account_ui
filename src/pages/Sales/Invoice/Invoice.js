@@ -115,14 +115,15 @@ const Invoice = () => {
             <table ref={tableRef} className="display">
               <thead className="thead-light">
                 <tr>
-                  <th scope="col" style={{ whiteSpace: "nowrap" }}>
+                  <th scope="col" style={{ whiteSpace: "nowrap" }} className="text-start">
                     S.NO
                   </th>
-                  <th scope="col" className="text-center">DATE</th>
-                  <th scope="col" className="text-center">INVOICE NUMBER</th>
+                  <th scope="col" className="text-center">Customer Name</th>
+                  <th scope="col" className="text-center">Date</th>
+                  <th scope="col" className="text-center">Invoice Number</th>
                   <th scope="col" className="text-center">Reference</th>
-                  <th scope="col" className="text-center">AMOUNT</th>
-                  <th scope="col" className="text-center">STATUS</th>
+                  <th scope="col" className="text-center">Amount Are</th>
+              
                   <th scope="col" className="text-center">
                     ACTION
                   </th>
@@ -131,12 +132,13 @@ const Invoice = () => {
               <tbody>
                 {datas.map((data, index) => (
                   <tr key={index}>
-                    <td className="text-start">{index + 1}</td>
-                    <td className="text-start">{data.issuesDate}</td>
-                    <td className="text-start">{data.invoiceNumber}</td>
-                    <td className="text-start">{data.reference}</td>
-                    <td className="text-start">{data.amountsAre}</td>
-                    <td className="text-start">
+                    <td className="text-center">{index + 1}</td>
+                    <td className="text-center">{data.customerName}</td>
+                    <td className="text-center">{data.issuesDate?.split("-").reverse().join("-")}</td>
+                    <td className="text-center">{data.invoiceNumber}</td>
+                    <td className="text-center">{data.reference}</td>
+                    <td className="text-center">{data.amountsAre}</td>
+                    {/* <td className="text-start">
                       {data.status === "PAID" ? (
                         <span className="badge badge-lg badge-dot">
                           <i className="bg-success"></i>Paid
@@ -148,7 +150,7 @@ const Invoice = () => {
                         <span className="badge badge-lg badge-dot">
                           <i className="bg-dark"></i>PARTLY PAID</span>
                       )}
-                    </td>
+                    </td> */}
                     <td className="text-center">
                       <div className="gap-2">
                         <Link to={`/invoice/view/${data.id}`}>

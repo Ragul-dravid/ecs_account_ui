@@ -64,13 +64,17 @@ const DeliveryEdit = () => {
       formData.append("total", values.total);
       formData.append("cusNotes", values.cusNotes);
       formData.append("termsConditions", values.termsConditions);
-      formData.append("files", values.files);
+      if (values.file) {
+        formData.append("files", values.file);
+      }
       values.challansItemsModels?.forEach((item) => {
         formData.append("item", item.item);
         formData.append("qty", item.qty);
         formData.append("rate", item.rate);
         formData.append("amount", item.amount);
-        formData.append("itemId", item.id);
+        if (item.id !== undefined) {
+          formData.append("itemId", item.id);
+        }
         formData.append("mstrItemsId", item.item);
       });
       setLoading(true);
@@ -170,7 +174,7 @@ const DeliveryEdit = () => {
 
   useEffect(() => {
     calculateTotals();
-  },[
+  }, [
     formik.values.challansItemsModels
       ?.map((item) => `${item.qty}-${item.rate}-${item.tax}-${item.amount}`)
       .join(","),
@@ -298,7 +302,6 @@ const DeliveryEdit = () => {
                 <div className="mb-3">
                   <input
                     type="date"
-                    name="challanDate"
                     className="form-control"
                     {...formik.getFieldProps("challanDate")}
                   />

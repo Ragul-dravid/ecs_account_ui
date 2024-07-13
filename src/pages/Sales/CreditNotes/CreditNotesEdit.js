@@ -87,7 +87,8 @@ function CreditNotesEdit() {
       formData.append("total", values.total);
       formData.append("creditNote", values.creditNote);
       values.txnCreditNoteItems.forEach((item) => {
-        formData.append("itemId", item.id);
+        if(item.id!==undefined){
+          formData.append("itemId", item.id);}
         formData.append("qty", item.qty);
         formData.append("price", item.price);
         formData.append("description", "test");
@@ -268,7 +269,7 @@ function CreditNotesEdit() {
                         aria-hidden="true"
                       ></span>
                     ) : (
-                      <span>Save</span>
+                      <span>Update</span>
                     )}
                   </button>
                 </div>

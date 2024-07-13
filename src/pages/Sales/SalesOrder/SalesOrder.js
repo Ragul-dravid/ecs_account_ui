@@ -111,7 +111,7 @@ const SalesOrder = () => {
             <table ref={tableRef} className="display">
               <thead className="thead-light">
                 <tr>
-                  <th scope="col" style={{ whiteSpace: "nowrap" }}>
+                  <th scope="col" style={{ whiteSpace: "nowrap" }} className="text-start">
                     S.NO
                   </th>
                   <th scope="col" className="text-center">Sales Person</th>
@@ -120,7 +120,7 @@ const SalesOrder = () => {
                   {/* <th scope="col" className="text-center">Reference</th>
                   <th scope="col" className="text-center">PaymentTerms</th>
                   <th scope="col" className="text-center">TermsConditions</th> */}
-                  <th scope="col" className="text-center">STATUS</th>
+                  {/* <th scope="col" className="text-center">STATUS</th> */}
                   <th scope="col" className="text-center">
                     ACTION
                   </th>
@@ -129,26 +129,13 @@ const SalesOrder = () => {
               <tbody>
                 {datas.map((data, index) => (
                   <tr key={index}>
-                    <td className="text-start">{index + 1}</td>
-                    <td className="text-start">{data.salesPerson}</td>
-                    <td className="text-start">{data.salesOrder}</td>
-                    <td className="text-start">{data.cusNotes}</td>
+                    <td className="text-center">{index + 1}</td>
+                    <td className="text-center">{data.salesPerson}</td>
+                    <td className="text-center">{data.salesOrder}</td>
+                    <td className="text-center">{data.cusNotes}</td>
                     {/* <td className="text-start">{data.reference}</td>
                     <td className="text-start">{data.paymentTerms}</td>
                     <td className="text-start">{data.termsConditions}</td> */}
-                    <td className="text-start">
-                      {data.status === "PAID" ? (
-                        <span className="badge badge-lg badge-dot">
-                          <i className="bg-success"></i>Paid
-                        </span>
-                      ) : data.status === "PENDING" ? (
-                        <span className="badge badge-lg badge-dot">
-                          <i className="bg-warning"></i>PENDING</span>
-                      ) : (
-                        <span className="badge badge-lg badge-dot">
-                          <i className="bg-dark"></i>PARTLY PAID</span>
-                      )}
-                    </td>
                     <td className="text-center">
                       <div className="gap-2">
                         <Link to={`/salesorder/view/${data.id}`}>

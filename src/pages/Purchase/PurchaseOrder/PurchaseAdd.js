@@ -1,23 +1,23 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 // import { MdDeleteSweep } from "react-icons/md";
 import api from "../../../config/URL";
 import toast from "react-hot-toast";
 import * as Yup from "yup";
+import fetchAllVendorNameWithIds from "../../List/VendorList";
+import fetchAllItemWithIds from "../../List/ItemList";
 
 const PurchaseAdd = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  // // const [rows, setRows] = useState([]);
-  // const [title, setTitle] = useState('');
-  // const [summary, setSummary] = useState('');
+  const [vendorData, setVendorData] = useState(null);
+  const [items, setItems] = useState([]);
   const [rows, setRows] = useState([{ id: 1 }]);
   // const [rowss, setRowss] = useState([]);
 
   const validationSchema = Yup.object({
     vendorId: Yup.string().required("*Vendor Name is required"),
-    // orderNumber: Yup.string().required("*Order Number is required"),
     currency: Yup.string().required("*Currency is required"),
     phone: Yup.string().required("*Phone is required"),
     street: Yup.string().required("*Street is required"),
@@ -26,12 +26,8 @@ const PurchaseAdd = () => {
     zipCode: Yup.string().required("*Zip Code is required"),
     country: Yup.string().required("*Country is required"),
     file: Yup.string().required("*Attachment is required"),
-    amountsAre: Yup.string().required("*Amounts is required"),
   });
 
-  const AddRowContent = () => {
-    setRows((prevRows) => [...prevRows, { id: prevRows.length + 1 }]);
-  };
 
   const formik = useFormik({
     initialValues: {
@@ -42,6 +38,7 @@ const PurchaseAdd = () => {
       currency: "",
       amountsAre: "",
       subTotal: "",
+      taxAmount: "",
       total: "",
       attention: "",
       telePhone: "",
@@ -55,15 +52,17 @@ const PurchaseAdd = () => {
       country: "",
       phone: "",
       addIntructions: "",
-      description: "",
-      qty: "",
-      unitPrice: "",
-      disc: "",
-      account: "",
-      taxRate: "",
-      amount: "",
-      itemId: "",
-      file: "",
+      items: [
+        {
+          item: "",
+          qty: "",
+          unitPrice: "",
+          disc: "",
+          taxRate: "",
+          amount: "",
+        },
+      ],
+      file: null,
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
@@ -73,7 +72,6 @@ const PurchaseAdd = () => {
       formData.append("vendorId", values.vendorId);
       formData.append("date", values.date);
       formData.append("deliveryDate", values.deliveryDate);
-      // formData.append("orderNumber", values.orderNumber);
       formData.append("reference", values.reference);
       formData.append("currency", values.currency);
       formData.append("amountsAre", values.amountsAre);
@@ -90,16 +88,19 @@ const PurchaseAdd = () => {
       formData.append("zipCode", values.zipCode);
       formData.append("country", values.country);
       formData.append("phone", values.phone);
-      formData.append("addIntructions", values.addInstructions);
-      formData.append("description", "Nothing");
-      formData.append("qty", values.qty);
-      formData.append("unitPrice", values.unitPrice);
-      formData.append("disc", values.disc);
-      formData.append("account", values.account);
-      formData.append("taxRate", values.taxRate);
-      formData.append("amount", values.amount);
-      formData.append("itemId", values.itemId);
-      formData.append("file", values.files);
+      formData.append("addIntructions", "values.addIntructions");
+      values.items.forEach((item) => {
+        formData.append("qty", item.qty);
+        formData.append("disc", item.disc);
+        formData.append("unitPrice", item.unitPrice);
+        formData.append("taxRate", item.taxRate);
+        formData.append("amount", item.amount);
+        formData.append("description"," item.description");
+        formData.append("account"," item.account");
+        formData.append("mstrItemsId", item.item);
+        formData.append("item", item.item);
+      });
+      formData.append("file", values.file);
 
       try {
         const response = await api.post("/createTxnPurchaseOrder", formData);
@@ -114,6 +115,102 @@ const PurchaseAdd = () => {
       }
     },
   });
+
+  const fetchData = async () => {
+    try {
+      const vendorData = await fetchAllVendorNameWithIds();
+      const itemData = await fetchAllItemWithIds();
+      setVendorData(vendorData);
+      setItems(itemData)
+    } catch (error) {
+      toast.error(error);
+    }
+  };
+  useEffect(()=>{
+    fetchData();
+  },[])
+
+  const addRow = () => {
+    formik.setFieldValue("items", [
+      ...formik.values.items,
+      { item: "", qty: "", unitPrice: "", disc: "", taxRate: "", amount: "" },
+    ]);
+  };
+
+  const removeRow = () => {
+    const items = [...formik.values.items];
+    if (items.length > 1) {
+      items.pop();
+      formik.setFieldValue("items", items);
+    }
+  };
+
+  useEffect(() => {
+    const updateAndCalculate = async () => {
+      try {
+        let totalRate = 0;
+        let totalAmount = 0;
+        let totalTax = 0;
+  
+        const updatedItems = await Promise.all(
+          formik.values.items.map(async (item, index) => {
+            if (item.item && !formik.values.items[index].qty) {
+              formik.values.items[index].qty = 1;
+            }
+            if (item.item) {
+              try {
+                const response = await api.get(`getMstrItemsById/${item.item}`);
+                const updatedItem = { ...item, unitPrice: response.data.salesPrice  };
+                const amount = calculateAmount(updatedItem.qty, updatedItem.unitPrice, updatedItem.disc, updatedItem.taxRate);
+                const itemTotalRate = updatedItem.qty * updatedItem.unitPrice;
+                const itemTotalTax = itemTotalRate * (updatedItem.taxRate / 100);
+                totalRate += updatedItem.unitPrice;
+                totalAmount += amount;
+                totalTax += itemTotalTax;
+                return { ...updatedItem, amount };
+              } catch (error) {
+                toast.error("Error fetching data: ", error?.response?.data?.message);
+              }
+            }
+          
+            if (item.qty && item.unitPrice && item.disc !== undefined && item.taxRate !== undefined) {
+              const amount = calculateAmount(item.qty, item.unitPrice, item.disc, item.taxRate);
+              const itemTotalRate = item.qty * item.unitPrice;
+              const itemTotalTax = itemTotalRate * (item.taxRate / 100);
+              totalRate += item.unitPrice;
+              totalAmount += amount;
+              totalTax += itemTotalTax;
+              return { ...item, amount,};
+            }
+            return item;
+          })
+        );
+        formik.setValues({ ...formik.values, items: updatedItems });
+        formik.setFieldValue("subTotal", totalRate);
+        formik.setFieldValue("total", totalAmount);
+        formik.setFieldValue("taxAmount", totalTax);
+      } catch (error) {
+        toast.error("Error updating items: ", error.message);
+      }
+    };
+
+    updateAndCalculate();
+  }, [
+    formik.values.items.map((item) => item.item).join(""),
+    formik.values.items.map((item) => item.qty).join(","),
+    formik.values.items.map((item) => item.unitPrice).join(""),
+    formik.values.items.map((item) => item.disc).join(""),
+    formik.values.items.map((item) => item.taxRate).join(""),
+  ]);
+
+  const calculateAmount = (qty, unitPrice, disc, taxRate) => {
+    const totalRate = qty * unitPrice;
+    const discountAmount = totalRate * (disc / 100);
+    const taxableAmount = totalRate * (taxRate / 100);
+    const totalAmount = totalRate + taxableAmount - discountAmount;
+    return totalAmount;
+  };
+ 
   return (
     <div className="container-fluid p-2 minHeight m-0">
       <div className="card shadow border-0 mb-2 top-header">
@@ -172,10 +269,12 @@ const PurchaseAdd = () => {
                     }`}
                   >
                     <option selected></option>
-                    <option value="1">Vendor 1</option>
-                    <option value="2">Vendor 2</option>
-                    <option value="3">Vendor 3</option>
-                    <option value="4">Vendor 4</option>
+                    {vendorData &&
+                      vendorData.map((item) => (
+                        <option key={item.id} value={item.id}>
+                          {item.contactName}
+                        </option>
+                      ))}
                   </select>
                   {formik.touched.vendorId && formik.errors.vendorId && (
                     <div className="invalid-feedback">
@@ -209,7 +308,7 @@ const PurchaseAdd = () => {
                 </div>
               </div>
 
-              <div className="col-md-6 col-12 mb-2">
+              {/* <div className="col-md-6 col-12 mb-2">
                 <lable className="form-lable">Order Number</lable>
                 <span className="text-danger">*</span>
                 <div className="mb-3">
@@ -229,7 +328,7 @@ const PurchaseAdd = () => {
                     </div>
                   )}
                 </div>
-              </div>
+              </div> */}
 
               <div className="col-md-6 col-12 mb-2">
                 <lable className="form-lable">Reference</lable>
@@ -401,7 +500,12 @@ const PurchaseAdd = () => {
                   <input
                     type="file"
                     name="file"
-                    {...formik.getFieldProps("file")}
+                    onChange={(event) => {
+                      formik.setFieldValue(
+                        "file",
+                        event.currentTarget.files[0]
+                      );
+                    }}
                     className={`form-control  ${
                       formik.touched.file && formik.errors.file
                         ? "is-invalid"
@@ -468,139 +572,162 @@ const PurchaseAdd = () => {
                     <tr>
                       <th scope="col">S.NO</th>
                       <th scope="col">ITEM</th>
-                      <th scope="col">Description</th>
+                      {/* <th scope="col">Description</th> */}
                       <th scope="col">Quantity</th>
                       <th scope="col">Unit Price</th>
                       <th scope="col">Disc %</th>
-                      <th scope="col">Account</th>
+                      {/* <th scope="col">Account</th> */}
                       <th scope="col">Tax Rate</th>
                       <th scope="col">AMOUNT</th>
                     </tr>
                   </thead>
                   <tbody className="table-group">
-                    {rows.map((row, index) => (
-                      <tr key={index}>
-                        <th scope="row">{index + 1}</th>
-                        <td>
-                          <select
-                            name={`items[${index}].itemId${index}`}
-                            {...formik.getFieldProps(
-                              `items[${index}].itemId${index}`
-                            )}
-                            className="form-select"
-                          >
-                            <option></option>
-                            <option value={"Apple"}>Apple</option>
-                            <option value={"Orange"}>Orange</option>
-                          </select>
-                        </td>
-                        <td>
-                          <input
-                            type="text"
-                            name={`items[${index}].description${index}`}
-                            className="form-control"
-                            {...formik.getFieldProps(
-                              `items[${index}].description${index}`
-                            )}
-                          />
-                        </td>
-                        <td>
-                          <input
-                            type="text"
-                            name={`items[${index}].qty${index}`}
-                            className="form-control"
-                            {...formik.getFieldProps(
-                              `items[${index}].qty${index}`
-                            )}
-                          />
-                        </td>
-                        <td>
-                          <input
-                            type="text"
-                            name={`items[${index}].unitPrice${index}`}
-                            className="form-control"
-                            {...formik.getFieldProps(
-                              `items[${index}].unitPrice${index}`
-                            )}
-                          />
-                        </td>
-                        {/* <td>
-                          <select
-                            name={`items[${index}].disc${index}`}
-                            {...formik.getFieldProps(
-                              `items[${index}].disc${index}`
-                            )}
-                            className="form-select"
-                          >
-                            <option></option>
-                            <option value="5 %">5 %</option>
-                            <option value="10 %">10 %</option>
-                          </select>
-                        </td> */}
-                         <td>
-                          <input
-                            type="text"
-                            name={`items[${index}].disc${index}`}
-                            className="form-control"
-                            {...formik.getFieldProps(
-                              `items[${index}].disc${index}`
-                            )}
-                          />
-                        </td>
-                        <td>
-                          <input
-                            type="text"
-                            name={`items[${index}].account${index}`}
-                            className="form-control"
-                            {...formik.getFieldProps(
-                              `items[${index}].account${index}`
-                            )}
-                          />
-                        </td>
-                        <td>
-                          <input
-                            type="text"
-                            name={`items[${index}].taxRate${index}`}
-                            className="form-control"
-                            {...formik.getFieldProps(
-                              `items[${index}].taxRate${index}`
-                            )}
-                          />
-                        </td>
-                        <td>
-                          <input
-                            type="text"
-                            name={`items[${index}].amount${index}`}
-                            className="form-control"
-                            {...formik.getFieldProps(
-                              `items[${index}].amount${index}`
-                            )}
-                          />
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
+                      {formik.values.items.map((item, index) => (
+                        <tr key={index}>
+                          <th scope="row">{index + 1}</th>
+                          <td>
+                            <select 
+                              {...formik.getFieldProps(`items[${index}].item`)}
+                              className={`form-select ${
+                                formik.touched.items?.[index]?.item &&
+                                formik.errors.items?.[index]?.item
+                                  ? "is-invalid"
+                                  : ""
+                              }`}
+                            >
+                              <option value=""> </option>
+                              {items &&
+                                items.map((item) => (
+                                  <option key={item.id} value={item.id}>
+                                    {item.itemName}
+                                  </option>
+                                ))}
+                            </select>
+                            {formik.touched.items?.[index]?.item &&
+                              formik.errors.items?.[index]?.item && (
+                                <div className="invalid-feedback">
+                                  {formik.errors.items[index].item}
+                                </div>
+                              )}
+                          </td>
+                          <td>
+                            <input
+                              type="number"
+                              min={1}
+                              className={`form-control ${
+                                formik.touched.items?.[index]?.qty &&
+                                formik.errors.items?.[index]?.qty
+                                  ? "is-invalid"
+                                  : ""
+                              }`}
+                              {...formik.getFieldProps(`items[${index}].qty`)}
+                            />
+                            {formik.touched.items?.[index]?.qty &&
+                              formik.errors.items?.[index]?.qty && (
+                                <div className="invalid-feedback">
+                                  {formik.errors.items[index].qty}
+                                </div>
+                              )}
+                          </td>
+                          <td>
+                            <input readOnly
+                              type="text"
+                              className={`form-control ${
+                                formik.touched.items?.[index]?.unitPrice &&
+                                formik.errors.items?.[index]?.unitPrice
+                                  ? "is-invalid"
+                                  : ""
+                              }`}
+                              {...formik.getFieldProps(
+                                `items[${index}].unitPrice`
+                              )}
+                            />
+                            {formik.touched.items?.[index]?.unitPrice &&
+                              formik.errors.items?.[index]?.unitPrice && (
+                                <div className="invalid-feedback">
+                                  {formik.errors.items[index].unitPrice}
+                                </div>
+                              )}
+                          </td>
+                          <td>
+                            <input
+                              type="text"
+                              className={`form-control ${
+                                formik.touched.items?.[index]?.disc &&
+                                formik.errors.items?.[index]?.disc
+                                  ? "is-invalid"
+                                  : ""
+                              }`}
+                              {...formik.getFieldProps(`items[${index}].disc`)}
+                            />
+                            {formik.touched.items?.[index]?.disc &&
+                              formik.errors.items?.[index]?.disc && (
+                                <div className="invalid-feedback">
+                                  {formik.errors.items[index].disc}
+                                </div>
+                              )}
+                          </td>
+                          <td>
+                            <input
+                              {...formik.getFieldProps(`items[${index}].taxRate`)}
+                              className={`form-control ${
+                                formik.touched.items?.[index]?.taxRate &&
+                                formik.errors.items?.[index]?.taxRate
+                                  ? "is-invalid"
+                                  : ""
+                              }`}
+                            />
+
+                            {formik.touched.items?.[index]?.taxRate &&
+                              formik.errors.items?.[index]?.taxRate && (
+                                <div className="invalid-feedback">
+                                  {formik.errors.items[index].taxRate}
+                                </div>
+                              )}
+                          </td>
+                          <td>
+                            <input readOnly
+                              type="text"
+                              className={`form-control ${
+                                formik.touched.items?.[index]?.amount &&
+                                formik.errors.items?.[index]?.amount
+                                  ? "is-invalid"
+                                  : ""
+                              }`}
+                              {...formik.getFieldProps(
+                                `items[${index}].amount`
+                              )}
+                            />
+                            {formik.touched.items?.[index]?.amount &&
+                              formik.errors.items?.[index]?.amount && (
+                                <div className="invalid-feedback">
+                                  {formik.errors.items[index].amount}
+                                </div>
+                              )}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
                 </table>
               </div>
             </div>
-            <button
-              className="btn btn-button btn-sm my-4 mx-1"
-              type="button"
-              onClick={AddRowContent}
-            >
-              Add row
-            </button>
-            {rows.length > 1 && (
-              <button
-                className="btn btn-sm my-4 mx-1 delete border-danger bg-white text-danger"
-                onClick={(e) => {
-                  e.preventDefault();
-                  setRows((prevRows) => prevRows.slice(0, -1));
-                }}
-              >
-                Delete
-              </button>
-            )}
+            <div>
+                <button
+                  className="btn btn-button btn-sm my-4 mx-1"
+                  type="button"
+                  onClick={addRow}
+                >
+                  Add row
+                </button>
+                {formik.values.items.length > 1 && (
+                  <button
+                    className="btn btn-sm my-4 mx-1 delete border-danger bg-white text-danger"
+                    onClick={removeRow}
+                  >
+                    Delete
+                  </button>
+                )}
+              </div>
             <div className="row mt-5 pt-0">
               <div
                 className="col-md-6 col-12 mb-2 mt-2"
@@ -633,9 +760,9 @@ const PurchaseAdd = () => {
                   <lable className="form-lable">Total Tax</lable>
                   <div className="ms-3">
                     <input
-                      {...formik.getFieldProps("adjustment")}
+                      {...formik.getFieldProps("taxAmount")}
                       type="text"
-                      name="adjustment"
+                      name="taxAmount"
                       className="form-control form-control-sm"
                     />
                   </div>

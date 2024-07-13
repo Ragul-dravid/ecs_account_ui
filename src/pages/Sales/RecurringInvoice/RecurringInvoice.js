@@ -127,7 +127,7 @@ const RecurringInvoice = () => {
                 <table ref={tableRef} className="display table ">
                   <thead className="thead-light">
                     <tr>
-                      <th scope="col" style={{ whiteSpace: "nowrap" }}>
+                      <th scope="col" style={{ whiteSpace: "nowrap" }} className="text-start">
                         S.NO
                       </th>
                       <th scope="col" className="text-center">CUSTOMER NAME</th>
@@ -145,13 +145,13 @@ const RecurringInvoice = () => {
                   <tbody>
                     {datas.map((data, index) => (
                       <tr key={index}>
-                        <td className="text-start">{index + 1}</td>
-                        <td className="text-start">{customer(data.customerId)}</td>
-                        <td className="text-start">{data.transactionEvery}</td>
-                        <td className="text-start">{data.transactionEveryNo}</td>
-                        <td className="text-start">{data.invoiceFrom}</td>
-                        {/* <td className="text-start">{data.invoiceDate}</td> */}
-                        <td className="text-start">{data.totalAmount}</td>
+                        <td className="text-center">{index + 1}</td>
+                        <td className="text-center">{customer(data.customerId)}</td>
+                        <td className="text-center">{data.transactionEvery}</td>
+                        <td className="text-center">{data.transactionEveryNo}</td>
+                        <td className="text-center">{data.invoiceFrom}</td>
+                        {/* <td className="text-center">{data.invoiceDate}</td> */}
+                        <td className="text-center">{data.totalAmount}</td>
                         <td className="text-center">
                           <div className="gap-2">
                             <Link to={`/recurringinvoice/view/${data.id}`}>

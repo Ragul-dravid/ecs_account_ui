@@ -11,10 +11,10 @@ function BankEdit() {
   const [loading, setLoading] = useState(false);
 
   const validationSchema = Yup.object({
-    selectaccounttype: Yup.string().required(
-      "*Select Account Type is required"
+    accountName: Yup.string().required("*Account Name is required"),
+    bankType: Yup.string().required(
+      "*Select Bank Type is required"
     ),
-    // accountName: Yup.string().required("*Account Name is required"),
     currency: Yup.string().required("*Currency is required"),
     accountNumber: Yup.string().required("*Account Number is required"),
     // ifsc: Yup.string().required("*IFSC code is required"),
@@ -23,7 +23,7 @@ function BankEdit() {
 
   const formik = useFormik({
     initialValues: {
-      selectaccounttype: "",
+      bankType: "",
       accountName: "",
       currency: "",
       accountNumber: "",

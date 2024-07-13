@@ -111,7 +111,6 @@ const RecurringInvoiceAdd = () => {
         formData.append("account"," item.account");
         formData.append("mstrItemsId", item.item);
         formData.append("item", item.item);
-        // formData.append("itemId", item.item);
       });
       if (file) {
         formData.append("files", file);

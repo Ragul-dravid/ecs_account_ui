@@ -147,12 +147,12 @@ const RecurringInvoiceView = () => {
                       <>
                         <div className="col-6">
                           <p className="text-sm">
-                            <b>Shipment Date</b>
+                            <b>Due Date</b>
                           </p>
                         </div>
                         <div className="col-6">
                           <p className="text-muted text-sm">
-                            {datas.shipmentDate || "N/A"}
+                            {datas.dueDate?.split("-").reverse().join("-") || "N/A"}
                           </p>
                         </div>
                       </>
@@ -163,12 +163,12 @@ const RecurringInvoiceView = () => {
                       <>
                         <div className="col-6">
                           <p className="text-sm">
-                            <b>Payment Terms</b>
+                            <b>Amounts Are</b>
                           </p>
                         </div>
                         <div className="col-6">
                           <p className="text-muted text-sm">
-                            {datas.paymentTerms || "N/A"}
+                            {datas.amountsAre || "N/A"}
                           </p>
                         </div>
                       </>
@@ -179,12 +179,12 @@ const RecurringInvoiceView = () => {
                       <>
                         <div className="col-6">
                           <p className="text-sm">
-                            <b>Reference</b>
+                            <b>End Date</b>
                           </p>
                         </div>
                         <div className="col-6">
                           <p className="text-muted text-sm">
-                            {datas.reference || "N/A"}
+                            {datas.endDate?.split("-").reverse().join("-") || "N/A"}
                           </p>
                         </div>
                       </>

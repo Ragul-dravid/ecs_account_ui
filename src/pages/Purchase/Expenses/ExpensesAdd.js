@@ -13,7 +13,7 @@ function ExpensesAdd() {
     expenseAcc: Yup.string().required("*Expense Account is required"),
     spendAt: Yup.string().required("*Spent At is required"),
     spendOn: Yup.string().required("*Spend On is required"),
-    amount: Yup.string().required("*Amount is required"),
+    amount: Yup.number().required("*Amount is required").typeError("*Amount must be a number"),
     paidThrough: Yup.string().required("*Paid Through is required"),
     // subTotalIncluding: Yup.string().required("*Sub Total Including is required"),
     // subTotalExcluding: Yup.string().required("*Sub Total Excluding is required"),

@@ -5,12 +5,15 @@ import { IoCloudDownloadSharp } from "react-icons/io5";
 import { FaTelegramPlane } from "react-icons/fa";
 import api from "../../../config/URL";
 import toast from "react-hot-toast";
+import fetchAllCustomerWithIds from "../../List/CustomerList";
+import fetchAllItemWithIds from "../../List/ItemList";
 
 const DeliveryView = () => {
 
   const { id } = useParams();
   const [data, setData] = useState([]);
   const [customerData, setCustomerData] = useState([]);
+  const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   
   useEffect(() => {
@@ -26,20 +29,27 @@ const DeliveryView = () => {
       }
     };
     fetchDelivery();
-    fetchCustamerData();
+    fetchData();
   }, [id]);
-  const fetchCustamerData = async () => {
+  const fetchData = async () => {
     try {
-      const response = await api.get("getAllCustomerWithIds");
-      setCustomerData(response.data);
+      const customerData = await fetchAllCustomerWithIds();
+      const itemData = await fetchAllItemWithIds();
+      setCustomerData(customerData);
+      setItems(itemData);
     } catch (error) {
-      toast.error("Error fetching tax data:", error);
+      toast.error(error);
     }
   };
-  const customer =(id)=>{
-    const name= customerData.find((item)=>(item.id===id))
-    return name?.contactName
-  }
+
+  const customer = (id) => {
+    const name = customerData.find((item) => item.id === id);
+    return name?.contactName;
+  };
+  const itemName = (id) => {
+    const name = items.find((item) => item.id == id);
+    return name?.itemName;
+  };
   return (
     <div>
     {loading ? (
@@ -81,10 +91,10 @@ const DeliveryView = () => {
         </div>
       </div>
       <div className="card shadow border-0 mb-2 minHeight">
-        <div className="container-fluid mt-5">
-          <div className="row mt-4 p-3">
+        <div className="container-fluid ">
+          <div className="row mt-2 p-3">
             <div className="col-md-6 col-12 ">
-              <div className=" d-flex align-items-center">
+              <div className=" d-flex align-items-center mb-2">
                 <img src={Logo} alt="" className="mt-3" width={130} />
               </div>
               <div className="">
@@ -95,7 +105,7 @@ const DeliveryView = () => {
               <p>Tamil Nadu</p></div>
 
             <div className="col-md-6 col-12 d-flex flex-column align-items-end pt-5">
-              <h5>DELIVERY</h5>
+              <h1>DELIVERY</h1>
               <p>#DEL-018</p>
             </div>
           </div>
@@ -117,13 +127,13 @@ const DeliveryView = () => {
                   </p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">:  {new Date(data.issueDate).toLocaleDateString('en-GB')}</p>
+                  <p className="text-muted text-sm">:  {data.challanDate?.split("-").reverse().join("-")}</p>
                 </div>
               </div>
               <div className="row my-3">
                 <div className="col-6 d-flex justify-content-end align-items-center">
                   <p className="text-sm">
-                    <b>reference #</b>
+                    <b>reference </b>
                   </p>
                 </div>
                 <div className="col-6">
@@ -171,7 +181,7 @@ const DeliveryView = () => {
                     data.challansItemsModels.map((item, index) => (
                       <tr key={index}>
                         <th scope="row">{index + 1}</th>
-                        <td>{item.item}</td>
+                        <td>{itemName(item.item)}</td>
                         <td>{item.qty}</td>
                         <td>{item.rate}</td>
                         {/* <td>{item.discount}</td> */}
@@ -190,9 +200,6 @@ const DeliveryView = () => {
               <h5 className="fw-bolder my-2">Terms & Conditions</h5>
               <p className="my-3">
                 {data.termsConditions}
-              </p>
-              <p className="my-3">
-               {data.termsConditions}
               </p>
             </div>
             <div className="col-md-6 col-12 card shadow border-2 h-40 d-flex justify-content-center gap-5 ">

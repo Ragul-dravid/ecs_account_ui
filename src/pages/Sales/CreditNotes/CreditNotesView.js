@@ -42,6 +42,10 @@ function CreditNotesView() {
       useEffect(() => {
         fetchData();
       }, []);
+      const customer = (id) => {
+        const name = customerData.find((item) => item.id === id);
+        return name?.contactName;
+      };
       const itemName =(id)=>{
         const name= items.find((item)=>(item.id === id))
         return name?.itemName
@@ -122,7 +126,7 @@ function CreditNotesView() {
                                     <>
                                         <h3>Customer Details</h3>
                                         <span style={{ color: "#2196f3" }}>
-                                            : {creditNotes.customerName || ""}
+                                             {customer(creditNotes.customerId) || ""}
                                         </span>
                                         <p className="fw-small">
                                             : {creditNotes.customerAddress || "Address not available"}
@@ -194,9 +198,9 @@ function CreditNotesView() {
                                         </div>
                                     </div>
                                     <div className="row mb-3">
-                                        <label className="col-sm-6 col-form-label">Discount</label>
+                                        <label className="col-sm-6 col-form-label">Tax Amount</label>
                                         <div className="col-sm-6">
-                                            ₹{creditNotes.discount || "0"}
+                                            ₹{creditNotes.taxAmount || "0"}
                                         </div>
                                     </div>
                                     <div className="row mb-3">

@@ -8,6 +8,8 @@ import toast from "react-hot-toast";
 import fetchAllCustomerWithIds from "../../List/CustomerList";
 import fetchAllItemWithIds from "../../List/ItemList";
 const validationSchema = yup.object().shape({
+  customerId: yup.string().required("*Customer name is required"),
+  challanDate: yup.date().required("*Date is required"),
   challansItemsModels: yup.array().of(
     yup.object().shape({
       item: yup.string().required("item is required"),
@@ -76,7 +78,8 @@ const DeliveryAdd = () => {
           }
         });
         challansItemsModels.forEach((item) => {
-          formData.append("itemId", item.item);
+          formData.append("mstrItemsId", item.item);
+          formData.append("item", item.item);
           formData.append("qty", item.qty);
           formData.append("rate", item.rate);
           formData.append("taxRate", item.taxRate);
@@ -116,7 +119,7 @@ const DeliveryAdd = () => {
     formik.values.challansItemsModels.forEach((item, index) => {
       const qty = item.qty || 0;
       const rate = item.rate || 0;
-      const tax = item.tax || 0;
+      const tax = item.taxRate || 0;
       const discountPercentage = formik.values.discount || 0;
 
       // Calculate the amount for each item
@@ -147,7 +150,7 @@ const DeliveryAdd = () => {
     calculateTotals();
   }, [
     formik.values.challansItemsModels
-      .map((item) => `${item.qty}-${item.rate}-${item.tax}-${item.amount}`)
+      .map((item) => `${item.qty}-${item.rate}-${item.taxRate}-${item.amount}`)
       .join(","),
     formik.values.discount,
   ]);
@@ -191,7 +194,7 @@ const DeliveryAdd = () => {
       ) {
         itemAmt(formik.values.challansItemsModels[index].item, index);
         formik.setFieldValue(`challansItemsModels[${index}].qty`, 1);
-        formik.setFieldValue(`challansItemsModels[${index}].tax`, 0);
+        formik.setFieldValue(`challansItemsModels[${index}].taxRate`, 0);
       }
     });
   }, [formik.values.challansItemsModels.map((item) => item.item).join(",")]);
@@ -243,7 +246,7 @@ const DeliveryAdd = () => {
           <div className="container mb-5">
             <div className="row py-4">
               <div className="col-md-6 col-12 mb-2">
-                <label className="form-label">Customer Name</label>
+                <label className="form-label">Customer Name</label><span className="text-danger">*</span>
                 <div className="mb-3">
                   <select
                     {...formik.getFieldProps("customerId")}
@@ -269,7 +272,7 @@ const DeliveryAdd = () => {
                 </div>
               </div>
               <div className="col-md-6 col-12 mb-2">
-                <label className="form-label">Reference#</label>
+                <label className="form-label">Reference</label>
                 <input
                   type="text"
                   name="reference"
@@ -278,14 +281,22 @@ const DeliveryAdd = () => {
                 />
               </div>
               <div className="col-md-6 col-12 mb-2">
-                <label className="form-label">challan Date</label>
+                <label className="form-label">challan Date</label><span className="text-danger">*</span>
                 <div className="mb-3">
                   <input
                     type="date"
-                    name="challanDate"
-                    className="form-control"
+                    className={`form-control ${
+                      formik.touched.challanDate && formik.errors.challanDate
+                        ? "is-invalid"
+                        : ""
+                    }`}
                     {...formik.getFieldProps("challanDate")}
                   />
+                  {formik.touched.challanDate && formik.errors.challanDate && (
+                    <div className="invalid-feedback">
+                      {formik.errors.challanDate}
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="col-md-6 col-12 mb-2">
@@ -446,14 +457,14 @@ const DeliveryAdd = () => {
                             max="100"
                             className={`form-control ${
                               formik.touched.challansItemsModels &&
-                              formik.touched.challansItemsModels[index]?.tax &&
+                              formik.touched.challansItemsModels[index]?.taxRate &&
                               formik.errors.challansItemsModels &&
-                              formik.errors.challansItemsModels[index]?.tax
+                              formik.errors.challansItemsModels[index]?.taxRate
                                 ? "is-invalid"
                                 : ""
                             }`}
                             {...formik.getFieldProps(
-                              `challansItemsModels[${index}].tax`
+                              `challansItemsModels[${index}].taxRate`
                             )}
                           />
                         </td>

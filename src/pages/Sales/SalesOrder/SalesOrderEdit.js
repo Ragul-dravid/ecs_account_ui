@@ -21,7 +21,7 @@ function SalesOrderEdit() {
     txnSalesOrderItemsModels: Yup.array().of(
       Yup.object({
         item: Yup.string().required("item is required"),
-        })
+      })
     ),
   });
 
@@ -71,20 +71,23 @@ function SalesOrderEdit() {
       formData.append("total", values.total);
       formData.append("cusNotes", values.cusNotes);
       formData.append("termsConditions", values.termsConditions);
-      formData.append("files", values.files);
+      if(values.files){
+        formData.append("files", values.files);}
       values.txnSalesOrderItemsModels?.forEach((item) => {
         formData.append("item", item.item);
         formData.append("qty", item.qty);
         formData.append("rate", item.rate);
         formData.append("amount", item.amount);
-        formData.append("itemId", item.id);
+        if (item.id !== undefined) {
+          formData.append("itemId", item.id);
+        }
         formData.append("mstrItemsId", item.item);
       });
 
       setLoadIndicator(true);
       try {
         const response = await api.put(
-          `/updateDeliveryAndDeliveryItems/${id}`,
+          `/updateSalesOrderAndSalesItems/${id}`,
           formData,
           {
             headers: {
@@ -153,7 +156,6 @@ function SalesOrderEdit() {
       itemAmt(value, index);
     }
   };
-  
 
   useEffect(() => {
     fetchData();
@@ -177,27 +179,31 @@ function SalesOrderEdit() {
     let subTotal = 0;
     let totalTax = 0;
     let totalDiscount = 0;
-  
+
     formik.values.txnSalesOrderItemsModels.forEach((item, index) => {
       const qty = item.qty || 0;
       const rate = item.rate || 0;
       const tax = item.tax || 0;
       const discountPercentage = formik.values.discount || 0;
-  
+
       // Calculate the amount for each item
       const itemDiscount = qty * rate * (discountPercentage / 100);
-      const discountedAmount = qty * rate - itemDiscount + (tax / 100) * qty * rate;
-      
+      const discountedAmount =
+        qty * rate - itemDiscount + (tax / 100) * qty * rate;
+
       // Update amount field
-      formik.setFieldValue(`txnSalesOrderItemsModels[${index}].amount`, discountedAmount.toFixed(2));
-  
+      formik.setFieldValue(
+        `txnSalesOrderItemsModels[${index}].amount`,
+        discountedAmount.toFixed(2)
+      );
+
       subTotal += qty * rate;
       totalTax += (tax / 100) * (qty * rate);
       totalDiscount += itemDiscount;
     });
-  
+
     const totalAmount = subTotal + totalTax - totalDiscount;
-  
+
     formik.setFieldValue("subTotal", subTotal.toFixed(2));
     formik.setFieldValue("totalTax", totalTax.toFixed(2));
     formik.setFieldValue("discountAmount", totalDiscount.toFixed(2));
@@ -611,16 +617,18 @@ function SalesOrderEdit() {
                           <td>
                             <input
                               type="number"
-                             
                               className={`form-control ${
-                                formik.touched.txnSalesOrderItemsModels &&
-                                formik.touched.txnSalesOrderItemsModels[
-                                  index
-                                ] &&
-                                formik.errors.txnSalesOrderItemsModels &&
-                                formik.errors.txnSalesOrderItemsModels[index] &&
-                                formik.errors.txnSalesOrderItemsModels[index]
-                                  .tax ||0
+                                (formik.touched.txnSalesOrderItemsModels &&
+                                  formik.touched.txnSalesOrderItemsModels[
+                                    index
+                                  ] &&
+                                  formik.errors.txnSalesOrderItemsModels &&
+                                  formik.errors.txnSalesOrderItemsModels[
+                                    index
+                                  ] &&
+                                  formik.errors.txnSalesOrderItemsModels[index]
+                                    .tax) ||
+                                0
                                   ? "is-invalid"
                                   : ""
                               }`}

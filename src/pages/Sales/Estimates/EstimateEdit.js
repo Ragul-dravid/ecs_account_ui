@@ -106,7 +106,8 @@ const EstimateEdit = () => {
       formData.append("terms", values.terms);
 
       values.quotesItemsModels.forEach((item) => {
-        formData.append("itemId", item.id);
+        if (item.id !== undefined) {
+        formData.append("itemId", item.id);}
         formData.append("item", item.item);
         formData.append("qty", item.qty);
         formData.append("price", item.price);

@@ -76,13 +76,13 @@ function SalesOrderAdd() {
           formData.append("qty", item.qty);
           formData.append("rate", item.rate);
           formData.append("amount", item.amount);
-          formData.append("itemId", item.item);
+          formData.append("mstrItemsId", item.item);
         });
 
         formData.append("files", values.files);
 
         const response = await api.post(
-          "/createDeliveryAndDeliveryItems",
+          "/createSalesOrderAndSalesItems",
           formData,
           {
             headers: {

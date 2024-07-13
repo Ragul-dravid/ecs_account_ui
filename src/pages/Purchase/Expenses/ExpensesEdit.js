@@ -15,7 +15,7 @@ function ExpensesEdit() {
     expenseAcc: Yup.string().required("*Expense Account is required"),
     spendAt: Yup.string().required("*Spent At is required"),
     spendOn: Yup.string().required("*Spend On is required"),
-    amount: Yup.string().required("*Amount is required"),
+    amount: Yup.number().required("*Amount is required").typeError("*Amount must be a number"),
     paidThrough: Yup.string().required("*Paid Through is required"),
     // subTotalIncluding: Yup.string().required("*Sub Total Including is required"),
     // subTotalExcluding: Yup.string().required("*Sub Total Excluding is required"),
@@ -41,10 +41,11 @@ function ExpensesEdit() {
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       setLoading(true)
-      try {
+      try { 
+        const { ...value} =values;
         const formData = new FormData();
-        Object.keys(values).forEach(key => formData.append(key, values[key]));
-        if (file) formData.append('attachment', file);
+        Object.keys(value).forEach(key => formData.append(key, value[key]));
+        if (file) {formData.append('attachment', file);}
 
         const response = await api.put(`/updateTxnExpenses/${id}`,values, {
           headers: {
@@ -115,7 +116,7 @@ function ExpensesEdit() {
                     ) : (
                       <span></span>
                     )}
-                    &nbsp;<span>Save</span>
+                    &nbsp;<span>Update</span>
                   </button>
                 </div>
               </div>

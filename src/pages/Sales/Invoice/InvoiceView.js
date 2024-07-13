@@ -5,10 +5,14 @@ import { FaTelegramPlane } from "react-icons/fa";
 import Logo from "../../../assets/AccountsLogo.png";
 import toast from "react-hot-toast";
 import api from "../../../config/URL"
+import fetchAllCustomerWithIds from "../../List/CustomerList";
+import fetchAllItemWithIds from "../../List/ItemList";
 
 function InvoiceView() {
   const { id } = useParams();
-  const [data, setData] = useState([]);
+  const [data, setData] = useState([]); 
+  const [items, setItems] = useState([]);
+  const [customerData, setCustomerData] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -23,9 +27,30 @@ function InvoiceView() {
         setLoading(false);
       }
     };
+    fetchData();
     getData();
   }, [id]);
+  const fetchData = async () => {
+    try {
+      const customerData = await fetchAllCustomerWithIds();
+      const itemData = await fetchAllItemWithIds();
+      setCustomerData(customerData);
+      setItems(itemData);
+    } catch (error) {
+      toast.error(error);
+    }
+  };
 
+  const customer = (id) => {
+    const name = customerData.find((item) => item.id === id);
+    return name?.contactName;
+  };
+
+  const itemName = (id) => {
+    const name = items.find((item) => item.id == id);
+    return name?.itemName;
+  };
+  
   return (
     <div>
     {loading ? (
@@ -95,8 +120,8 @@ function InvoiceView() {
             <div className="col-md-6 col-12 d-flex justify-end flex-column align-items-end mt-2">
               <h1>INVOICE</h1>
               <h3>#{data.invoiceNumber || "#1234"}</h3>
-              <span className="text-muted mt-4">Balance Due</span>
-              <h3>₹3000</h3>
+              {/* <span className="text-muted mt-4">Balance Due</span>
+              <h3>₹3000</h3> */}
             </div>
           </div>
           <div className="row mt-5">
@@ -119,17 +144,17 @@ function InvoiceView() {
                   </p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: {data.issuesDate || ""}</p>
+                  <p className="text-muted text-sm">: {data.issuesDate?.split("-").reverse().join("-") || ""}</p>
                 </div>
               </div>
               <div className="row mb-2 d-flex justify-content-end align-items-end">
                 <div className="col-6">
                   <p className="text-sm">
-                    <b>Terms</b>
+                    <b>Reference</b>
                   </p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: Due on Receipt</p>
+                  <p className="text-muted text-sm">: {data.reference}</p>
                 </div>
               </div>
               <div className="row mb-2 d-flex justify-content-end align-items-end">
@@ -139,7 +164,7 @@ function InvoiceView() {
                   </p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: {data.dueDate || ""}</p>
+                  <p className="text-muted text-sm">: {data.dueDate?.split("-").reverse().join("-")  || ""}</p>
                 </div>
               </div>
             </div>
@@ -175,30 +200,23 @@ function InvoiceView() {
                       <th>AMOUNT</th>
                     </tr>
                   </thead>
-                  <tbody>
-                    <tr>
-                      <td>1
-                      </td>
-                      <td>
-                        Apple
-                      </td>
-                      <td>
-                        1.00
-                      </td>
-                      <td>
-                        3500
-                      </td>
-                      <td>
-                        10
-                      </td>
-                      <td>
-                        Commision
-                      </td>
-                      <td>
-                        3500
-                      </td>
-                    </tr>
-                  </tbody>
+                  <tbody className="table-group">
+                      {data &&
+                        data.invoiceItemsModels &&
+                        data.invoiceItemsModels.map(
+                          (item, index) => (
+                            <tr key={index}>
+                              <th scope="row">{index + 1}</th>
+                              <td>{itemName(item.item)}</td>
+                              <td>{item.qty}</td>
+                              <td>{item.price}</td>
+                              <td>{item.disc}</td>
+                              <td>{item.taxRate}</td>
+                              <td>{item.amount}</td>
+                            </tr>
+                          )
+                        )}
+                    </tbody>
                 </table>
               </div>
             </div>
@@ -244,11 +262,11 @@ function InvoiceView() {
                 <label class="col-sm-4 col-form-label">Total ( ₹ )</label>
                 <div class="col-sm-4"></div>
                 <div class="col-sm-4 ">
-                  3000
+                 : {data.total}
                 </div>
               </div>
             </div>
-            <div className="col-md-6 col-12"></div>
+            {/* <div className="col-md-6 col-12"></div>
             <div className="col-md-6 col-12 ">
               <div class="row mt-2">
                 <label class="col-sm-4 col-form-label">Payment Made</label>
@@ -267,7 +285,7 @@ function InvoiceView() {
                   ₹3000
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
           <div className="col-md-6 col-12 mb-5">
             Authorized Signature _____________________________

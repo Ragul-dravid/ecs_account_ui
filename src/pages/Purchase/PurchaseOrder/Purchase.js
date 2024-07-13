@@ -6,11 +6,13 @@ import { Link } from "react-router-dom";
 import DeleteModel from "../../../components/common/DeleteModel";
 import api from "../../../config/URL";
 import toast from "react-hot-toast";
+import fetchAllVendorNameWithIds from "../../List/VendorList";
 
 const Purchase = () => {
   const tableRef = useRef(null);
   const [datas, setDatas] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [vendorData, setVendorData] = useState(null);
 
   useEffect(() => {
     if (!loading) {
@@ -61,9 +63,21 @@ const Purchase = () => {
         setLoading(false);
       }
     };
+    fetchData();
     getExpensesData();
   }, []);
-
+  const fetchData = async () => {
+    try {
+      const vendorData = await fetchAllVendorNameWithIds();
+      setVendorData(vendorData);
+    } catch (error) {
+      toast.error(error);
+    }
+  };
+  const vendor =(id)=>{
+    const name= vendorData.find((item)=>(item.id === id))
+    return name?.contactName
+  }
   return (
     <div>
     {loading ? (
@@ -107,16 +121,16 @@ const Purchase = () => {
                     S.NO
                   </th>
                   <th scope="col" className="text-center">
+                    Vendor Name
+                  </th>
+                  <th scope="col" className="text-center">
                     Date
                   </th>
                   <th scope="col" className="text-center">
-                    ORDER NUMBER
+                    Phone
                   </th>
                   <th scope="col" className="text-center">
                     REFERENCE
-                  </th>
-                  <th scope="col" className="text-center">
-                    STATUS
                   </th>
                   {/* <th scope="col">DEPARTMENT NAME</th>
                 <th scope="col">WORK LOCATION</th> */}
@@ -129,10 +143,10 @@ const Purchase = () => {
                 {datas?.map((data, index) => (
                   <tr key={index}>
                     <td className="text-center">{index + 1}</td>
-                    <td className="text-center">{data.date}</td>
-                    <td className="text-center">{data.orderNumber}</td>
+                    <td className="text-center">{vendor(data.vendorId)}</td>
+                    <td className="text-center">{data.date?.split("-").reverse().join("-")}</td>
+                    <td className="text-center">{data.phone}</td>
                     <td className="text-center">{data.reference}</td>
-                    <td className="text-center">{data.status}</td>
                     <td className="text-center">
                       <div className="gap-2">
                         <Link to={`/purchase/view/${data.id}`}>
