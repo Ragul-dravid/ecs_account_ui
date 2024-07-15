@@ -7,23 +7,25 @@ import toast from "react-hot-toast";
 import fetchAllCustomerWithIds from "../../List/CustomerList";
 import fetchAllItemWithIds from "../../List/ItemList";
 
+const validationSchema = Yup.object({
+  customerId: Yup.string().required("*Customer name is required"),
+  salesOrder: Yup.string().required("*SalesOrder is required"),
+  orderDate: Yup.date().required("*Order Date is required"),
+  shipmentDate: Yup.date().required("*Shipment Date is required"),
+  paymentTerms: Yup.string().required("*PaymentTerms is required"),
+  txnSalesOrderItemsModels: Yup.array().of(
+    Yup.object({
+      item: Yup.string().required("item is required"),
+      })
+  ),
+});
+
 function SalesOrderEdit() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [loading, setLoadIndicator] = useState(false);
   const [customerData, setCustomerData] = useState(null);
   const [itemData, setItemData] = useState(null);
-
-  const validationSchema = Yup.object({
-    customerId: Yup.string().required("* Customer name is required"),
-    orderDate: Yup.string().required("* Order Date is required"),
-    shipmentDate: Yup.string().required("* Shipment Date is required"),
-    txnSalesOrderItemsModels: Yup.array().of(
-      Yup.object({
-        item: Yup.string().required("item is required"),
-      })
-    ),
-  });
 
   const formik = useFormik({
     initialValues: {
@@ -313,7 +315,7 @@ function SalesOrderEdit() {
                 )}
               </div>
               <div className="col-md-6 col-12 mb-3">
-                <label className="form-label">Sales Order</label>
+                <label className="form-label">Sales Order<span className="text-danger">*</span></label>
                 <input
                   type="text"
                   className={`form-control ${
@@ -385,7 +387,7 @@ function SalesOrderEdit() {
                 )}
               </div>
               <div className="col-md-6 col-12 mb-3">
-                <label className="form-label">Payment Terms</label>
+                <label className="form-label">Payment Terms<span className="text-danger">*</span></label>
                 <select
                   className={`form-select ${
                     formik.touched.paymentTerms && formik.errors.paymentTerms
@@ -484,7 +486,7 @@ function SalesOrderEdit() {
                 <table className="table table-sm table-nowrap">
                   <thead>
                     <tr>
-                      <th style={{ width: "35%" }}>Item</th>
+                      <th style={{ width: "35%" }}>Item<span className="text-danger">*</span></th>
                       <th style={{ width: "15%" }}>Quantity</th>
                       <th style={{ width: "15%" }}>Rate</th>
                       <th style={{ width: "15%" }}>Tax (%)</th>

@@ -1,13 +1,17 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import toast from "react-hot-toast";
 import api from "../../../config/URL";
+import fetchAllVendorNameWithIds from "../../List/VendorList";
+import fetchAllItemWithIds from "../../List/ItemList";
 
 function ExpensesAdd() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [vendorData, setVendorData] = useState(null);
+  const [items, setItems] = useState([]);
 
   const validationSchema = Yup.object({
     expenseAcc: Yup.string().required("*Expense Account is required"),
@@ -57,7 +61,19 @@ function ExpensesAdd() {
       }
     },
   });
-
+  const fetchData = async () => {
+    try {
+      const vendorData = await fetchAllVendorNameWithIds();
+      const itemData = await fetchAllItemWithIds();
+      setVendorData(vendorData);
+      setItems(itemData)
+    } catch (error) {
+      toast.error(error);
+    }
+  };
+  useEffect(()=>{
+    fetchData();
+  },[])
   return (
     <form onSubmit={formik.handleSubmit}>
       <div className="container-fluid p-2 minHeight m-0">
@@ -238,10 +254,12 @@ function ExpensesAdd() {
                     }`}
                   >
                     <option selected></option>
-                    <option value="Vendor 1">Vendor 1</option>
-                    <option value="Vendor 2">Vendor 2</option>
-                    <option value="Vendor 3">Vendor 3</option>
-                    <option value="Vendor 4">Vendor 4</option>
+                    {vendorData &&
+                      vendorData.map((item) => (
+                        <option key={item.id} value={item.id}>
+                          {item.contactName}
+                        </option>
+                      ))}
                   </select>
                   {formik.touched.vendor && formik.errors.vendor && (
                     <div className="invalid-feedback">

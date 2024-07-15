@@ -19,15 +19,31 @@ const PurchaseAdd = () => {
   const validationSchema = Yup.object({
     vendorId: Yup.string().required("*Vendor Name is required"),
     currency: Yup.string().required("*Currency is required"),
+    deliveryDate: Yup.date().required("*Delivery Date is required"),
+    date: Yup.date().required("*date is required"),
     phone: Yup.string().required("*Phone is required"),
     street: Yup.string().required("*Street is required"),
     city: Yup.string().required("*City is required"),
     state: Yup.string().required("*State is required"),
     zipCode: Yup.string().required("*Zip Code is required"),
+    amountsAre: Yup.string().required("*Amounts Are is required"),
     country: Yup.string().required("*Country is required"),
     file: Yup.string().required("*Attachment is required"),
+    items: Yup.array().of(
+      Yup.object().shape({
+        item: Yup.string().required("*Item Details is required"),
+        qty: Yup.number()
+          .min(1, "*Quantity must be a min 1")
+          .notRequired(),
+          price: Yup.number()
+          .typeError("*Rate must be a number")
+          .notRequired(),
+        amount: Yup.number()
+          .typeError("*Amount must be a number")
+          .notRequired(),
+      })
+    ),
   });
-
 
   const formik = useFormik({
     initialValues: {
@@ -290,9 +306,17 @@ const PurchaseAdd = () => {
                   <input
                     type="date"
                     name="date"
-                    className="form-control"
+                    className={`form-control  ${
+                    formik.touched.date && formik.errors.date
+                      ? "is-invalid"
+                      : ""
+                  }`}
                     {...formik.getFieldProps("date")}
-                  />
+                  />{formik.touched.date && formik.errors.date && (
+                  <div className="invalid-feedback">
+                    {formik.errors.date}
+                  </div>
+                )}
                 </div>
               </div>
 
@@ -302,9 +326,17 @@ const PurchaseAdd = () => {
                   <input
                     type="date"
                     name="deliveryDate"
-                    className="form-control"
+                    className={`form-control  ${
+                    formik.touched.deliveryDate && formik.errors.deliveryDate
+                      ? "is-invalid"
+                      : ""
+                  }`}
                     {...formik.getFieldProps("deliveryDate")}
-                  />
+                  />{formik.touched.deliveryDate && formik.errors.deliveryDate && (
+                  <div className="invalid-feedback">
+                    {formik.errors.deliveryDate}
+                  </div>
+                )}
                 </div>
               </div>
 
@@ -346,7 +378,7 @@ const PurchaseAdd = () => {
                 <select
                   name="currency"
                   {...formik.getFieldProps("currency")}
-                  className={`form-control  ${
+                  className={`form-select  ${
                     formik.touched.currency && formik.errors.currency
                       ? "is-invalid"
                       : ""
@@ -531,7 +563,8 @@ const PurchaseAdd = () => {
                 </div>
               </div>
             </div>
-            <div className="col-12 mb-3 d-flex align-items-end justify-content-end">
+            <div className="col-12 mb-3 ">
+             <div className="d-flex align-items-end justify-content-end">
               <label className="col-form-label">
                 Amounts<span className="text-danger">*</span>&nbsp;&nbsp;
               </label>
@@ -550,12 +583,12 @@ const PurchaseAdd = () => {
                   <option value="TAX_INCLUSIVE">Tax Inclusive</option>
                   <option value="NO_TAX">No Tax</option>
                 </select>
-                {formik.touched.amountsAre && formik.errors.amountsAre && (
-                  <div className="invalid-feedback">
-                    {formik.errors.amountsAre}
-                  </div>
-                )}
+              </div></div>
+              <div className="row ">{formik.touched.amountsAre && formik.errors.amountsAre && (
+              <div className="text-danger d-flex justify-content-end " style={{fontSize: "0.875em",paddingRight:"5.25rem"}}>
+                {formik.errors.amountsAre}
               </div>
+            )}</div>
             </div>
             <div className="row">
               <div className="">
@@ -571,7 +604,7 @@ const PurchaseAdd = () => {
                   <thead>
                     <tr>
                       <th scope="col">S.NO</th>
-                      <th scope="col">ITEM</th>
+                      <th scope="col">ITEM<span className="text-danger">*</span></th>
                       {/* <th scope="col">Description</th> */}
                       <th scope="col">Quantity</th>
                       <th scope="col">Unit Price</th>

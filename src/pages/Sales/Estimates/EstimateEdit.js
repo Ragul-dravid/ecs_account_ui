@@ -8,6 +8,32 @@ import api from "../../../config/URL";
 import fetchAllCustomerWithIds from "../../List/CustomerList";
 import fetchAllItemWithIds from "../../List/ItemList";
 
+const validationSchema = Yup.object({
+  customerId: Yup.string().required("* Customer name is required"),
+  issuesDate: Yup.date().required("*Date is required"),
+  quoteNumber: Yup.string().required("*Quote Number is required"),
+  amountsAre: Yup.string().required("*Amounts Are is required"),
+  expiryDate: Yup.date().required("*Expiry Date is required"),
+  status: Yup.string().required("*status is required"),
+  txnQuotesItems: Yup.array().of(
+    Yup.object().shape({
+      item: Yup.string().required("*Item Details is required"),
+      qty: Yup.number()
+        .min(1, "*Quantity must be a min 1")
+        .typeError("*Quantity must be a number")
+        .required("*Quantity is required"),
+      price: Yup.number().typeError("*Rate must be a number").notRequired(),
+      disc: Yup.number()
+        .typeError("*Discount must be a number")
+        .required("*Discount is required"),
+      taxRate: Yup.string().required("*Tax is required"),
+      taxAmount: Yup.number()
+        .typeError("*Amount must be a number")
+        .notRequired(),
+    })
+  ),
+});
+
 const EstimateEdit = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -32,27 +58,7 @@ const EstimateEdit = () => {
   };
 
   console.log("object", customerData)
-  const validationSchema = Yup.object({
-    customerId: Yup.string().required("* Customer name is required"),
-    issueDate: Yup.string().required("*Date is required"),
-    quotesItemsModels: Yup.array().of(
-      Yup.object().shape({
-        item: Yup.string().required("*Item Details is required"),
-        qty: Yup.number()
-          .min(1, "*Quantity must be a min 1")
-          .typeError("*Quantity must be a number")
-          .required("*Quantity is required"),
-        price: Yup.number().typeError("*Rate must be a number").notRequired(),
-        disc: Yup.number()
-          .typeError("*Discount must be a number")
-          .required("*Discount is required"),
-        taxRate: Yup.string().required("*Tax is required"),
-        taxAmount: Yup.number()
-          .typeError("*Amount must be a number")
-          .notRequired(),
-      })
-    ),
-  });
+  
   const formik = useFormik({
     initialValues: {
       qoutesId: id,
@@ -316,7 +322,7 @@ const EstimateEdit = () => {
               </div>
 
               <div className="col-md-6 col-12 mb-3">
-                <label className="form-label">Quote Number</label>
+                <label className="form-label">Quote Number</label><span className="text-danger">*</span>
                 <input
                   type="text"
                   className={`form-control ${formik.touched.quoteNumber && formik.errors.quoteNumber
@@ -435,13 +441,13 @@ const EstimateEdit = () => {
                     <option value="APPROVED">Approved</option>
                     <option value="PENDING">Pending</option>
                   </select>
-                </div>
                 {formik.touched.status &&
                   formik.errors.status && (
                     <div className="invalid-feedback">
                       {formik.errors.status}
                     </div>
                   )}
+                </div>
               </div>
             </div>
 
@@ -480,34 +486,10 @@ const EstimateEdit = () => {
                   </div>
                 </div>
               )}
-              <div className="row">
-                <div className="col-12 mb-4">
-                  {rowss ? (
-                    <button
-                      type="button"
-                      onClick={() => (setRowss(false))}
-                      className="btn btn-danger btn-sm"
-                    >
-                      <MdDeleteSweep className="mb-1 mx-1" /> Delete Title & Summary
-                    </button>
-
-                  ) : (
-                    <button
-                      type="button"
-                      onClick={() => (setRowss(true))}
-                      className="btn btn-border btn-sm btn-button"
-                    >
-                      <i className="bx bx-plus"></i> Add Title & Summary
-                    </button>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            <div className="row">
-              <div className="col-12 mb-3 d-flex align-items-end justify-content-end">
-                <label className="col-form-label">
-                  Amount Are<span className="text-danger">*</span>&nbsp;&nbsp;
+               <div className="row mb-3">
+              <div className="col-12 d-flex align-items-end justify-content-end">
+                <label className="col-form-label me-1">
+                  Amount Are<span className="text-danger">*</span>
                 </label>
                 <div className="overflow-x-auto">
                   <select
@@ -525,13 +507,13 @@ const EstimateEdit = () => {
                     <option value="NO_TAX">No Tax</option>
                   </select>
                 </div>
-                {formik.touched.amountsAre &&
-                  formik.errors.amountsAre && (
-                    <div className="invalid-feedback">
-                      {formik.errors.amountsAre}
-                    </div>
-                  )}
               </div>
+              <div className="d-flex justify-content-end ">{formik.touched.amountsAre && formik.errors.amountsAre && (
+              <div className="text-danger   " style={{fontSize: "0.875em"}}>
+                {formik.errors.amountsAre}
+              </div>
+            )}</div>
+            </div>
             </div>
 
             <div className="row">

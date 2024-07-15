@@ -32,6 +32,8 @@ function CreditNotesAdd() {
   const validationSchema = Yup.object({
     customerId: Yup.string().required("* Customer name is required"),
     date: Yup.string().required("*Date is required"),
+    amountsAre: Yup.string().required("*Date is required"),
+    currency: Yup.string().required("*Date is required"),
     txnCreditNoteItems: Yup.array().of(
         Yup.object().shape({
           item: Yup.string().required("*Item Details is required"),
@@ -371,15 +373,16 @@ function CreditNotesAdd() {
                     <option value="SGD">SGD</option>
                     <option value="USD">USD</option>
                   </select>
-                </div>
                 {formik.touched.currency && formik.errors.currency && (
                   <div className="invalid-feedback">
                     {formik.errors.currency}
                   </div>
                 )}
+                </div>
               </div>
 
-              <div className="col-md-6 col-12 mb-3 d-flex align-items-end justify-content-end">
+              <div className="col-md-6 col-12 mb-3 ">
+              <div className="d-flex align-items-end justify-content-end">
                 <label className="col-form-label">
                   Amount Are<span className="text-danger">*</span>&nbsp;&nbsp;
                 </label>
@@ -400,11 +403,12 @@ function CreditNotesAdd() {
                     <option value="NO_TAX">No Tax</option>
                   </select>
                 </div>
-                {formik.touched.amountsAre && formik.errors.amountsAre && (
-                  <div className="invalid-feedback">
-                    {formik.errors.amountsAre}
-                  </div>
-                )}
+                </div>
+                <div className="row ">{formik.touched.amountsAre && formik.errors.amountsAre && (
+              <div className="text-danger d-flex justify-content-end " style={{fontSize: "0.875em",paddingRight:"8.25rem"}}>
+                {formik.errors.amountsAre}
+              </div>
+            )}</div>
               </div>
             </div>
 

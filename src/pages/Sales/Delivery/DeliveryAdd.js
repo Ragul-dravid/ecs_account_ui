@@ -7,16 +7,18 @@ import * as yup from "yup";
 import toast from "react-hot-toast";
 import fetchAllCustomerWithIds from "../../List/CustomerList";
 import fetchAllItemWithIds from "../../List/ItemList";
+
 const validationSchema = yup.object().shape({
   customerId: yup.string().required("*Customer name is required"),
   challanDate: yup.date().required("*Date is required"),
+  paymentTerms: yup.string().required("*PaymentTerms is required"),
+  challanType: yup.string().required("*challanType is required"),
   challansItemsModels: yup.array().of(
     yup.object().shape({
       item: yup.string().required("item is required"),
       // other validations as needed
     })
   ),
-  // other fields validation as needed
 });
 
 const DeliveryAdd = () => {
@@ -300,12 +302,16 @@ const DeliveryAdd = () => {
                 </div>
               </div>
               <div className="col-md-6 col-12 mb-2">
-                <label className="form-label">payment Terms</label>
+                <label className="form-label">payment Terms<span className="text-danger">*</span></label>
                 <div className="mb-3">
                   <select
                     type="text"
                     name="paymentTerms"
-                    className="form-select"
+                    className={`form-select ${
+                      formik.touched.paymentTerms && formik.errors.paymentTerms
+                        ? "is-invalid"
+                        : ""
+                    }`}
                     {...formik.getFieldProps("paymentTerms")}
                   >
                     <option value=""> </option>
@@ -314,15 +320,24 @@ const DeliveryAdd = () => {
                     <option value="NET_45"> NET_45</option>
                     <option value="NET_60"> NET_60</option>
                   </select>
+                  {formik.touched.paymentTerms && formik.errors.paymentTerms && (
+                  <div className="invalid-feedback">
+                    {formik.errors.paymentTerms}
+                  </div>
+                )}
                 </div>
               </div>
               <div className="col-md-6 col-12 mb-2">
-                <label className="form-label">Challan Type</label>
+                <label className="form-label">Challan Type<span className="text-danger">*</span></label>
                 <div className="mb-3">
                   <select
                     name="challanType"
                     {...formik.getFieldProps("challanType")}
-                    className={`form-select `}
+                    className={`form-select ${
+                      formik.touched.challanType && formik.errors.challanType
+                        ? "is-invalid"
+                        : ""
+                    }`}
                   >
                     <option value=""></option>
                     <option value="Job Work">Job Work</option>
@@ -331,6 +346,11 @@ const DeliveryAdd = () => {
                     </option>
                     <option value="Others">Others</option>
                   </select>
+                  {formik.touched.challanType && formik.errors.challanType && (
+                  <div className="invalid-feedback">
+                    {formik.errors.challanType}
+                  </div>
+                )}
                 </div>
               </div>
               <div className="col-md-6 col-12 mb-2">

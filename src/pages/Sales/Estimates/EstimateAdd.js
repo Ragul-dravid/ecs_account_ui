@@ -33,7 +33,11 @@ function EstimateAdd() {
   console.log("object", customerData)
   const validationSchema = Yup.object({
     customerId: Yup.string().required("* Customer name is required"),
-    issuesDate: Yup.string().required("*Date is required"),
+    issuesDate: Yup.date().required("*Date is required"),
+    quoteNumber: Yup.string().required("*Quote Number is required"),
+    amountsAre: Yup.string().required("*Amounts Are is required"),
+    expiryDate: Yup.date().required("*Expiry Date is required"),
+    status: Yup.string().required("*status is required"),
     txnQuotesItems: Yup.array().of(
       Yup.object().shape({
         item: Yup.string().required("*Item Details is required"),
@@ -299,7 +303,7 @@ function EstimateAdd() {
               </div>
 
               <div className="col-md-6 col-12 mb-3">
-                <label className="form-label">Quote Number</label>
+                <label className="form-label">Quote Number</label><span className="text-danger">*</span>
                 <input
                   type="text"
                   className={`form-control ${formik.touched.quoteNumber && formik.errors.quoteNumber
@@ -353,7 +357,7 @@ function EstimateAdd() {
 
               <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">
-                  Expriy Date
+                  Expriy Date<span className="text-danger">*</span>
                 </label>
                 <input
                   type="date"
@@ -401,7 +405,7 @@ function EstimateAdd() {
 
               <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">
-                  Status
+                  Status<span className="text-danger">*</span>
                 </label>
                 <div className="overflow-x-auto">
                   <select
@@ -418,13 +422,13 @@ function EstimateAdd() {
                     <option value="APPROVED">Approved</option>
                     <option value="PENDING">Pending</option>
                   </select>
-                </div>
                 {formik.touched.status &&
                   formik.errors.status && (
                     <div className="invalid-feedback">
                       {formik.errors.status}
                     </div>
                   )}
+                </div>
               </div>
             </div>
 
@@ -487,10 +491,10 @@ function EstimateAdd() {
               </div>
             </div>
 
-            <div className="row">
-              <div className="col-12 mb-3 d-flex align-items-end justify-content-end">
-                <label className="col-form-label">
-                  Amount Are
+            <div className="row mb-3">
+              <div className="col-12 d-flex align-items-end justify-content-end">
+                <label className="col-form-label me-1">
+                  Amount Are<span className="text-danger">*</span>
                 </label>
                 <div className="overflow-x-auto">
                   <select
@@ -509,12 +513,13 @@ function EstimateAdd() {
                   </select>
                 </div>
               </div>
-            </div>
-            {formik.touched.amountsAre && formik.errors.amountsAre && (
-              <div className="invalid-feedback">
+              <div className="d-flex justify-content-end pe-5">{formik.touched.amountsAre && formik.errors.amountsAre && (
+              <div className="text-danger   " style={{fontSize: "0.875em"}}>
                 {formik.errors.amountsAre}
               </div>
-            )}
+            )}</div>
+            </div>
+            
 
             <div className="row">
               <div className="">

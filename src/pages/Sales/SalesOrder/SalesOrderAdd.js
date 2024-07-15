@@ -15,8 +15,10 @@ function SalesOrderAdd() {
 
   const validationSchema = Yup.object({
     customerId: Yup.string().required("*Customer name is required"),
-    orderDate: Yup.string().required("*Order Date is required"),
-    shipmentDate: Yup.string().required("*Shipment Date is required"),
+    salesOrder: Yup.string().required("*SalesOrder is required"),
+    orderDate: Yup.date().required("*Order Date is required"),
+    shipmentDate: Yup.date().required("*Shipment Date is required"),
+    paymentTerms: Yup.string().required("*PaymentTerms is required"),
     txnSalesOrderItemsModels: Yup.array().of(
       Yup.object({
         item: Yup.string().required("item is required"),
@@ -290,7 +292,7 @@ function SalesOrderAdd() {
                 )}
               </div>
               <div className="col-md-6 col-12 mb-3">
-                <label className="form-label">Sales Order</label>
+                <label className="form-label">Sales Order<span className="text-danger">*</span></label>
                 <input
                   type="text"
                   className={`form-control ${
@@ -362,7 +364,7 @@ function SalesOrderAdd() {
                 )}
               </div>
               <div className="col-md-6 col-12 mb-3">
-                <label className="form-label">Payment Terms</label>
+                <label className="form-label">Payment Terms<span className="text-danger">*</span></label>
                 <select
                   className={`form-select ${
                     formik.touched.paymentTerms && formik.errors.paymentTerms
@@ -689,7 +691,7 @@ function SalesOrderAdd() {
             <div className="row mt-5 pt-0">
               <div className="col-md-6 col-12 mb-3 pt-0">
                 <lable className="form-lable">
-                  Customer Notes<span className="text-danger">*</span>
+                  Customer Notes
                 </lable>
                 <div className="mb-3">
                   <input
@@ -760,7 +762,7 @@ function SalesOrderAdd() {
                 </div>
                 <div className="row mb-3">
                   <label className="col-sm-4 col-form-label">
-                    Discount Amount<span className="text-danger">*</span>
+                    Discount Amount
                   </label>
                   <div className="col-sm-4"></div>
                   <div className="col-sm-4">
@@ -810,7 +812,7 @@ function SalesOrderAdd() {
 
               <div className="col-md-6 col-12 mb-3">
                 <lable className="form-lable">
-                  Terms & Conditions<span className="text-danger">*</span>
+                  Terms & Conditions
                 </lable>
                 <div className="mb-3">
                   <textarea

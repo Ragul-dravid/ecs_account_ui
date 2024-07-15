@@ -7,22 +7,25 @@ import toast from "react-hot-toast";
 import fetchAllCustomerWithIds from "../../List/CustomerList";
 import fetchAllItemWithIds from "../../List/ItemList";
 
+const validationSchema = Yup.object({
+  customerId: Yup.string().required("*Customer name is required"),
+  invoiceNumber: Yup.string().required("*Invoice Number is required"),
+  issuesDate: Yup.string().required("*Issues Date is required"),
+  dueDate: Yup.string().required("*Due Date is required"),
+  amountsAre: Yup.string().required("*Amount Are is required"),
+  txnInvoiceOrderItemsModels: Yup.array().of(
+    Yup.object({
+      item: Yup.string().required("item is required"),
+      })
+  ),
+});
+
 function InvoiceEdit() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [loading, setLoadIndicator] = useState(false);
   const [customerData, setCustomerData] = useState(null);
   const [itemData, setItemData] = useState(null);
-
-  const validationSchema = Yup.object({
-    customerId: Yup.string().required("*Customer name is required"),
-    amountsAre: Yup.string().required("*Amount Are is required"),
-    txnInvoiceOrderItemsModels: Yup.array().of(
-      Yup.object({
-        item: Yup.string().required("item is required"),
-      })
-    ),
-  });
 
   const formik = useFormik({
     initialValues: {
@@ -435,7 +438,7 @@ function InvoiceEdit() {
 
               <div className="col-md-6 col-12 mb-3">
                 <lable className="form-lable">
-                  Reference<span className="text-danger">*</span>
+                  Reference
                 </lable>
                 <div className="mb-3">
                   <input
@@ -455,29 +458,33 @@ function InvoiceEdit() {
                 </div>
               </div>
 
-              <div className="col-md-6 col-12 mb-3">
-                <label className="form-label">
+               <div className="col-md-6 col-12 mb-3">
+                <label className="form-label mb-0">
                   Amount Are<span className="text-danger">*</span>&nbsp;&nbsp;
                 </label>
                 <div className="mb-3">
                   <select
                     name="amountsAre"
                     {...formik.getFieldProps("amountsAre")}
-                    className="form-select"
+                    className={`form-select ${
+                      formik.touched.amountsAre && formik.errors.amountsAre
+                        ? "is-invalid"
+                        : ""
+                    }`}
+                    style={{ width: "100%" }}
                   >
                     <option></option>
                     <option value="TAX_EXCLUSIVE">Tax Exclusive</option>
                     <option value="TAX_INCLUSIVE">Tax Inclusive</option>
                     <option value="NO_TAX">No Tax</option>
                   </select>
-                </div>
                 {formik.touched.amountsAre && formik.errors.amountsAre && (
                   <div className="invalid-feedback">
                     {formik.errors.amountsAre}
                   </div>
                 )}
+                </div>
               </div>
-
               <div className="row">
                 <div className="">
                   <h3
@@ -491,7 +498,7 @@ function InvoiceEdit() {
                   <table className="table table-sm table-nowrap">
                     <thead>
                       <tr>
-                        <th style={{ width: "25%" }}>Item</th>
+                        <th style={{ width: "25%" }}>Item<span className="text-danger">*</span></th>
                         <th style={{ width: "15%" }}>Quantity</th>
                         <th style={{ width: "15%" }}>Rate</th>
                         <th style={{ width: "15%" }}>Discount(%)</th>
@@ -823,7 +830,7 @@ function InvoiceEdit() {
                 >
                   <div className="row mb-3 mt-2">
                     <label className="col-sm-4 col-form-label">
-                      Sub Total<span className="text-danger">*</span>
+                      Sub Total
                     </label>
                     <div className="col-sm-4"></div>
                     <div className="col-sm-4">
@@ -845,7 +852,7 @@ function InvoiceEdit() {
                   </div>
                   <div className="row mb-3 mt-2">
                     <label className="col-sm-4 col-form-label">
-                      Total Discount<span className="text-danger">*</span>
+                      Total Discount
                     </label>
                     <div className="col-sm-4"></div>
                     <div className="col-sm-4">
@@ -869,7 +876,7 @@ function InvoiceEdit() {
                   </div>
                   <div className="row mb-3">
                     <label className="col-sm-4 col-form-label">
-                      Total Tax<span className="text-danger">*</span>
+                      Total Tax
                     </label>
                     <div className="col-sm-4"></div>
                     <div className="col-sm-4">
@@ -915,7 +922,7 @@ function InvoiceEdit() {
 
                 <div className="col-md-6 col-12 mb-3">
                   <lable className="form-lable">
-                    Terms & Conditions<span className="text-danger">*</span>
+                    Terms & Conditions
                   </lable>
                   <div className="mb-3">
                     <textarea

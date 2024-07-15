@@ -15,6 +15,9 @@ function InvoiceAdd() {
 
   const validationSchema = Yup.object({
     customerId: Yup.string().required("*Customer name is required"),
+    invoiceNumber: Yup.string().required("*Invoice Number is required"),
+    issuesDate: Yup.string().required("*Issues Date is required"),
+    dueDate: Yup.string().required("*Due Date is required"),
     amountsAre: Yup.string().required("*Amount Are is required"),
     txnInvoiceOrderItemsModels: Yup.array().of(
       Yup.object({
@@ -31,7 +34,7 @@ function InvoiceAdd() {
       dueDate: "",
       invoiceNumber: "",
       reference: "",
-      AmountsAre: "",
+      amountsAre: "",
       subTotal: "",
       totalTax: "",
       totalDiscount: "",
@@ -402,7 +405,7 @@ function InvoiceAdd() {
 
               <div className="col-md-6 col-12 mb-3">
                 <lable className="form-lable">
-                  Reference<span className="text-danger">*</span>
+                  Reference
                 </lable>
                 <div className="mb-3">
                   <input
@@ -428,9 +431,13 @@ function InvoiceAdd() {
                 </label>
                 <div className="mb-3">
                   <select
-                    name="AmountsAre"
-                    {...formik.getFieldProps("AmountsAre")}
-                    className="form-select"
+                    name="amountsAre"
+                    {...formik.getFieldProps("amountsAre")}
+                    className={`form-select ${
+                      formik.touched.amountsAre && formik.errors.amountsAre
+                        ? "is-invalid"
+                        : ""
+                    }`}
                     style={{ width: "100%" }}
                   >
                     <option></option>
@@ -438,12 +445,12 @@ function InvoiceAdd() {
                     <option value="TAX_INCLUSIVE">Tax Inclusive</option>
                     <option value="NO_TAX">No Tax</option>
                   </select>
-                </div>
-                {formik.touched.AmountsAre && formik.errors.AmountsAre && (
+                {formik.touched.amountsAre && formik.errors.amountsAre && (
                   <div className="invalid-feedback">
-                    {formik.errors.AmountsAre}
+                    {formik.errors.amountsAre}
                   </div>
                 )}
+                </div>
               </div>
 
               <div className="row">
@@ -459,7 +466,7 @@ function InvoiceAdd() {
                   <table className="table table-sm table-nowrap">
                     <thead>
                       <tr>
-                        <th style={{ width: "25%" }}>Item</th>
+                        <th style={{ width: "25%" }}>Item<span className="text-danger">*</span></th>
                         <th style={{ width: "15%" }}>Quantity</th>
                         <th style={{ width: "15%" }}>Rate</th>
                         <th style={{ width: "15%" }}>Discount(%)</th>
@@ -747,7 +754,7 @@ function InvoiceAdd() {
               <div className="row mt-5 pt-0">
                 <div className="col-md-6 col-12 mb-3 pt-0">
                   <lable className="form-lable">
-                    Customer Notes<span className="text-danger">*</span>
+                    Customer Notes
                   </lable>
                   <div className="mb-3">
                     <input
@@ -819,7 +826,7 @@ function InvoiceAdd() {
                   </div>
                   <div className="row mb-3">
                     <label className="col-sm-4 col-form-label">
-                      Total Tax<span className="text-danger">*</span>
+                      Total Tax
                     </label>
                     <div className="col-sm-4"></div>
                     <div className="col-sm-4">
@@ -865,7 +872,7 @@ function InvoiceAdd() {
 
                 <div className="col-md-6 col-12 mb-3">
                   <lable className="form-lable">
-                    Terms & Conditions<span className="text-danger">*</span>
+                    Terms & Conditions
                   </lable>
                   <div className="mb-3">
                     <textarea
