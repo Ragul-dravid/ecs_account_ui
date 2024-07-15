@@ -6,7 +6,7 @@ import api from "../../../config/URL";
 import toast from "react-hot-toast";
 
 const validationSchema = Yup.object().shape({
-    vendorId : Yup.string().required("*Vendor Name is required"),
+  vendorId : Yup.string().required("*Vendor Name is required"),
     transactionEveryNo: Yup.number()
       .typeError("*Transaction Every No must be a number")
       .required("*Transaction Every No is required"),
@@ -86,7 +86,7 @@ const RecurringBillEdit = () => {
       termsAndconditions: "",
       files: null,
     },
-    // validationSchema: validationSchema,
+    validationSchema: validationSchema,
     onSubmit: async (values) => {
       setLoadIndicator(true);
       console.log("Create Tnx :", values);
@@ -212,15 +212,15 @@ const RecurringBillEdit = () => {
                 toast.error("Error fetching data: ", error?.response?.data?.message);
               }
             }
-            // if (item.qty && item.taxRate && item.disc !== undefined && item.tax !== undefined) {
-            //   const amount = calculateAmount(item.qty, item.taxRate, item.disc, item.tax);
-            //   const itemTotalRate = item.qty * item.taxRate;
-            //   const itemTotalTax = itemTotalRate * (item.tax / 100);
-            //   totalRate += item.taxRate;
-            //   totalAmount += amount;
-            //   totalTax += itemTotalTax;
-            //   return { ...item, amount,};
-            // }
+            if (item.qty && item.taxRate && item.disc !== undefined && item.tax !== undefined) {
+              const amount = calculateAmount(item.qty, item.taxRate, item.disc, item.tax);
+              const itemTotalRate = item.qty * item.taxRate;
+              const itemTotalTax = itemTotalRate * (item.tax / 100);
+              totalRate += item.taxRate;
+              totalAmount += amount;
+              totalTax += itemTotalTax;
+              return { ...item, amount,};
+            }
             return item;
           })
         );
