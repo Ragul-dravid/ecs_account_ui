@@ -5,7 +5,7 @@ import { FaTelegramPlane } from "react-icons/fa";
 import Logo from "../../../assets/AccountsLogo.png";
 import api from "../../../config/URL";
 import toast from "react-hot-toast";
-
+import GeneratePdf from "../../GeneratePdf";
 
 const PaymentMadeView = () => {
 
@@ -61,9 +61,31 @@ const PaymentMadeView = () => {
                 <button type="submit" className="btn btn-button rounded-pill p-2">
                   <FaTelegramPlane size={18} />
                 </button>
-                <button type="submit" className="btn btn-button rounded-pill p-2">
-                  <IoCloudDownloadSharp size={18} />
-                </button>
+                <button
+                      className="btn btn-button rounded-pill p-2"
+                      type="button"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                    >
+                      <IoCloudDownloadSharp size={18} className="mx-1 text-white fs-5" />
+                    </button>
+                    <ul className="dropdown-menu">
+                      <li
+                        className="dropdown-item"
+                        onClick={() => GeneratePdf("download",data,{ name: "PAYMENT MADE" })}
+                      >
+                        Download PDF
+                      </li>
+                      <li className="dropdown-item" onClick={() => GeneratePdf("open",data,{ name: "PAYMENT MADE" })}>
+                        Open PDF
+                      </li>
+                      <li
+                        className="dropdown-item"
+                        onClick={() => GeneratePdf("print",data,{ name: "PAYMENT MADE" })}
+                      >
+                        Print PDF
+                      </li>
+                    </ul>
 
               </div>
             </div>
