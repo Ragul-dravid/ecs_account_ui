@@ -49,7 +49,7 @@ function SalesOrderEdit() {
           item: "",
           qty: "",
           rate: "",
-          tax: "",
+          taxAmount: "",
           amount: "",
           itemId: "",
           mstrItemsId: "",
@@ -79,7 +79,9 @@ function SalesOrderEdit() {
         formData.append("item", item.item);
         formData.append("qty", item.qty);
         formData.append("rate", item.rate);
+        formData.append("taxAmount", item.taxAmount);
         formData.append("amount", item.amount);
+        formData.append("discountAmount", 0);
         if (item.id !== undefined) {
           formData.append("itemId", item.id);
         }
@@ -136,9 +138,9 @@ function SalesOrderEdit() {
         toast.error("Error fetching data: ", e?.response?.data?.message);
       }
     };
-
     getData();
   }, [id]);
+
   const itemAmt = async (id, index) => {
     try {
       const response = await api.get(`/getMstrItemsById/${id}`);
@@ -171,7 +173,7 @@ function SalesOrderEdit() {
       ) {
         itemAmt(formik.values.txnSalesOrderItemsModels[index].item, index);
         formik.setFieldValue(`txnSalesOrderItemsModels[${index}].qty`, 1);
-        formik.setFieldValue(`txnSalesOrderItemsModels[${index}].tax`, 0);
+        formik.setFieldValue(`txnSalesOrderItemsModels[${index}].taxAmount`, 0);
       }
     });
   }, [
@@ -185,7 +187,7 @@ function SalesOrderEdit() {
     formik.values.txnSalesOrderItemsModels.forEach((item, index) => {
       const qty = item.qty || 0;
       const rate = item.rate || 0;
-      const tax = item.tax || 0;
+      const tax = item.taxAmount || 0;
       const discountPercentage = formik.values.discount || 0;
 
       // Calculate the amount for each item
@@ -216,7 +218,7 @@ function SalesOrderEdit() {
     calculateTotals();
   }, [
     formik.values.txnSalesOrderItemsModels
-      .map((item) => `${item.qty}-${item.rate}-${item.tax}-${item.amount}`)
+      .map((item) => `${item.qty}-${item.rate}-${item.taxAmount}-${item.amount}`)
       .join(","),
     formik.values.discount,
   ]);
@@ -226,7 +228,7 @@ function SalesOrderEdit() {
       item: "",
       qty: "",
       rate: "",
-      tax: "",
+      taxAmount: "",
       amount: "",
       itemId: "",
     };
@@ -629,17 +631,17 @@ function SalesOrderEdit() {
                                     index
                                   ] &&
                                   formik.errors.txnSalesOrderItemsModels[index]
-                                    .tax) ||
+                                    .taxAmount) ||
                                 0
                                   ? "is-invalid"
                                   : ""
                               }`}
                               value={
                                 formik.values.txnSalesOrderItemsModels[index]
-                                  .tax || 0
+                                  .taxAmount || 0
                               }
                               {...formik.getFieldProps(
-                                `txnSalesOrderItemsModels[${index}].tax`
+                                `txnSalesOrderItemsModels[${index}].taxAmount`
                               )}
                             />
                             {formik.touched.txnSalesOrderItemsModels &&
@@ -647,12 +649,12 @@ function SalesOrderEdit() {
                               formik.errors.txnSalesOrderItemsModels &&
                               formik.errors.txnSalesOrderItemsModels[index] &&
                               formik.errors.txnSalesOrderItemsModels[index]
-                                .tax && (
+                                .taxAmount && (
                                 <div className="invalid-feedback">
                                   {
                                     formik.errors.txnSalesOrderItemsModels[
                                       index
-                                    ].tax
+                                    ].taxAmount
                                   }
                                 </div>
                               )}

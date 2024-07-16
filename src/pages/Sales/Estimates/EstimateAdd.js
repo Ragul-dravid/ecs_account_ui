@@ -50,9 +50,6 @@ function EstimateAdd() {
           .typeError("*Discount must be a number")
           .required("*Discount is required"),
         taxRate: Yup.string().required("*Tax is required"),
-        taxAmount: Yup.number()
-          .typeError("*Amount must be a number")
-          .notRequired(),
       })
     ),
   });
@@ -81,7 +78,6 @@ function EstimateAdd() {
           price: "",
           disc: "",
           taxRate: "",
-          taxAmount: "",
           itemId: "",
         },
       ],
@@ -113,7 +109,7 @@ function EstimateAdd() {
           formData.append("description", "test");
           formData.append("account", "test");
           formData.append("disc", item.disc);
-          formData.append("taxAmount", item.taxAmount);
+          formData.append("taxAmount", '000');
           formData.append("taxRate", item.taxRate);
           formData.append("mstrItemsId", item.item);
         });

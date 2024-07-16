@@ -15,11 +15,10 @@ const Estimates = () => {
   const [datas, setDatas] = useState([]);
   const [loading, setLoading] = useState(true);
   const [customerData, setCustomerData] = useState([]);
-  console.log("object",customerData)
+
   const getData = async () => {
     try {
       const response = await api.get("/getAllTxnQuotes");
-      setCustomerData(response.data);
       if (response.status === 200) {
         setDatas(response.data)
         setLoading(false);
@@ -30,6 +29,16 @@ const Estimates = () => {
 
     }
   }
+
+  const fetchCustamerData = async () => {
+    try {
+      const response = await api.get("getAllCustomerWithIds");
+      setCustomerData(response.data);
+    } catch (error) {
+      toast.error("Error fetching tax data:", error);
+    }
+  };
+
   const initializeDataTable = () => {
     if ($.fn.DataTable.isDataTable(tableRef.current)) {
       // DataTable already initialized, no need to initialize again
@@ -48,8 +57,8 @@ const Estimates = () => {
   };
 
   const customer =(id)=>{
-    const name= customerData.find((item)=>(item.id === id))
-    return name?.customerName
+    const name= customerData.find((item)=>(item.id == id))
+    return name?.contactName
   }
 
   const refreshData = async () => {
@@ -74,12 +83,10 @@ const Estimates = () => {
     };
   }, [loading]);
 
-  const contactName =(id)=>{
-    const name= customerData.find((item)=>(item.id === id))
-    return name?.contactName
-  }
+  
   
   useEffect(() => {
+    fetchCustamerData();
     getData();
   }, []);
   return (
@@ -138,7 +145,7 @@ const Estimates = () => {
               {datas?.map((data, index) => (
                 <tr key={index}>
                   <td className="text-center">{index + 1}</td>
-                  <td className="text-center">{customer(data.id)}</td>
+                  <td className="text-center">{customer(data.customerId)}</td>
                   <td className="text-center">
                     {new Date(data.issueDate).toLocaleDateString('en-GB')}
                   </td>

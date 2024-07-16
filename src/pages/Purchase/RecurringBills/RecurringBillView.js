@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import Logo from "../../../assets/AccountsLogo.png";
 import fetchAllVendorNameWithIds from "../../List/VendorList";
 import fetchAllItemWithIds from "../../List/ItemList";
+import SendInvoice from "../../SendMails/SendInvoice";
 
 const RecurringBillView = () => {
   const { id } = useParams();
@@ -79,6 +80,7 @@ const RecurringBillView = () => {
                         <span>Back</span>
                       </button>
                     </Link>
+                    <SendInvoice recurringBill={recurringBill}/>
                   </div>
                 </div>
               </div>

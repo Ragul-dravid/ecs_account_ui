@@ -183,7 +183,7 @@ const RecurringInvoiceView = () => {
                         </div>
                         <div className="col-6">
                           <p className="text-muted text-sm">
-                            {datas.tax || "N/A"}
+                            {datas.amountsAre || "N/A"}
                           </p>
                         </div>
                       </>

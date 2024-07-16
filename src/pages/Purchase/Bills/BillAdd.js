@@ -103,6 +103,7 @@ function BillsAdd() {
         formData.append("taxRate", item.taxRate);
         formData.append("amount", item.amount);
         formData.append("mstrItemsId", item.item);
+        formData.append("discount", item.disc);
         formData.append("account", "item");
         formData.append("description", "test");
       });
@@ -126,7 +127,7 @@ function BillsAdd() {
   const addRow = () => {
     formik.setFieldValue("billItemsModels", [
       ...formik.values.billItemsModels,
-      { item: "", qty: "", price: "", taxRate: "", amount: "" },
+      { item: "", qty: "", price: "",disc:"", taxRate: "", amount: "" },
     ]);
   };
 
@@ -182,6 +183,7 @@ function BillsAdd() {
                 const amount = calculateAmount(
                   updatedItem.qty,
                   updatedItem.taxRate,
+                  updatedItem.disc,
                   updatedItem.price
                 );
                 const itemTotalRate = updatedItem.qty * updatedItem.price;
@@ -235,15 +237,18 @@ function BillsAdd() {
     formik.values.billItemsModels.map((item) => item.qty).join(","),
     formik.values.billItemsModels.map((item) => item.taxRate).join(""),
     formik.values.billItemsModels.map((item) => item.price).join(""),
+    formik.values.billItemsModels.map((item) => item.disc).join(""),
     // formik.values.items.map((item) => item.tax).join(""),
   ]);
 
-  const calculateAmount = (qty, taxRate, price, tax) => {
+  const calculateAmount = (qty, taxRate, price, disc) => {
+    console.log("price",price)
     const totalRate = qty * price;
-    // const discountAmount = totalRate * (disc / 100);
+    const discountAmount = totalRate * (disc / 100);
     const taxableAmount = totalRate * (taxRate / 100);
-    // const totalAmount = totalRate + taxableAmount - discountAmount;
-    const totalAmount = totalRate + taxableAmount;
+    const totalAmount = (totalRate + taxableAmount) - discountAmount;
+    // const totalAmount = totalRate + taxableAmount;
+    console.log("object",totalRate)
     return totalAmount;
   };
 
@@ -417,7 +422,7 @@ function BillsAdd() {
                         ? "is-invalid"
                         : ""
                     }`}
-                    {...formik.getFieldProps("duedueDate")}
+                    {...formik.getFieldProps("dueDate")}
                   />
                   {formik.touched.dueDate && formik.errors.dueDate && (
                     <div className="invalid-feedback">

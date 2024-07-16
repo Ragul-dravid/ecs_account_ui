@@ -10,7 +10,7 @@ import fetchAllItemWithIds from "../../List/ItemList";
 
 const validationSchema = Yup.object({
   customerId: Yup.string().required("* Customer name is required"),
-  issuesDate: Yup.date().required("*Date is required"),
+  issueDate: Yup.date().required("*Date is required"),
   quoteNumber: Yup.string().required("*Quote Number is required"),
   amountsAre: Yup.string().required("*Amounts Are is required"),
   expiryDate: Yup.date().required("*Expiry Date is required"),
