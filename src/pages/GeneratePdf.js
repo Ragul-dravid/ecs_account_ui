@@ -1,11 +1,22 @@
 import jsPDF from "jspdf";
 import 'jspdf-autotable';
 import Logo from "../assets/AccountsLogo2.png"
+import fetchAllItemWithIds from "../../src/pages/List/ItemList";
+import toast from "react-hot-toast";
 
-const dataTable = () => {
-  return
-}
-const GeneratePdf = (action = "download", data, { name }) => {
+const GeneratePdf = async (action = "download", data, { name }) => {
+
+  let items = [];
+  try {
+    items = await fetchAllItemWithIds();
+  } catch (error) {
+    toast.error(error);
+  }
+
+  const itemName = (id) => {
+    const name = items.find((item) => item.id == id);
+    return name?.itemName;
+  };
   const doc = new jsPDF();
   doc.addImage(Logo, "Logo", 13, 15, 15, 15); // x, y, width, height
 
@@ -44,15 +55,14 @@ const GeneratePdf = (action = "download", data, { name }) => {
   // Add the table
   const tableData =
     itemsModel &&
-    itemsModel.map((item, index) => [
+    itemsModel.map((items, index) => [
       index + 1,
-      item.productName,
-      item.qty,
-      item.rate || item.unitPrice,
-      item.disc,
-      item.tax || item.taxRate,
-      item.amount,
-      item.total,
+      itemName(items.item),
+      items.qty,
+      items.rate || items.unitPrice,
+      items.disc || "0",
+      items.tax || items.taxRate || "0",
+      items.amount,
     ]);
   doc.autoTable({
     startY: 85,
@@ -71,7 +81,6 @@ const GeneratePdf = (action = "download", data, { name }) => {
         "Discount",
         "Tax",
         "Amount",
-        "Total",
       ],
     ],
     body: tableData,
@@ -80,8 +89,6 @@ const GeneratePdf = (action = "download", data, { name }) => {
       textColor: [0, 0, 0],
       fontStyle: "normal",
     },
-    // eslint-disable-next-line no-dupe-keys
-    body: tableData,
     foot: [
       [
         "",
@@ -89,16 +96,10 @@ const GeneratePdf = (action = "download", data, { name }) => {
         "",
         "",
         "",
-        "",
         "Sub Total(SGT)",
         `: ${data.subTotal || "0"}`,
-        "",
-        "",
-        "",
-        "",
       ],
       [
-        "",
         "",
         "",
         "",
@@ -106,13 +107,8 @@ const GeneratePdf = (action = "download", data, { name }) => {
         "",
         "Discount(%)",
         `: ${data.txnDiscount || "0"}`,
-        "",
-        "",
-        "",
-        "",
       ],
       [
-        "",
         "",
         "",
         "",
@@ -120,10 +116,6 @@ const GeneratePdf = (action = "download", data, { name }) => {
         "",
         "Tax(%)",
         `: ${data.totalTax || "0"}`,
-        "",
-        "",
-        "",
-        "",
       ],
       [
         "",
@@ -131,13 +123,8 @@ const GeneratePdf = (action = "download", data, { name }) => {
         "",
         "",
         "",
-        "",
         "Grand Total(SGT)",
         `: ${data.total || "0"}`,
-        "",
-        "",
-        "",
-        "",
       ],
     ],
   });
@@ -178,4 +165,4 @@ const GeneratePdf = (action = "download", data, { name }) => {
   }
 };
 
-export default GeneratePdf
+export default GeneratePdf;

@@ -14,61 +14,51 @@ function ExpensesEdit() {
   const [file, setFile] = useState(null);
   const [vendorData, setVendorData] = useState(null);
   const [items, setItems] = useState([]);
-
+console.log("vendorData",vendorData)
   const validationSchema = Yup.object({
+    vendorId: Yup.string().required("*Vendor Name is required"),
     expenseAcc: Yup.string().required("*Expense Account is required"),
     spendAt: Yup.string().required("*Spent At is required"),
     spendOn: Yup.string().required("*Spend On is required"),
     amount: Yup.number().required("*Amount is required").typeError("*Amount must be a number"),
     paidThrough: Yup.string().required("*Paid Through is required"),
-    // subTotalIncluding: Yup.string().required("*Sub Total Including is required"),
-    // subTotalExcluding: Yup.string().required("*Sub Total Excluding is required"),
     total: Yup.string().required("*Total Amount is required"),
   });
 
   const formik = useFormik({
     initialValues: {
+      vendorId: "",
       expenseAcc: "",
       spendAt: "",
       spendOn: "",
       amount: "",
       paidThrough: "",
-      vendor: "",
-      description: "",
-      // attachment: "",
-      // subTotalIncluding: "",
-      // subTotalExcluding: "",
+      attachment: "",
       tax: "",
       total: "",
+      description: "",
       
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
-      setLoading(true)
-      try { 
-        const { ...value} =values;
-        const formData = new FormData();
-        Object.keys(value).forEach(key => formData.append(key, value[key]));
-        if (file) {formData.append('attachment', file);}
-
-        const response = await api.put(`/updateTxnExpenses/${id}`,values, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        })
+      setLoading(true);
+      console.log("Create Tnx :", values);
+      const {attachment,...value}=values
+      try {
+        const response = await api.put(
+          `/updateTxnExpenses/${id}`,
+          value
+        );
         if (response.status === 200) {
-          toast.success(response.data.message)
+          toast.success(response.data.message);
           navigate("/expenses");
-          
         }
+      } catch (e) {
+        toast.error("Error fetching data: ", e?.response?.data?.message);
+      } finally {
+        setLoading(false);
       }
-      catch (error) {
-        toast.error("Error fetching data: ", error?.response?.data?.message);
-      }
-      finally {
-        setLoading(false)
-      }
-    } 
+    },
   });
 
   useEffect(() => {
@@ -143,6 +133,36 @@ function ExpensesEdit() {
           <div className="container fw-bold fs-5 my-4">Expense Information</div>
           <div className="container mb-5">
             <div className="row py-4">
+            <div className="col-md-6 col-12 mb-2">
+                <lable className="form-lable">
+                  Vendor
+                </lable>
+                <div className="mb-3">
+                  <select
+                    
+                    {...formik.getFieldProps("vendorId")}
+                    className={`form-select    ${
+                      formik.touched.vendorId && formik.errors.vendorId
+                        ? "is-invalid"
+                        : ""
+                    }`}
+                  >
+                    <option selected></option>
+                    {vendorData &&
+                      vendorData.map((item) => (
+                        <option key={item.id} value={item.id}>
+                          {item.contactName}
+                        </option>
+                      ))}
+                  </select>
+                  {formik.touched.vendorId && formik.errors.vendorId && (
+                    <div className="invalid-feedback">
+                      {formik.errors.vendorId}
+                    </div>
+                  )}
+                </div>
+              </div>
+
               <div className="col-md-6 col-12 mb-2">
                 <lable className="form-lable">
                   Expense Account<span className="text-danger">*</span>
@@ -259,36 +279,6 @@ function ExpensesEdit() {
                   {formik.touched.amount && formik.errors.amount && (
                     <div className="invalid-feedback">
                       {formik.errors.amount}
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              <div className="col-md-6 col-12 mb-2">
-                <lable className="form-lable">
-                  Vendor
-                </lable>
-                <div className="mb-3">
-                  <select
-                    name="vendor"
-                    {...formik.getFieldProps("vendor")}
-                    className={`form-select    ${
-                      formik.touched.vendor && formik.errors.vendor
-                        ? "is-invalid"
-                        : ""
-                    }`}
-                  >
-                    <option selected></option>
-                    {vendorData &&
-                      vendorData.map((item) => (
-                        <option key={item.id} value={item.id}>
-                          {item.contactName}
-                        </option>
-                      ))}
-                  </select>
-                  {formik.touched.vendor && formik.errors.vendor && (
-                    <div className="invalid-feedback">
-                      {formik.errors.vendor}
                     </div>
                   )}
                 </div>

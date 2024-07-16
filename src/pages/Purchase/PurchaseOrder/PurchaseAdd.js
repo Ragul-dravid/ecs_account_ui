@@ -54,7 +54,7 @@ const PurchaseAdd = () => {
       currency: "",
       amountsAre: "",
       subTotal: "",
-      taxAmount: "",
+      taxTotal: "",
       total: "",
       attention: "",
       telePhone: "",
@@ -204,7 +204,7 @@ const PurchaseAdd = () => {
         formik.setValues({ ...formik.values, items: updatedItems });
         formik.setFieldValue("subTotal", totalRate);
         formik.setFieldValue("total", totalAmount);
-        formik.setFieldValue("taxAmount", totalTax);
+        formik.setFieldValue("taxTotal", totalTax);
       } catch (error) {
         toast.error("Error updating items: ", error.message);
       }
@@ -793,9 +793,9 @@ const PurchaseAdd = () => {
                   <lable className="form-lable">Total Tax</lable>
                   <div className="ms-3">
                     <input
-                      {...formik.getFieldProps("taxAmount")}
+                      {...formik.getFieldProps("taxTotal")}
                       type="text"
-                      name="taxAmount"
+                      name="taxTotal"
                       className="form-control form-control-sm"
                     />
                   </div>
