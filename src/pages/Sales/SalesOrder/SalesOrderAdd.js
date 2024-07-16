@@ -49,8 +49,8 @@ function SalesOrderAdd() {
           item: "",
           qty: "",
           rate: "",
+          taxAmount: "",
           amount: "",
-          itemId: "",
         },
       ],
     },
@@ -78,6 +78,8 @@ function SalesOrderAdd() {
           formData.append("qty", item.qty);
           formData.append("rate", item.rate);
           formData.append("amount", item.amount);
+          formData.append("taxAmount", item.amount);
+          formData.append("discountAmount", 0);
           formData.append("mstrItemsId", item.item);
         });
 
@@ -150,7 +152,7 @@ function SalesOrderAdd() {
       ) {
         itemAmt(formik.values.txnSalesOrderItemsModels[index].item, index);
         formik.setFieldValue(`txnSalesOrderItemsModels[${index}].qty`, 1);
-        formik.setFieldValue(`txnSalesOrderItemsModels[${index}].tax`, 0);
+        formik.setFieldValue(`txnSalesOrderItemsModels[${index}].taxAmount`, 0);
       }
     });
   }, [
@@ -165,7 +167,7 @@ function SalesOrderAdd() {
     formik.values.txnSalesOrderItemsModels.forEach((item, index) => {
       const qty = item.qty || 0;
       const rate = item.rate || 0;
-      const tax = item.tax || 0;
+      const tax = item.taxAmount || 0;
       const discountPercentage = formik.values.discount || 0;
   
       // Calculate the amount for each item
@@ -193,7 +195,7 @@ function SalesOrderAdd() {
     calculateTotals();
   }, [
     formik.values.txnSalesOrderItemsModels
-      .map((item) => `${item.qty}-${item.rate}-${item.tax}-${item.amount}`)
+      .map((item) => `${item.qty}-${item.rate}-${item.taxAmount}-${item.amount}`)
       .join(","),
     formik.values.discount,
   ]);
@@ -203,7 +205,7 @@ function SalesOrderAdd() {
       item: "",
       qty: "",
       rate: "",
-      tax: "",
+      taxAmount: "",
       amount: "",
       itemId: "",
     };
@@ -606,12 +608,12 @@ function SalesOrderAdd() {
                                 formik.errors.txnSalesOrderItemsModels &&
                                 formik.errors.txnSalesOrderItemsModels[index] &&
                                 formik.errors.txnSalesOrderItemsModels[index]
-                                  .tax
+                                  .taxAmount
                                   ? "is-invalid"
                                   : ""
                               }`}
                               {...formik.getFieldProps(
-                                `txnSalesOrderItemsModels[${index}].tax`
+                                `txnSalesOrderItemsModels[${index}].taxAmount`
                               )}
                             />
                             {formik.touched.txnSalesOrderItemsModels &&
@@ -619,12 +621,12 @@ function SalesOrderAdd() {
                               formik.errors.txnSalesOrderItemsModels &&
                               formik.errors.txnSalesOrderItemsModels[index] &&
                               formik.errors.txnSalesOrderItemsModels[index]
-                                .tax && (
+                                .taxAmount && (
                                 <div className="invalid-feedback">
                                   {
                                     formik.errors.txnSalesOrderItemsModels[
                                       index
-                                    ].tax
+                                    ].taxAmount
                                   }
                                 </div>
                               )}

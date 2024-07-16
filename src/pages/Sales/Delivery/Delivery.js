@@ -144,7 +144,7 @@ const Delivery = () => {
                   {datas?.map((data, index) => (
                     <tr key={index}>
                       <td className="text-center">{index + 1}</td>
-                      <td className="text-center">{data.customerName}</td>
+                      <td className="text-center">{customer(data.customerId)}</td>
 
                       <td className="text-center">{data.reference}</td>
                       <td className="text-center">{data.challanType}</td>

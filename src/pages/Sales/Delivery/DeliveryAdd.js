@@ -52,6 +52,7 @@ const DeliveryAdd = () => {
       salesPerson: "",
       subTotal: "",
       discount: "",
+      taxAmount: "",
       adjustment: "",
       total: "",
       cusNotes: "",
@@ -84,7 +85,7 @@ const DeliveryAdd = () => {
           formData.append("item", item.item);
           formData.append("qty", item.qty);
           formData.append("rate", item.rate);
-          formData.append("taxRate", item.taxRate);
+          formData.append("tax", item.taxRate);
           formData.append("amount", item.amount);
         });
         if (file) {
@@ -143,7 +144,7 @@ const DeliveryAdd = () => {
     const totalAmount = subTotal + totalTax - totalDiscount;
 
     formik.setFieldValue("subTotal", subTotal.toFixed(2));
-    formik.setFieldValue("Tax", totalTax.toFixed(2));
+    formik.setFieldValue("taxAmount", totalTax.toFixed(2));
     formik.setFieldValue("totalDiscount", totalDiscount.toFixed(2));
     formik.setFieldValue("total", totalAmount.toFixed(2));
   };
@@ -552,12 +553,12 @@ const DeliveryAdd = () => {
                   </div>
                 </div>
                 <div className="ms-2 d-flex justify-content-between align-items-center">
-                  <label className="form-label">Adjustment</label>
+                  <label className="form-label">Tax</label>
                   <div className="ms-3">
                     <input
-                      {...formik.getFieldProps("adjustment")}
+                      {...formik.getFieldProps("taxAmount")}
                       type="text"
-                      name="adjustment"
+                      name="taxAmount"
                       className="form-control form-control-sm"
                     />
                   </div>
