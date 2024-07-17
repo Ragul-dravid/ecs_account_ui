@@ -8,11 +8,10 @@ import api from "../../../config/URL";
 function BillsEdit() {
   const validationSchema = Yup.object().shape({
     vendorId: Yup.string().required("*Customer Name is required"),
-
     status: Yup.string().required("*Status is required"),
     // invoiceDate: Yup.date().required("*Invoice Date is required"),
     dueDate: Yup.date().required("*Due Date is required"),
-    billDate: Yup.date().required("*Bill Date is required"),
+    date: Yup.date().required("*Bill Date is required"),
     amountsAre: Yup.string().required("*Amounts Are is required"),
     // invoiceFrom: Yup.string().required("*Invoice From is required"),
     currency: Yup.string().required("*Currency is required"),
@@ -21,7 +20,7 @@ function BillsEdit() {
         item: Yup.string().required("*Item Details is required"),
         qty: Yup.number().min(1, "*Quantity must be a min 1").notRequired(),
         price: Yup.number().typeError("*Rate must be a number").notRequired(),
-        // disc: Yup.number()
+        // discount: Yup.number()
         //   .typeError("*Discount must be a number")
         //   .required("*Discount is required"),
         taxRate: Yup.string().required("*Tax is required"),
@@ -47,7 +46,7 @@ function BillsEdit() {
   const [items, setItems] = useState([]);
   const [vendorData, setVendorData] = useState([]);
   const { id } = useParams();
-
+console.log("items",items)
   const [rows, setRows] = useState([{ id: 1 }]); // Initialize rows with one row having an id
   const AddRowContent = () => {
     setRows((prevRows) => [...prevRows, { id: prevRows.length + 1 }]);
@@ -58,7 +57,7 @@ function BillsEdit() {
       vendorId: "",
       currency: "",
       reference: "",
-      billDate: "",
+      date: "",
       dueDate: "",
       permitNumber: "",
       status: "",
@@ -72,7 +71,7 @@ function BillsEdit() {
           item: "",
           qty: "",
           price: "",
-          disc: "",
+          discount: "",
           taxRate: "",
           amount: "",
         },
@@ -84,7 +83,7 @@ function BillsEdit() {
       const formData = new FormData();
 
       formData.append("vendorId", values.vendorId);
-      formData.append("date", values.billDate);
+      formData.append("date", values.date);
       formData.append("dueDate", values.dueDate);
       formData.append("reference", values.reference);
       formData.append("permitNumber", values.permitNumber);
@@ -104,9 +103,10 @@ function BillsEdit() {
         formData.append("price", item.price);
         formData.append("taxRate", item.taxRate);
         formData.append("amount", item.amount);
-        formData.append("itemId", item.item);
+        formData.append("discount", item.discount);
         formData.append("account", "item");
         formData.append("description", "test");
+        formData.append("mstrItemsId", item.item);
       });
       if (values.file) {
         formData.append("files", values.file);
@@ -114,7 +114,7 @@ function BillsEdit() {
 
       try {
         const response = await api.put(`/updateTxnBill/${id}`, formData);
-        if (response.status === 201) {
+        if (response.status === 200) {
           toast.success(response.data.message);
           navigate("/bills");
         }
@@ -215,13 +215,13 @@ function BillsEdit() {
             if (
               item.qty &&
               item.taxRate &&
-              item.disc !== undefined &&
+              item.discount !== undefined &&
               item.tax !== undefined
             ) {
               const amount = calculateAmount(
                 item.qty,
                 item.taxRate,
-                item.disc,
+                item.discount,
                 item.tax
               );
               const itemTotalRate = item.qty * item.taxRate;
@@ -254,7 +254,7 @@ function BillsEdit() {
 
   const calculateAmount = (qty, taxRate, price, tax) => {
     const totalRate = qty * price;
-    // const discountAmount = totalRate * (disc / 100);
+    // const discountAmount = totalRate * (discount / 100);
     const taxableAmount = totalRate * (taxRate / 100);
     // const totalAmount = totalRate + taxableAmount - discountAmount;
     const totalAmount = totalRate + taxableAmount;
@@ -285,7 +285,7 @@ function BillsEdit() {
                     onClick={formik.handleSubmit}
                     className="btn btn-button btn-sm"
                   >
-                    Save
+                    Update
                   </button>
                 </div>
               </div>
@@ -402,22 +402,22 @@ function BillsEdit() {
                 <div className="mb-3">
                   <input
                     type="date"
-                    name="billDate"
+                    name="date"
                     className={`form-control ${
-                      formik.touched.billDate && formik.errors.billDate
+                      formik.touched.date && formik.errors.date
                         ? "is-invalid"
                         : ""
                     }`}
-                    {...formik.getFieldProps("billDate")}
+                    {...formik.getFieldProps("date")}
                   />
-                  {formik.touched.billDate && formik.errors.billDate && (
+                  {formik.touched.date && formik.errors.date && (
                     <div className="invalid-feedback">
-                      {formik.errors.billDate}
+                      {formik.errors.date}
                     </div>
                   )}
                 </div>
               </div>
-
+              
               <div className="col-md-6 col-12 mb-2">
                 <lable className="form-lable">
                   Due Date<span className="text-danger">*</span>
@@ -431,7 +431,7 @@ function BillsEdit() {
                         ? "is-invalid"
                         : ""
                     }`}
-                    {...formik.getFieldProps("duedueDate")}
+                    {...formik.getFieldProps("dueDate")}
                   />
                   {formik.touched.dueDate && formik.errors.dueDate && (
                     <div className="invalid-feedback">
@@ -587,19 +587,19 @@ function BillsEdit() {
                           <input
                             type="text"
                             className={`form-control ${
-                              formik.touched.billItemsModels?.[index]?.disc &&
-                              formik.errors.billItemsModels?.[index]?.disc
+                              formik.touched.billItemsModels?.[index]?.discount &&
+                              formik.errors.billItemsModels?.[index]?.discount
                                 ? "is-invalid"
                                 : ""
                             }`}
                             {...formik.getFieldProps(
-                              `billItemsModels[${index}].disc`
+                              `billItemsModels[${index}].discount`
                             )}
                           />
-                          {formik.touched.billItemsModels?.[index]?.disc &&
-                            formik.errors.billItemsModels?.[index]?.disc && (
+                          {formik.touched.billItemsModels?.[index]?.discount &&
+                            formik.errors.billItemsModels?.[index]?.discount && (
                               <div className="invalid-feedback">
-                                {formik.errors.billItemsModels[index].disc}
+                                {formik.errors.billItemsModels[index].discount}
                               </div>
                             )}
                         </td>
