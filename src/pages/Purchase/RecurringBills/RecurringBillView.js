@@ -283,7 +283,7 @@ const RecurringBillView = () => {
                       <div className="d-flex justify-content-center flex-column align-items-start">
                         <h3>Customer Notes</h3>
                         <p className="fw-small">
-                          {recurringBill.cusNotes || ""}
+                          {recurringBill.notes || ""}
                         </p>
                       </div>
                     </div>

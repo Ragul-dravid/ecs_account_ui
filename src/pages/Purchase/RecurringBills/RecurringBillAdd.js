@@ -75,6 +75,7 @@ const RecurringBillAdd = () => {
           item: "",
           qty: "",
           unitPrice : "",
+          disc: "",
           taxRate: "",
           amount: "",
         },
@@ -89,7 +90,7 @@ const RecurringBillAdd = () => {
     onSubmit: async (values) => {
       setLoadIndicator(true);
       console.log("Create Tnx :", values);
-      const { items, file,total,vendorId, ...value } = values;
+      const { items, file,total, ...value } = values;
       const formData = new FormData();
 
       Object.entries(value).forEach(([key, value]) => {
@@ -101,6 +102,7 @@ const RecurringBillAdd = () => {
       items.forEach((item) => {
         formData.append("item", item.item);
         formData.append("qty", item.qty);
+        formData.append("disc", item.disc);
         formData.append("unitPrice", item.unitPrice);
         formData.append("taxRate", item.taxRate  );
         formData.append("amount", item.amount);
@@ -131,7 +133,7 @@ const RecurringBillAdd = () => {
   const addRow = () => {
     formik.setFieldValue("items", [
       ...formik.values.items,
-      { item: "", qty: "", unitPrice: "", taxRate: "", amount: "" },
+      { item: "", qty: "", unitPrice: "",  disc: "", taxRate: "", amount: "" },
     ]);
   };
 
@@ -180,11 +182,11 @@ const RecurringBillAdd = () => {
             if (item.item) {
               try {
                 const response = await api.get(`getMstrItemsById/${item.item}`);
-                const updatedItem = { ...item, unitPrice: response.data.salesPrice };
-                const amount = calculateAmount(updatedItem.qty, updatedItem.taxRate, updatedItem.unitPrice, );
-                const itemTotalRate = updatedItem.qty * updatedItem.unitPrice;
+                const updatedItem = { ...item, price: response.data.salesPrice };
+                const amount = calculateAmount(updatedItem.qty, updatedItem.price, updatedItem.disc, updatedItem.taxRate);
+                const itemTotalRate = updatedItem.qty * updatedItem.price;
                 const itemTotalTax = itemTotalRate * (updatedItem.taxRate / 100);
-                totalRate += updatedItem.unitPrice;
+                totalRate += itemTotalRate;
                 totalAmount += amount;
                 totalTax += itemTotalTax;
                 return { ...updatedItem, amount };
@@ -192,15 +194,16 @@ const RecurringBillAdd = () => {
                 toast.error("Error fetching data: ", error?.response?.data?.message);
               }
             }
-            // if (item.qty && item.taxRate && item.disc !== undefined && item.tax !== undefined) {
-            //   const amount = calculateAmount(item.qty, item.taxRate, item.disc, item.tax);
-            //   const itemTotalRate = item.qty * item.taxRate;
-            //   const itemTotalTax = itemTotalRate * (item.tax / 100);
-            //   totalRate += item.taxRate;
-            //   totalAmount += amount;
-            //   totalTax += itemTotalTax;
-            //   return { ...item, amount,};
-            // }
+  
+            if (item.qty && item.price && item.disc !== undefined && item.taxRate !== undefined) {
+              const amount = calculateAmount(item.qty, item.price, item.disc, item.taxRate);
+              const itemTotalRate = item.qty * item.price;
+              const itemTotalTax = itemTotalRate * (item.taxRate / 100);
+              totalRate += itemTotalRate;
+              totalAmount += amount;
+              totalTax += itemTotalTax;
+              return { ...item, amount };
+            }
             return item;
           })
         );
@@ -212,24 +215,24 @@ const RecurringBillAdd = () => {
         toast.error("Error updating items: ", error.message);
       }
     };
-
+  
     updateAndCalculate();
   }, [
     formik.values.items.map((item) => item.item).join(""),
     formik.values.items.map((item) => item.qty).join(","),
+    formik.values.items.map((item) => item.price).join(""),
+    formik.values.items.map((item) => item.disc).join(""),
     formik.values.items.map((item) => item.taxRate).join(""),
-    formik.values.items.map((item) => item.unitPrice).join(""),
-    // formik.values.items.map((item) => item.tax).join(""),
   ]);
-
-  const calculateAmount = (qty, taxRate, unitPrice, tax) => {
-    const totalRate = qty * unitPrice;
-    // const discountAmount = totalRate * (disc / 100);
+  
+  const calculateAmount = (qty, price, disc, taxRate) => {
+    const totalRate = qty * price;
+    const discountAmount = totalRate * (disc / 100);
     const taxableAmount = totalRate * (taxRate / 100);
-    // const totalAmount = totalRate + taxableAmount - discountAmount;
-    const totalAmount = totalRate + taxableAmount;
+    const totalAmount = totalRate + taxableAmount - discountAmount;
     return totalAmount;
   };
+  
 
   return (
     <div className="container-fluid p-2 minHeight m-0">
@@ -274,34 +277,34 @@ const RecurringBillAdd = () => {
       <div className="card shadow border-0 my-2">
         <div className="container mb-5 mt-5">
           <div className="row py-4">
-            <div className="col-md-6 col-12 mb-3">
-              <lable className="form-lable">
-                Vendor Name<span className="text-danger">*</span>
-              </lable>
-              <div className="mb-3">
-                <select
-                  {...formik.getFieldProps("vendorId ")}
-                  className={`form-select    ${
-                    formik.touched.vendorId  && formik.errors.vendorId 
-                      ? "is-invalid"
-                      : ""
-                  }`}
-                >
-                  <option value=""> </option>
-                  {vendorData &&
-                    vendorData.map((item) => (
-                      <option key={item.id} value={item.id}>
-                        {item.contactName}
-                      </option>
-                    ))}
-                </select>
-                {formik.touched.vendorId  && formik.errors.vendorId  && (
-                  <div className="invalid-feedback">
-                    {formik.errors.vendorId }
-                  </div>
-                )}
+          <div className="col-md-6 col-12 mb-2">
+                <lable className="form-lable">
+                  Vendor Name<span className="text-danger">*</span>
+                </lable>
+                <div className="mb-3">
+                  <select
+                    {...formik.getFieldProps("vendorId")}
+                    className={`form-select    ${
+                      formik.touched.vendorId && formik.errors.vendorId
+                        ? "is-invalid"
+                        : ""
+                    }`}
+                  >
+                    <option value=""> </option>
+                    {vendorData &&
+                      vendorData.map((item) => (
+                        <option key={item.id} value={item.id}>
+                          {item.contactName}
+                        </option>
+                      ))}
+                  </select>
+                  {formik.touched.vendorId && formik.errors.vendorId && (
+                    <div className="invalid-feedback">
+                      {formik.errors.vendorId}
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
 
             <div className="col-md-6 col-12 mb-3">
               <lable className="form-lable">
@@ -554,6 +557,7 @@ const RecurringBillAdd = () => {
                       <th scope="col" style={{width:"25%"}}>ITEM DETAILS</th>
                       <th scope="col">QUANTITY</th>
                       <th scope="col">PRICE</th>
+                      <th scope="col">DISCOUNT</th>
                       <th scope="col">Tax Rate(%)</th>
                       <th scope="col">AMOUNT</th>
                     </tr>
@@ -662,6 +666,26 @@ const RecurringBillAdd = () => {
                               </div>
                             )}
                         </td> */}
+                        <td>
+                          <input
+                            type="text"
+                            className={`form-control ${
+                              formik.touched.items?.[index]?.disc &&
+                              formik.errors.items?.[index]?.disc
+                                ? "is-invalid"
+                                : ""
+                            }`}
+                            {...formik.getFieldProps(
+                              `items[${index}].disc`
+                            )}
+                          />
+                          {formik.touched.items?.[index]?.disc &&
+                            formik.errors.items?.[index]?.disc && (
+                              <div className="invalid-feedback">
+                                {formik.errors.items[index].disc}
+                              </div>
+                            )}
+                        </td>
                         <td>
                           <input readOnly
                             type="text"
