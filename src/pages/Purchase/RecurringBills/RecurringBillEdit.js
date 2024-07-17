@@ -105,7 +105,7 @@ const RecurringBillEdit = () => {
         formData.append("unitPrice", 2000);
         formData.append("taxRate", item.taxRate  );
         formData.append("amount", 2333);
-        formData.append("itemId", item.id);
+        // formData.append("itemId", item.id);
         formData.append("mstrItemsId", item.item);
         formData.append("account", "item");
         formData.append("description", "test");
@@ -121,7 +121,7 @@ const RecurringBillEdit = () => {
         );
         if (response.status === 200) {
           toast.success(response.data.message);
-          // navigate("/recurringinvoice");
+          navigate("/recurringinvoice");
         }
       } catch (e) {
         toast.error("Error fetching data: ", e?.response?.data?.message);
