@@ -172,12 +172,9 @@ const RecurringInvoiceAdd = () => {
         const updatedItems = await Promise.all(
           formik.values.items.map(async (item, index) => {
             if (item.item && !formik.values.items[index].qty) {
-              formik.values.items[index].qty = 1;
-            }
-            if (item.item) {
               try {
                 const response = await api.get(`getMstrItemsById/${item.item}`);
-                const updatedItem = { ...item, price: response.data.salesPrice };
+                const updatedItem = { ...item, price: response.data.salesPrice, qty:1 };
                 const amount = calculateAmount(updatedItem.qty, updatedItem.price, updatedItem.disc, updatedItem.taxRate);
                 const itemTotalRate = updatedItem.qty * updatedItem.price;
                 const itemTotalTax = itemTotalRate * (updatedItem.taxRate / 100);
@@ -189,7 +186,32 @@ const RecurringInvoiceAdd = () => {
                 toast.error("Error fetching data: ", error?.response?.data?.message);
               }
             }
-          
+            return item;
+          })
+        );
+        formik.setValues({ ...formik.values, items: updatedItems });
+        formik.setFieldValue("subTotal", totalRate);
+        formik.setFieldValue("totalAmount", totalAmount);
+        formik.setFieldValue("tax", totalTax);
+      } catch (error) {
+        toast.error("Error updating items: ", error.message);
+      }
+    };
+
+    updateAndCalculate();
+  }, [
+    formik.values.items.map((item) => item.item).join(""),
+  ]);
+  
+  useEffect(() => {
+    const updateAndCalculate = async () => {
+      try {
+        let totalRate = 0;
+        let totalAmount = 0;
+        let totalTax = 0;
+  
+        const updatedItems = await Promise.all(
+          formik.values.items.map(async (item, index) => {
             if (item.qty && item.price && item.disc !== undefined && item.taxRate !== undefined) {
               const amount = calculateAmount(item.qty, item.price, item.disc, item.taxRate);
               const itemTotalRate = item.qty * item.price;
@@ -213,8 +235,7 @@ const RecurringInvoiceAdd = () => {
 
     updateAndCalculate();
   }, [
-    formik.values.items.map((item) => item.item).join(""),
-    formik.values.items.map((item) => item.qty).join(","),
+    formik.values.items.map((item) => item.qty).join(""),
     formik.values.items.map((item) => item.price).join(""),
     formik.values.items.map((item) => item.disc).join(""),
     formik.values.items.map((item) => item.taxRate).join(""),

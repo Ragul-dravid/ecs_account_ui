@@ -64,7 +64,7 @@ function InvoiceEdit() {
         formData.append("reference", values.reference);
         formData.append("dueDate", values.dueDate);
         formData.append("invoiceNumber", values.invoiceNumber);
-        formData.append("AmountsAre", values.amountsAre);
+        formData.append("amountsAre", values.amountsAre);
         formData.append("subTotal", values.subTotal);
         formData.append("totalTax", values.totalTax);
         formData.append("total", values.total);
@@ -193,7 +193,7 @@ function InvoiceEdit() {
 
     formik.setFieldValue(
       `txnInvoiceOrderItemsModels[${index}].amount`,
-      roundedAmount
+      amount
     );
 
     return roundedAmount;

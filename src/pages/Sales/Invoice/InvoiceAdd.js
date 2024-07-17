@@ -26,7 +26,6 @@ function InvoiceAdd() {
     ),
   });
 
-
   const formik = useFormik({
     initialValues: {
       customerId:"",
@@ -63,7 +62,7 @@ function InvoiceAdd() {
           formData.append("reference", values.reference);
           formData.append("dueDate", values.dueDate);
           formData.append("invoiceNumber", values.invoiceNumber);
-          formData.append("AmountsAre", values.AmountsAre);
+          formData.append("amountsAre", values.amountsAre);
           formData.append("subTotal", values.subTotal);      
           formData.append("totalTax", values.totalTax);
           formData.append("total", values.total);
@@ -113,6 +112,9 @@ function InvoiceAdd() {
       toast.error(error.message);
     }
   };
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   const itemAmt = async (id, index) => {
     try {
@@ -133,10 +135,6 @@ function InvoiceAdd() {
       itemAmt(value, index);
     }
   };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
 
   useEffect(() => {
     formik.values.txnInvoiceOrderItemsModels.forEach((_, index) => {
@@ -210,7 +208,6 @@ function InvoiceAdd() {
       disc:"",
       tax: "",
       taxRate: "",
-      itemId: "",
     };
     formik.setFieldValue("txnInvoiceOrderItemsModels", [
       ...formik.values.txnInvoiceOrderItemsModels,
