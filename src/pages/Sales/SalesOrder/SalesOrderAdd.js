@@ -38,9 +38,8 @@ function SalesOrderAdd() {
       subTotal: "",
       discount: "",
       totalTax: "",
-      discountAmount: "",
-      adjustment: "",
       total: "",
+      adjustment: "",
       cusNotes: "",
       termsConditions: "",
       files: null,
@@ -50,6 +49,7 @@ function SalesOrderAdd() {
           qty: "",
           rate: "",
           taxAmount: "",
+          discountAmount: "",
           amount: "",
         },
       ],
@@ -79,7 +79,7 @@ function SalesOrderAdd() {
           formData.append("rate", item.rate);
           formData.append("amount", item.amount);
           formData.append("taxAmount", item.amount);
-          formData.append("discountAmount", 0);
+          formData.append("discountAmount", item.discountAmount);
           formData.append("mstrItemsId", item.item);
         });
 
@@ -119,6 +119,18 @@ function SalesOrderAdd() {
       toast.error(error.message);
     }
   };
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  
+  const handleSelectChange = (event, index) => {
+    const { value } = event.target;
+    formik.setFieldValue(`txnSalesOrderItemsModels[${index}].item`, value);
+    if (value) {
+      itemAmt(value, index);
+    }
+  };
 
   const itemAmt = async (id, index) => {
     try {
@@ -132,18 +144,6 @@ function SalesOrderAdd() {
     }
   };
 
-  const handleSelectChange = (event, index) => {
-    const { value } = event.target;
-    formik.setFieldValue(`txnSalesOrderItemsModels[${index}].item`, value);
-    if (value) {
-      itemAmt(value, index);
-    }
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-
   useEffect(() => {
     formik.values.txnSalesOrderItemsModels.forEach((_, index) => {
       if (
@@ -153,6 +153,7 @@ function SalesOrderAdd() {
         itemAmt(formik.values.txnSalesOrderItemsModels[index].item, index);
         formik.setFieldValue(`txnSalesOrderItemsModels[${index}].qty`, 1);
         formik.setFieldValue(`txnSalesOrderItemsModels[${index}].taxAmount`, 0);
+        formik.setFieldValue(`txnSalesOrderItemsModels[${index}].discountAmount`, 0);
       }
     });
   }, [
@@ -168,7 +169,7 @@ function SalesOrderAdd() {
       const qty = item.qty || 0;
       const rate = item.rate || 0;
       const tax = item.taxAmount || 0;
-      const discountPercentage = formik.values.discount || 0;
+      const discountPercentage = item.discountAmount;
   
       // Calculate the amount for each item
       const itemDiscount = qty * rate * (discountPercentage / 100);
@@ -186,7 +187,7 @@ function SalesOrderAdd() {
   
     formik.setFieldValue("subTotal", subTotal.toFixed(2));
     formik.setFieldValue("totalTax", totalTax.toFixed(2));
-    formik.setFieldValue("discountAmount", totalDiscount.toFixed(2));
+    formik.setFieldValue("discount", totalDiscount.toFixed(2));
     formik.setFieldValue("total", totalAmount.toFixed(2));
   };
   
@@ -195,9 +196,8 @@ function SalesOrderAdd() {
     calculateTotals();
   }, [
     formik.values.txnSalesOrderItemsModels
-      .map((item) => `${item.qty}-${item.rate}-${item.taxAmount}-${item.amount}`)
+      .map((item) => `${item.qty}-${item.rate}-${item.taxAmount}-${item.amount}-${item.discountAmount}`)
       .join(","),
-    formik.values.discount,
   ]);
 
   const AddRowContent = () => {
@@ -206,8 +206,8 @@ function SalesOrderAdd() {
       qty: "",
       rate: "",
       taxAmount: "",
+      discountAmount: "",
       amount: "",
-      itemId: "",
     };
     formik.setFieldValue("txnSalesOrderItemsModels", [
       ...formik.values.txnSalesOrderItemsModels,
@@ -215,11 +215,10 @@ function SalesOrderAdd() {
     ]);
   };
 
-  const deleteRow = (index) => {
+  const deleteRow = () => {
     if (formik.values.txnSalesOrderItemsModels.length === 1) {
       return;
     }
-
     const updatedRows = [...formik.values.txnSalesOrderItemsModels];
     updatedRows.pop();
     formik.setFieldValue("txnSalesOrderItemsModels", updatedRows);
@@ -404,7 +403,7 @@ function SalesOrderAdd() {
                   </div>
                 )}
               </div>
-              <div className="col-md-6 col-12 mb-3">
+              {/* <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">Discount</label>
                 <input
                   type="text"
@@ -420,7 +419,7 @@ function SalesOrderAdd() {
                     {formik.errors.discount}
                   </div>
                 )}
-              </div>
+              </div> */}
 
               <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">Adjustment</label>
@@ -465,9 +464,10 @@ function SalesOrderAdd() {
                 <table className="table table-sm table-nowrap">
                   <thead>
                     <tr>
-                      <th style={{ width: "35%" }}>Item</th>
+                      <th style={{ width: "25%" }}>Item</th>
                       <th style={{ width: "15%" }}>Quantity</th>
                       <th style={{ width: "15%" }}>Rate</th>
+                      <th style={{ width: "15%" }}>disc (%)</th>
                       <th style={{ width: "15%" }}>Tax (%)</th>
                       <th style={{ width: "15%" }}>Amount</th>
                     
@@ -480,10 +480,6 @@ function SalesOrderAdd() {
                           <td>
                             <select
                               className={`form-select ${
-                                formik.touched.txnSalesOrderItemsModels &&
-                                formik.touched.txnSalesOrderItemsModels[
-                                  index
-                                ] &&
                                 formik.errors.txnSalesOrderItemsModels &&
                                 formik.errors.txnSalesOrderItemsModels[index] &&
                                 formik.errors.txnSalesOrderItemsModels[index]
@@ -509,17 +505,13 @@ function SalesOrderAdd() {
                                   </option>
                                 ))}
                             </select>
-                            {formik.touched.txnSalesOrderItemsModels &&
-                              formik.touched.txnSalesOrderItemsModels[index] &&
+                            {
                               formik.errors.txnSalesOrderItemsModels &&
                               formik.errors.txnSalesOrderItemsModels[index] &&
-                              formik.errors.txnSalesOrderItemsModels[index]
-                                .item && (
+                              formik.errors.txnSalesOrderItemsModels[index].item && (
                                 <div className="invalid-feedback">
                                   {
-                                    formik.errors.txnSalesOrderItemsModels[
-                                      index
-                                    ].item
+                                    formik.errors.txnSalesOrderItemsModels[index].item
                                   }
                                 </div>
                               )}
@@ -529,10 +521,6 @@ function SalesOrderAdd() {
                               type="number"
                               min="1"
                               className={`form-control ${
-                                formik.touched.txnSalesOrderItemsModels &&
-                                formik.touched.txnSalesOrderItemsModels[
-                                  index
-                                ] &&
                                 formik.errors.txnSalesOrderItemsModels &&
                                 formik.errors.txnSalesOrderItemsModels[index] &&
                                 formik.errors.txnSalesOrderItemsModels[index]
@@ -544,8 +532,7 @@ function SalesOrderAdd() {
                                 `txnSalesOrderItemsModels[${index}].qty`
                               )}
                             />
-                            {formik.touched.txnSalesOrderItemsModels &&
-                              formik.touched.txnSalesOrderItemsModels[index] &&
+                            {
                               formik.errors.txnSalesOrderItemsModels &&
                               formik.errors.txnSalesOrderItemsModels[index] &&
                               formik.errors.txnSalesOrderItemsModels[index]
@@ -580,8 +567,7 @@ function SalesOrderAdd() {
                               )}
                               readOnly
                             />
-                            {formik.touched.txnSalesOrderItemsModels &&
-                              formik.touched.txnSalesOrderItemsModels[index] &&
+                            {
                               formik.errors.txnSalesOrderItemsModels &&
                               formik.errors.txnSalesOrderItemsModels[index] &&
                               formik.errors.txnSalesOrderItemsModels[index]
@@ -601,10 +587,33 @@ function SalesOrderAdd() {
                               min="0"
                               max="100"
                               className={`form-control ${
-                                formik.touched.txnSalesOrderItemsModels &&
-                                formik.touched.txnSalesOrderItemsModels[
-                                  index
-                                ] &&
+                                formik.errors.txnSalesOrderItemsModels &&
+                                formik.errors.txnSalesOrderItemsModels[index] &&
+                                formik.errors.txnSalesOrderItemsModels[index]
+                                  .discountAmount
+                                  ? "is-invalid"
+                                  : ""
+                              }`}
+                              {...formik.getFieldProps(`txnSalesOrderItemsModels[${index}].discountAmount`)}
+                            />
+                            {formik.touched.txnSalesOrderItemsModels &&
+                              formik.errors.txnSalesOrderItemsModels[index] &&
+                              formik.errors.txnSalesOrderItemsModels[index].discountAmount && (
+                                <div className="invalid-feedback">
+                                  {
+                                    formik.errors.txnSalesOrderItemsModels[
+                                      index
+                                    ].discountAmount
+                                  }
+                                </div>
+                              )}
+                          </td>
+                          <td>
+                            <input
+                              type="number"
+                              min="0"
+                              max="100"
+                              className={`form-control ${
                                 formik.errors.txnSalesOrderItemsModels &&
                                 formik.errors.txnSalesOrderItemsModels[index] &&
                                 formik.errors.txnSalesOrderItemsModels[index]
@@ -616,8 +625,7 @@ function SalesOrderAdd() {
                                 `txnSalesOrderItemsModels[${index}].taxAmount`
                               )}
                             />
-                            {formik.touched.txnSalesOrderItemsModels &&
-                              formik.touched.txnSalesOrderItemsModels[index] &&
+                            {
                               formik.errors.txnSalesOrderItemsModels &&
                               formik.errors.txnSalesOrderItemsModels[index] &&
                               formik.errors.txnSalesOrderItemsModels[index]
@@ -636,10 +644,6 @@ function SalesOrderAdd() {
                               type="number"
                               min="0"
                               className={`form-control ${
-                                formik.touched.txnSalesOrderItemsModels &&
-                                formik.touched.txnSalesOrderItemsModels[
-                                  index
-                                ] &&
                                 formik.errors.txnSalesOrderItemsModels &&
                                 formik.errors.txnSalesOrderItemsModels[index] &&
                                 formik.errors.txnSalesOrderItemsModels[index]
@@ -650,8 +654,7 @@ function SalesOrderAdd() {
                               readOnly
                               value={item.amount}
                             />
-                            {formik.touched.txnSalesOrderItemsModels &&
-                              formik.touched.txnSalesOrderItemsModels[index] &&
+                            {
                               formik.errors.txnSalesOrderItemsModels &&
                               formik.errors.txnSalesOrderItemsModels[index] &&
                               formik.errors.txnSalesOrderItemsModels[index]
@@ -771,18 +774,18 @@ function SalesOrderAdd() {
                     <input
                       type="text"
                       className={`form-control ${
-                        formik.touched.discountAmount &&
-                        formik.errors.discountAmount
+                        formik.touched.discount &&
+                        formik.errors.discount
                           ? "is-invalid"
                           : ""
                       }`}
-                      {...formik.getFieldProps("discountAmount")}
+                      {...formik.getFieldProps("discount")}
                       readOnly
                     />
-                    {formik.touched.discountAmount &&
-                      formik.errors.discountAmount && (
+                    {formik.touched.discount &&
+                      formik.errors.discount && (
                         <div className="invalid-feedback">
-                          {formik.errors.discountAmount}
+                          {formik.errors.discount}
                         </div>
                       )}
                   </div>

@@ -6,11 +6,13 @@ import { Link } from "react-router-dom";
 import { FaPlus } from "react-icons/fa6";
 import DeleteModel from "../../../components/common/DeleteModel";
 import api from "../../../config/URL"
+import toast from "react-hot-toast";
 
 const SalesOrder = () => {
   const tableRef = useRef(null);
   const [datas, setDatas] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [customerData, setCustomerData] = useState([]);
   console.log("datas",datas)
 
   useEffect(() => {
@@ -19,13 +21,23 @@ const SalesOrder = () => {
         const response = await api.get("/getAllTxnSalesOrder");
         setDatas(response.data);
       } catch (error) {
-        console.error("Error fetching data:", error);
+        toast.error("Error fetching data:", error);
       } finally {
         setLoading(false);
       }
     };
+    fetchCustamerData();
     getData();
   }, []);
+
+  const fetchCustamerData = async () => {
+    try {
+      const response = await api.get("getAllCustomerWithIds");
+      setCustomerData(response.data);
+    } catch (error) {
+      toast.error("Error fetching tax data:", error);
+    }
+  };
 
   useEffect(() => {
     if (!loading) {
@@ -73,6 +85,10 @@ const SalesOrder = () => {
       table.destroy();
     };
   }, []);
+  const customer =(id)=>{
+    const name= customerData.find((item)=>(item.id === id))
+    return name?.contactName
+  }
   return (
     <div>
       {loading ? (
@@ -114,6 +130,7 @@ const SalesOrder = () => {
                   <th scope="col" style={{ whiteSpace: "nowrap" }} className="text-start">
                     S.NO
                   </th>
+                  <th scope="col" className="text-center">Customer Name</th>
                   <th scope="col" className="text-center">Sales Person</th>
                   <th scope="col" className="text-center">Sales Order</th>
                   <th scope="col" className="text-center">CusNotes</th>
@@ -130,6 +147,7 @@ const SalesOrder = () => {
                 {datas.map((data, index) => (
                   <tr key={index}>
                     <td className="text-center">{index + 1}</td>
+                    <td className="text-center">{customer(data.customerId)}</td>
                     <td className="text-center">{data.salesPerson}</td>
                     <td className="text-center">{data.salesOrder}</td>
                     <td className="text-center">{data.cusNotes}</td>

@@ -86,7 +86,7 @@ const DeliveryAdd = () => {
           formData.append("qty", item.qty);
           formData.append("rate", item.rate);
           formData.append("tax", item.taxRate);
-          formData.append("amount", item.amount);
+          formData.append("taxAmount", item.amount);
         });
         if (file) {
           formData.append("files", file);

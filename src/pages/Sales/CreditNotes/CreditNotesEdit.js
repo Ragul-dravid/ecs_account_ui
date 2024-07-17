@@ -101,6 +101,7 @@ function CreditNotesEdit() {
         formData.append("taxRate", item.taxRate);
         formData.append("mstrItemsId", item.item);
         formData.append("item", item.item);
+        formData.append("discount", item.discount);
       });
       if(values.files){
         formData.append("files",values.files)

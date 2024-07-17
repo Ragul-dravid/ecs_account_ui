@@ -156,7 +156,7 @@ const PaymentReceived = () => {
               {datas?.map((data, index) => (
                 <tr key={index}>
                   <td className="text-center">{index + 1}</td>
-                  <td className="text-center">{customer(data.customerName)}</td>
+                  <td className="text-center">{customer(data.customerId)}</td>
                   <td className="text-center">
                     {data?.paymentDate.split('-').reverse().join('-')}
                   </td>

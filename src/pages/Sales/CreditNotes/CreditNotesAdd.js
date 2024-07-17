@@ -99,6 +99,7 @@ function CreditNotesAdd() {
           formData.append("account", "test");
           formData.append("amount", item.amount);
           formData.append("taxRate", item.taxRate);
+          formData.append("discount", item.discount);
         });
         if (values.files) {
           formData.append("files", values.files);

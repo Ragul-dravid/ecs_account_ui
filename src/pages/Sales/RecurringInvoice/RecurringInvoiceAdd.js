@@ -102,6 +102,7 @@ const RecurringInvoiceAdd = () => {
         }
       });
       items.forEach((item) => {
+        formData.append("item", item.item);
         formData.append("qty", item.qty);
         formData.append("disc", item.disc);
         formData.append("price", item.price);
@@ -110,7 +111,6 @@ const RecurringInvoiceAdd = () => {
         formData.append("description"," item.description");
         formData.append("account"," item.account");
         formData.append("mstrItemsId", item.item);
-        formData.append("item", item.item);
       });
       if (file) {
         formData.append("files", file);
