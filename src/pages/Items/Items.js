@@ -70,13 +70,11 @@ const Items = () => {
     <div>
     {loading ? (
       <div className="loader-container">
-        <div class="loader">
-          <span></span>
-          <span></span>
-          <span></span>
-          <span></span>
-          <span></span>
-        </div>
+          <div class="Loader-Div">
+        <svg id="triangle" width="50px" height="50px" viewBox="-3 -4 39 39">
+            <polygon fill="transparent" stroke="blue" stroke-width="1.3" points="16,0 32,32 0,32"></polygon>
+        </svg>
+    </div>
       </div>
     ) : (
     <div className="container-fluid px-2 minHeight">
@@ -100,9 +98,7 @@ const Items = () => {
           </div>
         </div>
         <hr className="removeHrMargin"></hr>
-        {loading ? (
-          <div class="loader">Loading</div>
-        ) : (
+       
         <div className="table-responsive p-2 minHeight">
           <table ref={tableRef} className="display table">
             <thead className="thead-light">
@@ -159,7 +155,7 @@ const Items = () => {
             </tbody>
           </table>
         </div>
-        )}
+        
         <div className="card-footer border-0 py-5"></div>
       </div>
     </div>

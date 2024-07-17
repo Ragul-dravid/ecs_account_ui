@@ -77,13 +77,11 @@ const Customers = () => {
     <div>
       {loading ? (
         <div className="loader-container">
-          <div class="loader">
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-          </div>
+         <div class="Loader-Div">
+        <svg id="triangle" width="50px" height="50px" viewBox="-3 -4 39 39">
+            <polygon fill="transparent" stroke="blue" stroke-width="1.3" points="16,0 32,32 0,32"></polygon>
+        </svg>
+    </div>
         </div>
       ) : (
         <div className="container-fluid px-2 minHeight">
