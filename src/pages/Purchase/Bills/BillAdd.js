@@ -12,7 +12,7 @@ function BillsAdd() {
     status: Yup.string().required("*Status is required"),
     // invoiceDate: Yup.date().required("*Invoice Date is required"),
     dueDate: Yup.date().required("*Due Date is required"),
-    billDate: Yup.date().required("*Bill Date is required"),
+    date: Yup.date().required("*Bill Date is required"),
     amountsAre: Yup.string().required("*Amounts Are is required"),
     // invoiceFrom: Yup.string().required("*Invoice From is required"),
     currency: Yup.string().required("*Currency is required"),
@@ -21,7 +21,7 @@ function BillsAdd() {
         item: Yup.string().required("*Item Details is required"),
         qty: Yup.number().min(1, "*Quantity must be a min 1").notRequired(),
         price: Yup.number().typeError("*Rate must be a number").notRequired(),
-        // disc: Yup.number()
+        // discount: Yup.number()
         //   .typeError("*Discount must be a number")
         //   .required("*Discount is required"),
         taxRate: Yup.string().required("*Tax is required"),
@@ -57,7 +57,7 @@ function BillsAdd() {
       vendorId: "",
       currency: "",
       reference: "",
-      billDate: "",
+      date: "",
       dueDate: "",
       permitNumber: "",
       status: "",
@@ -71,7 +71,7 @@ function BillsAdd() {
           item: "",
           qty: "",
           price: "",
-          disc: "",
+          discount: "",
           taxRate: "",
           amount: "",
         },
@@ -83,7 +83,7 @@ function BillsAdd() {
       const formData = new FormData();
 
       formData.append("vendorId", values.vendorId);
-      formData.append("date", values.billDate);
+      formData.append("date", values.date);
       formData.append("dueDate", values.dueDate);
       formData.append("reference", values.reference);
       formData.append("permitNumber", values.permitNumber);
@@ -103,7 +103,7 @@ function BillsAdd() {
         formData.append("taxRate", item.taxRate);
         formData.append("amount", item.amount);
         formData.append("mstrItemsId", item.item);
-        formData.append("discount", item.disc);
+        formData.append("discount", item.discount);
         formData.append("account", "item");
         formData.append("description", "test");
       });
@@ -127,7 +127,7 @@ function BillsAdd() {
   const addRow = () => {
     formik.setFieldValue("billItemsModels", [
       ...formik.values.billItemsModels,
-      { item: "", qty: "", price: "",disc:"", taxRate: "", amount: "" },
+      { item: "", qty: "", price: "",discount:"", taxRate: "", amount: "" },
     ]);
   };
 
@@ -183,7 +183,6 @@ function BillsAdd() {
                 const amount = calculateAmount(
                   updatedItem.qty,
                   updatedItem.taxRate,
-                  updatedItem.disc,
                   updatedItem.price
                 );
                 const itemTotalRate = updatedItem.qty * updatedItem.price;
@@ -203,13 +202,13 @@ function BillsAdd() {
             if (
               item.qty &&
               item.taxRate &&
-              item.disc !== undefined &&
+              item.discount !== undefined &&
               item.tax !== undefined
             ) {
               const amount = calculateAmount(
                 item.qty,
                 item.taxRate,
-                item.disc,
+                item.discount,
                 item.tax
               );
               const itemTotalRate = item.qty * item.taxRate;
@@ -237,18 +236,15 @@ function BillsAdd() {
     formik.values.billItemsModels.map((item) => item.qty).join(","),
     formik.values.billItemsModels.map((item) => item.taxRate).join(""),
     formik.values.billItemsModels.map((item) => item.price).join(""),
-    formik.values.billItemsModels.map((item) => item.disc).join(""),
     // formik.values.items.map((item) => item.tax).join(""),
   ]);
 
-  const calculateAmount = (qty, taxRate, price, disc) => {
-    console.log("price",price)
+  const calculateAmount = (qty, taxRate, price, tax) => {
     const totalRate = qty * price;
-    const discountAmount = totalRate * (disc / 100);
+    // const discountAmount = totalRate * (discount / 100);
     const taxableAmount = totalRate * (taxRate / 100);
-    const totalAmount = (totalRate + taxableAmount) - discountAmount;
-    // const totalAmount = totalRate + taxableAmount;
-    console.log("object",totalRate)
+    // const totalAmount = totalRate + taxableAmount - discountAmount;
+    const totalAmount = totalRate + taxableAmount;
     return totalAmount;
   };
 
@@ -393,17 +389,17 @@ function BillsAdd() {
                 <div className="mb-3">
                   <input
                     type="date"
-                    name="billDate"
+                    name="date"
                     className={`form-control ${
-                      formik.touched.billDate && formik.errors.billDate
+                      formik.touched.date && formik.errors.date
                         ? "is-invalid"
                         : ""
                     }`}
-                    {...formik.getFieldProps("billDate")}
+                    {...formik.getFieldProps("date")}
                   />
-                  {formik.touched.billDate && formik.errors.billDate && (
+                  {formik.touched.date && formik.errors.date && (
                     <div className="invalid-feedback">
-                      {formik.errors.billDate}
+                      {formik.errors.date}
                     </div>
                   )}
                 </div>
@@ -589,19 +585,19 @@ function BillsAdd() {
                           <input
                             type="text"
                             className={`form-control ${
-                              formik.touched.billItemsModels?.[index]?.disc &&
-                              formik.errors.billItemsModels?.[index]?.disc
+                              formik.touched.billItemsModels?.[index]?.discount &&
+                              formik.errors.billItemsModels?.[index]?.discount
                                 ? "is-invalid"
                                 : ""
                             }`}
                             {...formik.getFieldProps(
-                              `billItemsModels[${index}].disc`
+                              `billItemsModels[${index}].discount`
                             )}
                           />
-                          {formik.touched.billItemsModels?.[index]?.disc &&
-                            formik.errors.billItemsModels?.[index]?.disc && (
+                          {formik.touched.billItemsModels?.[index]?.discount &&
+                            formik.errors.billItemsModels?.[index]?.discount && (
                               <div className="invalid-feedback">
-                                {formik.errors.billItemsModels[index].disc}
+                                {formik.errors.billItemsModels[index].discount}
                               </div>
                             )}
                         </td>

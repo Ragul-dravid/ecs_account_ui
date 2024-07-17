@@ -29,7 +29,7 @@ const PurchaseEdit = () => {
     amountsAre: Yup.string().required("*Amounts Are is required"),
     zipCode: Yup.string().required("*Zip Code is required"),
     country: Yup.string().required("*Country is required"),
-    items: Yup.array().of(
+    purchaseOrderItemModels: Yup.array().of(
       Yup.object().shape({
         item: Yup.string().required("*Item Details is required"),
         qty: Yup.number()
@@ -68,7 +68,7 @@ const PurchaseEdit = () => {
       country: "",
       phone: "",
       addIntructions: "",
-      items: [
+      purchaseOrderItemModels: [
         {
           item: "",
           qty: "",
@@ -104,7 +104,7 @@ const PurchaseEdit = () => {
       formData.append("country", values.country);
       formData.append("phone", values.phone);
       formData.append("addIntructions", values.addIntructions);
-      values.items.forEach((item) => {
+      values.purchaseOrderItemModels.forEach((item) => {
         formData.append("qty", item.qty);
         formData.append("disc", item.disc);
         formData.append("unitPrice", item.unitPrice);
@@ -164,16 +164,16 @@ const PurchaseEdit = () => {
     fetchData();
   },[])
   const addRow = () => {
-    formik.setFieldValue("items", [
-      ...formik.values.items,
+    formik.setFieldValue("purchaseOrderItemModels", [
+      ...formik.values.purchaseOrderItemModels,
       { item: "", qty: "", unitPrice: "", disc: "", taxRate: "", amount: "" },
     ]);
   };
   const removeRow = () => {
-    const items = [...formik.values.items];
+    const items = [...formik.values.purchaseOrderItemModels];
     if (items.length > 1) {
       items.pop();
-      formik.setFieldValue("items", items);
+      formik.setFieldValue("purchaseOrderItemModels", items);
     }
   };
   useEffect(() => {
@@ -184,9 +184,9 @@ const PurchaseEdit = () => {
         let totalTax = 0;
   
         const updatedItems = await Promise.all(
-          formik.values.items?.map(async (item, index) => {
-            if (item.item && !formik.values.items[index].qty) {
-              formik.values.items[index].qty = 1;
+          formik.values.purchaseOrderItemModels?.map(async (item, index) => {
+            if (item.item && !formik.values.purchaseOrderItemModels[index].qty) {
+              formik.values.purchaseOrderItemModels[index].qty = 1;
             }
             if (item.item) {
               try {
@@ -216,7 +216,7 @@ const PurchaseEdit = () => {
             return item;
           })
         );
-        formik.setValues({ ...formik.values, items: updatedItems });
+        formik.setValues({ ...formik.values, purchaseOrderItemModels: updatedItems });
         formik.setFieldValue("subTotal", totalRate);
         formik.setFieldValue("total", totalAmount);
         formik.setFieldValue("taxTotal", totalTax);
@@ -227,11 +227,11 @@ const PurchaseEdit = () => {
 
     updateAndCalculate();
   }, [
-    formik.values.items?.map((item) => item.item).join(""),
-    formik.values.items?.map((item) => item.qty).join(","),
-    formik.values.items?.map((item) => item.unitPrice).join(""),
-    formik.values.items?.map((item) => item.disc).join(""),
-    formik.values.items?.map((item) => item.taxRate).join(""),
+    formik.values.purchaseOrderItemModels?.map((item) => item.item).join(""),
+    formik.values.purchaseOrderItemModels?.map((item) => item.qty).join(","),
+    formik.values.purchaseOrderItemModels?.map((item) => item.unitPrice).join(""),
+    formik.values.purchaseOrderItemModels?.map((item) => item.disc).join(""),
+    formik.values.purchaseOrderItemModels?.map((item) => item.taxRate).join(""),
   ]);
 
   const calculateAmount = (qty, unitPrice, disc, taxRate) => {
@@ -274,7 +274,7 @@ const PurchaseEdit = () => {
                 ) : (
                   <span></span>
                 )}
-                &nbsp;<span>Save</span>
+                &nbsp;<span>Update</span>
               </button>
             </div>
           </div>
@@ -629,15 +629,15 @@ const PurchaseEdit = () => {
                   </tr>
                 </thead>
                 <tbody className="table-group">
-                    {(formik.values.items || [{}]).map((item, index) => (
+                    {(formik.values.purchaseOrderItemModels || [{}]).map((item, index) => (
                       <tr key={index}>
                         <th scope="row">{index + 1}</th>
                         <td>
                           <select 
-                            {...formik.getFieldProps(`items[${index}].item`)}
+                            {...formik.getFieldProps(`purchaseOrderItemModels[${index}].item`)}
                             className={`form-select ${
-                              formik.touched.items?.[index]?.item &&
-                              formik.errors.items?.[index]?.item
+                              formik.touched.purchaseOrderItemModels?.[index]?.item &&
+                              formik.errors.purchaseOrderItemModels?.[index]?.item
                                 ? "is-invalid"
                                 : ""
                             }`}
@@ -650,10 +650,10 @@ const PurchaseEdit = () => {
                                 </option>
                               ))}
                           </select>
-                          {formik.touched.items?.[index]?.item &&
-                            formik.errors.items?.[index]?.item && (
+                          {formik.touched.purchaseOrderItemModels?.[index]?.item &&
+                            formik.errors.purchaseOrderItemModels?.[index]?.item && (
                               <div className="invalid-feedback">
-                                {formik.errors.items[index].item}
+                                {formik.errors.purchaseOrderItemModels[index].item}
                               </div>
                             )}
                         </td>
@@ -662,17 +662,17 @@ const PurchaseEdit = () => {
                             type="number"
                             min={1}
                             className={`form-control ${
-                              formik.touched.items?.[index]?.qty &&
-                              formik.errors.items?.[index]?.qty
+                              formik.touched.purchaseOrderItemModels?.[index]?.qty &&
+                              formik.errors.purchaseOrderItemModels?.[index]?.qty
                                 ? "is-invalid"
                                 : ""
                             }`}
-                            {...formik.getFieldProps(`items[${index}].qty`)}
+                            {...formik.getFieldProps(`purchaseOrderItemModels[${index}].qty`)}
                           />
-                          {formik.touched.items?.[index]?.qty &&
-                            formik.errors.items?.[index]?.qty && (
+                          {formik.touched.purchaseOrderItemModels?.[index]?.qty &&
+                            formik.errors.purchaseOrderItemModels?.[index]?.qty && (
                               <div className="invalid-feedback">
-                                {formik.errors.items[index].qty}
+                                {formik.errors.purchaseOrderItemModels[index].qty}
                               </div>
                             )}
                         </td>
@@ -680,19 +680,19 @@ const PurchaseEdit = () => {
                           <input readOnly
                             type="text"
                             className={`form-control ${
-                              formik.touched.items?.[index]?.unitPrice &&
-                              formik.errors.items?.[index]?.unitPrice
+                              formik.touched.purchaseOrderItemModels?.[index]?.unitPrice &&
+                              formik.errors.purchaseOrderItemModels?.[index]?.unitPrice
                                 ? "is-invalid"
                                 : ""
                             }`}
                             {...formik.getFieldProps(
-                              `items[${index}].unitPrice`
+                              `purchaseOrderItemModels[${index}].unitPrice`
                             )}
                           />
-                          {formik.touched.items?.[index]?.unitPrice &&
-                            formik.errors.items?.[index]?.unitPrice && (
+                          {formik.touched.purchaseOrderItemModels?.[index]?.unitPrice &&
+                            formik.errors.purchaseOrderItemModels?.[index]?.unitPrice && (
                               <div className="invalid-feedback">
-                                {formik.errors.items[index].unitPrice}
+                                {formik.errors.purchaseOrderItemModels[index].unitPrice}
                               </div>
                             )}
                         </td>
@@ -700,35 +700,35 @@ const PurchaseEdit = () => {
                           <input
                             type="text"
                             className={`form-control ${
-                              formik.touched.items?.[index]?.disc &&
-                              formik.errors.items?.[index]?.disc
+                              formik.touched.purchaseOrderItemModels?.[index]?.disc &&
+                              formik.errors.purchaseOrderItemModels?.[index]?.disc
                                 ? "is-invalid"
                                 : ""
                             }`}
-                            {...formik.getFieldProps(`items[${index}].disc`)}
+                            {...formik.getFieldProps(`purchaseOrderItemModels[${index}].disc`)}
                           />
-                          {formik.touched.items?.[index]?.disc &&
-                            formik.errors.items?.[index]?.disc && (
+                          {formik.touched.purchaseOrderItemModels?.[index]?.disc &&
+                            formik.errors.purchaseOrderItemModels?.[index]?.disc && (
                               <div className="invalid-feedback">
-                                {formik.errors.items[index].disc}
+                                {formik.errors.purchaseOrderItemModels[index].disc}
                               </div>
                             )}
                         </td>
                         <td>
                           <input
-                            {...formik.getFieldProps(`items[${index}].taxRate`)}
+                            {...formik.getFieldProps(`purchaseOrderItemModels[${index}].taxRate`)}
                             className={`form-control ${
-                              formik.touched.items?.[index]?.taxRate &&
-                              formik.errors.items?.[index]?.taxRate
+                              formik.touched.purchaseOrderItemModels?.[index]?.taxRate &&
+                              formik.errors.purchaseOrderItemModels?.[index]?.taxRate
                                 ? "is-invalid"
                                 : ""
                             }`}
                           />
 
-                          {formik.touched.items?.[index]?.taxRate &&
-                            formik.errors.items?.[index]?.taxRate && (
+                          {formik.touched.purchaseOrderItemModels?.[index]?.taxRate &&
+                            formik.errors.purchaseOrderItemModels?.[index]?.taxRate && (
                               <div className="invalid-feedback">
-                                {formik.errors.items[index].taxRate}
+                                {formik.errors.purchaseOrderItemModels[index].taxRate}
                               </div>
                             )}
                         </td>
@@ -736,19 +736,19 @@ const PurchaseEdit = () => {
                           <input readOnly
                             type="text"
                             className={`form-control ${
-                              formik.touched.items?.[index]?.amount &&
-                              formik.errors.items?.[index]?.amount
+                              formik.touched.purchaseOrderItemModels?.[index]?.amount &&
+                              formik.errors.purchaseOrderItemModels?.[index]?.amount
                                 ? "is-invalid"
                                 : ""
                             }`}
                             {...formik.getFieldProps(
-                              `items[${index}].amount`
+                              `purchaseOrderItemModels[${index}].amount`
                             )}
                           />
-                          {formik.touched.items?.[index]?.amount &&
-                            formik.errors.items?.[index]?.amount && (
+                          {formik.touched.purchaseOrderItemModels?.[index]?.amount &&
+                            formik.errors.purchaseOrderItemModels?.[index]?.amount && (
                               <div className="invalid-feedback">
-                                {formik.errors.items[index].amount}
+                                {formik.errors.purchaseOrderItemModels[index].amount}
                               </div>
                             )}
                         </td>
