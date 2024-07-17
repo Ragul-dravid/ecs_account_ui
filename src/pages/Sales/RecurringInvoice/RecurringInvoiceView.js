@@ -9,63 +9,61 @@ import fetchAllCustomerWithIds from "../../List/CustomerList";
 import fetchAllItemWithIds from "../../List/ItemList";
 
 const RecurringInvoiceView = () => {
-    const { id } = useParams();
-    const [datas, setData] = useState([]);
-    const [items, setItems] = useState([]);
-    const [customerData, setCustomerData] = useState([]);
-    const [loading, setLoading] = useState(true);
+  const { id } = useParams();
+  const [datas, setData] = useState([]);
+  const [items, setItems] = useState([]);
+  const [customerData, setCustomerData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-      const getData = async () => {
-        setLoading(true);
-        try{
+  useEffect(() => {
+    const getData = async () => {
+      setLoading(true);
+      try {
         const response = await api.get(`/getTxnRecurringInvoiceById/${id}`);
         setData(response.data);
-        console.log("object",datas);
-        }catch(e){
-          toast.error("Error fetching data: ", e?.response?.data?.message);
-        }finally{
-          setLoading(false);
-        }
-      };
-      getData();
-      fetchData();
-    }, [id]);
-
-    const fetchData = async () => {
-      try {
-        const customerData = await fetchAllCustomerWithIds();
-        const itemData = await fetchAllItemWithIds();
-        setCustomerData(customerData);
-        setItems(itemData);
-      } catch (error) {
-        toast.error(error);
+        console.log("object", datas);
+      } catch (e) {
+        toast.error("Error fetching data: ", e?.response?.data?.message);
+      } finally {
+        setLoading(false);
       }
     };
-  
-    useEffect(() => {
-      fetchData();
-    }, [datas]);
+    getData();
+    fetchData();
+  }, [id]);
 
-    const customer =(id)=>{
-        const name= customerData.find((item)=>(item.id === id))
-        return name?.contactName
-      }
-    const itemName =(id)=>{
-        const name= items.find((item)=>(item.id == id))
-        return name?.itemName
-      }
+  const fetchData = async () => {
+    try {
+      const customerData = await fetchAllCustomerWithIds();
+      const itemData = await fetchAllItemWithIds();
+      setCustomerData(customerData);
+      setItems(itemData);
+    } catch (error) {
+      toast.error(error);
+    }
+  };
 
-    return (
-      <div>
+  useEffect(() => {
+    fetchData();
+  }, [datas]);
+
+  const customer = (id) => {
+    const name = customerData.find((item) => (item.id === id))
+    return name?.contactName
+  }
+  const itemName = (id) => {
+    const name = items.find((item) => (item.id == id))
+    return name?.itemName
+  }
+
+  return (
+    <div>
       {loading ? (
         <div className="loader-container">
-          <div class="loader">
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
+          <div class="Loader-Div">
+            <svg id="triangle" width="50px" height="50px" viewBox="-3 -4 39 39">
+              <polygon fill="transparent" stroke="blue" stroke-width="1.3" points="16,0 32,32 0,32"></polygon>
+            </svg>
           </div>
         </div>
       ) : (
@@ -196,7 +194,7 @@ const RecurringInvoiceView = () => {
                 <h3 style={{ background: "#4066D5" }} className="text-light p-2">
                   Item Table
                 </h3>
-    
+
                 <div className="table-responsive">
                   <table className="table">
                     <thead>
@@ -276,8 +274,8 @@ const RecurringInvoiceView = () => {
           </div>
         </div>
       )}
-      </div>
-      );
+    </div>
+  );
 }
 
 export default RecurringInvoiceView

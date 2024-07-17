@@ -7,7 +7,6 @@ import api from "../../../config/URL";
 import toast from "react-hot-toast";
 import fetchAllItemWithIds from "../../List/ItemList";
 import fetchAllVendorNameWithIds from "../../List/VendorList";
-import jsPDF from "jspdf";
 import 'jspdf-autotable'
 import GeneratePdf from "../../GeneratePdf";
 
@@ -58,12 +57,10 @@ const PurchaseView = () => {
     <div>
       {loading ? (
         <div className="loader-container">
-          <div class="loader">
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
+          <div class="Loader-Div">
+            <svg id="triangle" width="50px" height="50px" viewBox="-3 -4 39 39">
+              <polygon fill="transparent" stroke="blue" stroke-width="1.3" points="16,0 32,32 0,32"></polygon>
+            </svg>
           </div>
         </div>
       ) : (
@@ -100,16 +97,16 @@ const PurchaseView = () => {
                     <ul className="dropdown-menu">
                       <li
                         className="dropdown-item"
-                        onClick={() => GeneratePdf("download",data,{ name: "PURCHASE" })}
+                        onClick={() => GeneratePdf("download", data, { name: "PURCHASE" })}
                       >
                         Download PDF
                       </li>
-                      <li className="dropdown-item" onClick={() => GeneratePdf("open",data,{ name: "PURCHASE" })}>
+                      <li className="dropdown-item" onClick={() => GeneratePdf("open", data, { name: "PURCHASE" })}>
                         Open PDF
                       </li>
                       <li
                         className="dropdown-item"
-                        onClick={() => GeneratePdf("print",data,{ name: "PURCHASE" })}
+                        onClick={() => GeneratePdf("print", data, { name: "PURCHASE" })}
                       >
                         Print PDF
                       </li>
@@ -232,7 +229,7 @@ const PurchaseView = () => {
                         data.purchaseOrderItemModels.map((item, index) => (
                           <tr key={index}>
                             <th scope="row">{index + 1}</th>
-                            <td>{item.item}</td>
+                            <td>{itemName(item.item)}</td>
                             {/* <td>{item.description}</td> */}
                             <td>{item.qty}</td>
                             <td>{item.unitPrice}</td>

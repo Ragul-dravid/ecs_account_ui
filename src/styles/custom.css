@@ -312,7 +312,7 @@ color: white !important;
   margin: 0;
 }
 
-.loader {
+/* .loader {
   display: inline-flex;
   gap: 5px;
 }
@@ -334,4 +334,28 @@ color: white !important;
   33.33% {transform:scaleX(var(--s,1)) translate(-50%) rotate(90deg)}
   50%,
   100%   {transform:scaleX(var(--s,1)) translate(0) rotate(90deg)}
+} */
+.Loader-Div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  
+  margin: 0;
+}
+
+svg {
+  animation: rotate 2.5s cubic-bezier(0.35, 0.04, 0.63, 0.95) infinite;
+  transform-origin: 50% 65%;
+}
+
+svg polygon {
+  stroke-dasharray: 17;
+  animation: dash 2.5s cubic-bezier(0.35, 0.04, 0.63, 0.95) infinite;
+}
+
+@keyframes dash {
+  to {
+      stroke-dashoffset: 136;
+  }
 }
