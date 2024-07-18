@@ -211,10 +211,10 @@ const BillView = () => {
                 <div className="col-md-6 col-12">
                   <h5 className="fw-bolder my-2">Notes</h5>
                   <p className="my-3"></p>
-                  <h5 className="fw-bolder my-2">{datas.notes || "Terms & Conditions."}</h5>
+                  <h5 className="fw-bolder my-2">{datas.cusNotes || "Terms & Conditions."}</h5>
                   <h3>Terms & Conditions</h3>
                   <p className="fw-small">
-                    {datas.termsConditions ||
+                    {datas.termsCondition ||
                       "Payment is due upon receipt of the invoice unless otherwise agreed upon in writing."}
                   </p>
                 </div>

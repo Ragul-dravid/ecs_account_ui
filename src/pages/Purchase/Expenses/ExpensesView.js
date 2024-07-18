@@ -2,11 +2,13 @@ import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import api from "../../../config/URL";
 import toast from "react-hot-toast";
+import fetchAllVendorNameWithIds from "../../List/VendorList";
 
 function ExpensesView() {
   const { id } = useParams();
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [vendorData, setVendorData] = useState(null);
 
   useEffect(() => {
     const getExpensesData = async () => {
@@ -20,8 +22,22 @@ function ExpensesView() {
         setLoading(false);
       }
     };
+    fetchData();
     getExpensesData();
   }, [id]);
+
+  const fetchData = async () => {
+    try {
+      const vendorData = await fetchAllVendorNameWithIds();
+      setVendorData(vendorData);
+    } catch (error) {
+      toast.error(error);
+    }
+  };
+  const vendor = (id) => {
+    const name = vendorData.find((item) => (item.id === id))
+    return name?.contactName
+  }
 
   return (
     <div>
@@ -118,7 +134,7 @@ function ExpensesView() {
                   </p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: {data.vendor || ""} </p>
+                  <p className="text-muted text-sm">: {vendor(data.vendorId) || ""} </p>
                 </div>
               </div>
             </div>

@@ -61,7 +61,8 @@ console.log("items",items)
       dueDate: "",
       permitNumber: "",
       status: "",
-      // subject: "",
+      cusNotes: "",
+      termsCondition: "",
       total: "",
       subTotal: "",
       tax: "",
@@ -94,8 +95,8 @@ console.log("items",items)
       formData.append("tax", values.tax);
       formData.append("subTotal", values.subTotal);
       // formData.append("total", values.total);
-      // formData.append("customerNote", "test");
-      // formData.append("terms", values.terms);
+      formData.append("customerNote", values.cusNotes);
+      formData.append("termsCondition", values.termsCondition);
 
       values.billItemsModels.forEach((item) => {
         formData.append("item", item.item);
@@ -672,8 +673,8 @@ console.log("items",items)
                 <div className="mb-3">
                   <input
                     type="text"
-                    {...formik.getFieldProps("customerNotes")}
-                    name="customerNotes"
+                    {...formik.getFieldProps("cusNotes")}
+                    name="cusNotes"
                     className="form-control"
                   />
                 </div>
@@ -720,10 +721,10 @@ console.log("items",items)
                 <lable className="form-lable">Terms & Conditions</lable>
                 <div className="mb-3">
                   <textarea
-                    {...formik.getFieldProps("termsConditions")}
+                    {...formik.getFieldProps("termsCondition")}
                     placeholder="Enter the terms and conditions of your business in your transaction"
                     type="text"
-                    name="termsConditions"
+                    name="termsCondition"
                     className="form-control "
                     style={{ width: "65%", height: "5rem" }}
                   />
