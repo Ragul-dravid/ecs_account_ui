@@ -237,7 +237,7 @@ const RecurringInvoiceView = () => {
                       <div className="row mb-3">
                         <label className="col-sm-6 col-form-label">Tax</label>
                         <div className="col-sm-6">
-                          ₹{datas.totaltax || "0"}
+                          ₹{datas.taxAmounts || "0"}
                         </div>
                       </div>
                       <div className="row mb-3">

@@ -149,94 +149,86 @@ function CreditNotesAdd() {
         let totalRate = 0;
         let totalAmount = 0;
         let totalTax = 0;
-
+  
         const updatedItems = await Promise.all(
           formik.values.txnCreditNoteItems.map(async (item, index) => {
             if (item.item) {
               try {
                 const response = await api.get(`getMstrItemsById/${item.item}`);
-                console.log("object", response.data);
-                const updatedItem = {
-                  ...item,
-                  price: response.data.salesPrice,
-                };
-
-                const qty = updatedItem.qty || 1;
-                const amount = calculateAmount(
-                  qty,
-                  updatedItem.taxRate,
-                  updatedItem.discount,
-                  updatedItem.price
-                );
-                const itemTotalRate = qty * updatedItem.price;
-                const itemTotalTax =
-                  itemTotalRate * (updatedItem.taxRate / 100);
-
-                totalRate += updatedItem.price * qty;
+                const updatedItem = { ...item, price: response.data.salesPrice, qty:1 };
+                const amount = calculateAmount(updatedItem.qty, updatedItem.price, updatedItem.discount, updatedItem.taxRate);
+                const itemTotalRate = updatedItem.qty * updatedItem.price;
+                const itemTotalTax = itemTotalRate * (updatedItem.taxRate / 100);
+                totalRate += updatedItem.price;
                 totalAmount += amount;
                 totalTax += itemTotalTax;
-
-                return { ...updatedItem, qty, amount };
+                return { ...updatedItem, amount };
               } catch (error) {
-                toast.error(
-                  "Error fetching data: " +
-                    (error?.response?.data?.message || error.message)
-                );
+                toast.error("Error fetching data: ", error?.response?.data?.message);
               }
             }
-
-            const qty = item.qty;
-            // Calculate amount if all necessary values are present
-            if (item.price !== undefined &&item.discount !== undefined &&item.taxRate !== undefined) {
-              const amount = calculateAmount(
-                qty,
-                item.taxRate,
-                item.discount,
-                item.price
-              );
-              const itemTotalRate = qty * item.price;
-              const itemTotalTax = itemTotalRate * (item.taxRate / 100);
-
-              totalRate += item.price * qty;
-              totalAmount += amount;
-              totalTax += itemTotalTax;
-
-              return { ...item, qty, amount };
-            }
-
             return item;
           })
         );
-
-        formik.setValues({
-          ...formik.values,
-          txnCreditNoteItems: updatedItems,
-        });
+        formik.setValues({ ...formik.values, txnCreditNoteItems: updatedItems });
         formik.setFieldValue("subTotal", totalRate);
         formik.setFieldValue("total", totalAmount);
         formik.setFieldValue("tax", totalTax);
       } catch (error) {
-        toast.error("Error updating items: " + error.message);
+        toast.error("Error updating items: ", error.message);
       }
     };
 
     updateAndCalculate();
   }, [
     formik.values.txnCreditNoteItems.map((item) => item.item).join(""),
+  ]);
+  
+  useEffect(() => {
+    const updateAndCalculate = async () => {
+      try {
+        let totalRate = 0;
+        let totalAmount = 0;
+        let totalTax = 0;
+  
+        const updatedItems = await Promise.all(
+          formik.values.txnCreditNoteItems.map(async (item, index) => {
+            if (item.qty && item.price && item.discount !== undefined && item.taxRate !== undefined) {
+              const amount = calculateAmount(item.qty, item.price, item.discount, item.taxRate);
+              const itemTotalRate = item.qty * item.price;
+              const itemTotalTax = itemTotalRate * (item.taxRate / 100);
+              totalRate += item.price;
+              totalAmount += amount;
+              totalTax += itemTotalTax;
+              return { ...item, amount,};
+            }
+            return item;
+          })
+        );
+        formik.setValues({ ...formik.values, txnCreditNoteItems: updatedItems });
+        formik.setFieldValue("subTotal", totalRate);
+        formik.setFieldValue("total", totalAmount);
+        formik.setFieldValue("tax", totalTax);
+      } catch (error) {
+        toast.error("Error updating items: ", error.message);
+      }
+    };
+
+    updateAndCalculate();
+  }, [
     formik.values.txnCreditNoteItems.map((item) => item.qty).join(""),
     formik.values.txnCreditNoteItems.map((item) => item.price).join(""),
     formik.values.txnCreditNoteItems.map((item) => item.discount).join(""),
     formik.values.txnCreditNoteItems.map((item) => item.taxRate).join(""),
   ]);
 
-  const calculateAmount = (qty, taxRate, discount, price) => {
+  const calculateAmount = (qty, price, discount, taxRate) => {
     const totalRate = qty * price;
     const discountAmount = totalRate * (discount / 100);
     const taxableAmount = totalRate * (taxRate / 100);
     const totalAmount = totalRate + taxableAmount - discountAmount;
     return totalAmount;
-  };
-
+  }
   return (
     <div className="container-fluid p-2 minHeight m-0">
       <form onSubmit={formik.handleSubmit}>
@@ -427,8 +419,8 @@ function CreditNotesAdd() {
                   <thead>
                     <tr>
                       <th scope="col">S.NO</th>
-                      <th scope="col">ITEM <span className="text-danger">*</span></th>
-                      <th scope="col">QUANTITY<span className="text-danger">*</span></th>
+                      <th scope="col" style={{ width: "25%" }}>ITEM <span className="text-danger">*</span></th>
+                      <th scope="col" style={{ width: "10%" }}>QUANTITY<span className="text-danger">*</span></th>
                       <th scope="col">PRICE</th>
                       <th scope="col">DISCOUNT</th>
                       <th scope="col">TAX RATE<span className="text-danger">*</span></th>
@@ -468,9 +460,8 @@ function CreditNotesAdd() {
                               )}
                         </td>
                         <td>
-                          <input
-                            type="number"
-                            min={1}
+                          <input onInput={(event)=>{ event.target.value = event.target.value.replace(/[^0-9]/g, '');}}
+                            type="text"
                             name={`txnCreditNoteItems[${index}].qty`}
                             className={`form-control ${
                                 formik.touched.txnCreditNoteItems?.[index]?.qty &&
@@ -490,7 +481,7 @@ function CreditNotesAdd() {
                               )}
                         </td>
                         <td>
-                          <input
+                          <input readOnly
                             type="text"
                             name={`txnCreditNoteItems[${index}].price`}
                             className={`form-control ${
@@ -511,7 +502,7 @@ function CreditNotesAdd() {
                               )}
                         </td>
                         <td>
-                          <input
+                          <input onInput={(event)=>{ event.target.value = event.target.value.replace(/[^0-9]/g, '').slice(0,2);}}
                             type="text"
                             name={`txnCreditNoteItems[${index}].discount`}
                             className={`form-control ${
@@ -532,7 +523,7 @@ function CreditNotesAdd() {
                               )}
                         </td>
                         <td>
-                          <input
+                          <input onInput={(event)=>{ event.target.value = event.target.value.replace(/[^0-9]/g, '').slice(0,2);}}
                             type="text"
                             name={`txnCreditNoteItems[${index}].taxRate`}
                             className={`form-control ${
@@ -553,7 +544,7 @@ function CreditNotesAdd() {
                               )}
                         </td>
                         <td>
-                          <input
+                          <input readOnly
                             type="text"
                             name={`txnCreditNoteItems[${index}].amount`}
                             className={`form-control ${

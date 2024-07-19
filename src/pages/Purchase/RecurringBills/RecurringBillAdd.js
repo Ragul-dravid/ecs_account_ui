@@ -24,15 +24,15 @@ const validationSchema = Yup.object().shape({
     Yup.object().shape({
       item: Yup.string().required("*Item Details is required"),
       qty: Yup.number()
-        .min(1, "*Quantity must be a min 1")
-        .typeError("*Quantity must be a number")
-        .required("*Quantity is required"),
+      .typeError("*Quantity must be a number")
+      .min(1, "*Quantity must be a min 1")
+      .notRequired(),
       // unitPrice: Yup.number()
       //   .typeError("*Price must be a number")
       //   .required("*Price is required"),
       taxRate: Yup.number()
         .typeError("*Tax Rate must be a number")
-        .required("*Tax Rate is required"),
+        .notRequired(),
       // tax: Yup.string().required("*Tax is required"),
       amount: Yup.number()
         .typeError("*Amount must be a number")
@@ -171,46 +171,95 @@ const RecurringBillAdd = () => {
     const updateAndCalculate = async () => {
       try {
         let totalRate = 0;
-        let total = 0;
-        let tax = 0;
-
+        let totalAmount = 0;
+        let totalTax = 0;
+        let totalDisc = 0;
         const updatedItems = await Promise.all(
           formik.values.items.map(async (item, index) => {
-            if (item.item && !formik.values.items[index].qty) {
-              formik.values.items[index].qty = 1;
-            }
             if (item.item) {
               try {
                 const response = await api.get(`getMstrItemsById/${item.item}`);
-                const updatedItem = { ...item, unitPrice: response.data.salesPrice };
-                const amount = calculateAmount(updatedItem.qty, updatedItem.unitPrice, updatedItem.disc, updatedItem.taxRate);
+                const updatedItem = {
+                  ...item,
+                  unitPrice: response.data.costPrice,
+                  qty: 1,
+                };
+                const amount = await calculateAmount(
+                  updatedItem.qty,
+                  updatedItem.unitPrice,
+                  updatedItem.disc,
+                  updatedItem.taxRate
+                );
                 const itemTotalRate = updatedItem.qty * updatedItem.unitPrice;
-                const itemTotalTax = itemTotalRate * (updatedItem.taxRate / 100);
+                const itemTotalTax =
+                  itemTotalRate * (updatedItem.taxRate / 100);
+                const itemTotalDisc = itemTotalRate * (updatedItem.disc / 100);
+                totalDisc += itemTotalDisc;
                 totalRate += updatedItem.unitPrice;
-                total += amount;
-                tax += itemTotalTax;
+                totalAmount += amount;
+                totalTax += itemTotalTax;
                 return { ...updatedItem, amount };
               } catch (error) {
-                toast.error("Error fetching data: ", error?.response?.data?.message);
+                toast.error(
+                  "Error fetching data: ",
+                  error?.response?.data?.message
+                );
               }
-            }
-
-            if (item.qty && item.unitPrice && item.disc !== undefined && item.taxRate !== undefined) {
-              const amount = calculateAmount(item.qty, item.unitPrice, item.disc, item.taxRate);
-              const itemTotalRate = item.qty * item.unitPrice;
-              const itemTotalTax = itemTotalRate * (item.taxRate / 100);
-              totalRate += item.unitPrice;
-              total += amount;
-              tax += itemTotalTax;
-              return { ...item, amount, };
             }
             return item;
           })
         );
         formik.setValues({ ...formik.values, items: updatedItems });
         formik.setFieldValue("subTotal", totalRate);
-        formik.setFieldValue("total", total);
-        formik.setFieldValue("tax", tax);
+        formik.setFieldValue("total", totalAmount);
+        formik.setFieldValue("discount", totalDisc);
+        formik.setFieldValue("tax", totalTax);
+      } catch (error) {
+        toast.error("Error updating items: ", error.message);
+      }
+    };
+
+    updateAndCalculate();
+  }, [formik.values.items.map((item) => item.item).join("")]);
+
+  useEffect(() => {
+    const updateAndCalculate = async () => {
+      try {
+        let totalRate = 0;
+        let totalAmount = 0;
+        let totalTax = 0;
+        let totalDisc = 0;
+        const updatedItems = await Promise.all(
+          formik.values.items.map(async (item, index) => {
+            if (
+              item.qty &&
+              item.unitPrice &&
+              item.disc !== undefined &&
+              item.taxRate !== undefined
+            ) {
+              const amount = calculateAmount(
+                item.qty,
+                item.unitPrice,
+                item.disc,
+                item.taxRate
+              );
+              const itemTotalRate = item.qty * item.unitPrice;
+              const itemTotalTax = itemTotalRate * (item.taxRate / 100);
+              const itemTotalDisc = itemTotalRate * (item.disc / 100);
+              totalDisc += itemTotalDisc;
+              totalRate += item.unitPrice;
+              totalAmount += amount;
+              totalTax += itemTotalTax;
+              return { ...item, amount };
+            }
+            return item;
+          })
+        );
+        formik.setValues({ ...formik.values, items: updatedItems });
+        formik.setFieldValue("subTotal", totalRate);
+        formik.setFieldValue("total", totalAmount);
+        formik.setFieldValue("discount", totalDisc);
+        formik.setFieldValue("tax", totalTax);
       } catch (error) {
         toast.error("Error updating items: ", error.message);
       }
@@ -218,19 +267,18 @@ const RecurringBillAdd = () => {
 
     updateAndCalculate();
   }, [
-    formik.values.items.map((item) => item.item).join(""),
     formik.values.items.map((item) => item.qty).join(","),
-    formik.values.items.map((item) => item.unitPrice).join(""),
-    formik.values.items.map((item) => item.disc).join(""),
-    formik.values.items.map((item) => item.taxRate).join(""),
+    formik.values.items.map((item) => item.unitPrice).join(","),
+    formik.values.items.map((item) => item.disc).join(","),
+    formik.values.items.map((item) => item.taxRate).join(","),
   ]);
 
   const calculateAmount = (qty, unitPrice, disc, taxRate) => {
     const totalRate = qty * unitPrice;
-    const discountAmount = totalRate * (disc / 100);
+    const discountAmounts = totalRate * (disc / 100);
     const taxableAmount = totalRate * (taxRate / 100);
-    const total = totalRate + taxableAmount - discountAmount;
-    return total;
+    const totalAmount = totalRate + taxableAmount - discountAmounts;
+    return totalAmount;
   };
 
   return (
@@ -544,28 +592,29 @@ const RecurringBillAdd = () => {
                     <thead>
                       <tr>
                         <th scope="col">S.NO</th>
-                        <th scope="col">ITEM<span className="text-danger">*</span></th>
-                        {/* <th scope="col">Description</th> */}
-                        <th scope="col">QUANTITY</th>
-                        <th scope="col">PRICE</th>
-                        <th scope="col">Disc %</th>
-                        {/* <th scope="col">Account</th> */}
-                        <th scope="col">Tax Rate(%)</th>
-                        <th scope="col">AMOUNT</th>
+                        <th style={{ width: "25%" }}>
+                        Item<span className="text-danger">*</span>
+                      </th>
+                      <th style={{ width: "10%" }}>Quantity</th>
+                      <th style={{ width: "15%" }}>Rate</th>
+                      <th style={{ width: "15%" }}>disc (%)</th>
+                      <th style={{ width: "15%" }}>Tax (%)</th>
+                      <th style={{ width: "15%" }}>Amount</th>
                       </tr>
                     </thead>
                     <tbody className="table-group">
                       {formik.values.items.map((item, index) => (
                         <tr key={index}>
-                          <th scope="row">{index + 1}</th>
+                            <th scope="row">{index + 1}</th>
                           <td>
                             <select
                               {...formik.getFieldProps(`items[${index}].item`)}
-                              className={`form-select ${formik.touched.items?.[index]?.item &&
-                                  formik.errors.items?.[index]?.item
+                              className={`form-select ${
+                                formik.touched.items?.[index]?.item &&
+                                formik.errors.items?.[index]?.item
                                   ? "is-invalid"
                                   : ""
-                                }`}
+                              }`}
                             >
                               <option value=""> </option>
                               {items &&
@@ -584,36 +633,54 @@ const RecurringBillAdd = () => {
                           </td>
                           <td>
                             <input
-                              type="number"
-                              min={1}
-                              className={`form-control ${formik.touched.items?.[index]?.qty &&
-                                  formik.errors.items?.[index]?.qty
+                              onInput={(event) => {
+                                event.target.value = event.target.value.replace(
+                                  /[^0-9]/g,
+                                  ""
+                                );
+                              }}
+                              type="text"
+                              className={`form-control ${
+                                formik.touched.items &&
+                                formik.touched.items[index] &&
+                                formik.touched.items[index].qty &&
+                                formik.errors.items &&
+                                formik.errors.items[index] &&
+                                formik.errors.items[index].qty
                                   ? "is-invalid"
                                   : ""
-                                }`}
+                              }`}
                               {...formik.getFieldProps(`items[${index}].qty`)}
                             />
-                            {formik.touched.items?.[index]?.qty &&
-                              formik.errors.items?.[index]?.qty && (
+                            {formik.touched.items &&
+                                formik.touched.items[index] &&
+                                formik.touched.items[index].qty &&
+                                formik.errors.items &&
+                                formik.errors.items[index] &&
+                                formik.errors.items[index].qty &&(
                                 <div className="invalid-feedback">
                                   {formik.errors.items[index].qty}
                                 </div>
                               )}
                           </td>
                           <td>
-                            <input readOnly
+                            <input
                               type="text"
-                              className={`form-control ${formik.touched.items?.[index]?.unitPrice &&
-                                  formik.errors.items?.[index]?.unitPrice
+                              className={`form-control ${
+                                formik.errors.items &&
+                                formik.errors.items[index] &&
+                                formik.errors.items[index].unitPrice
                                   ? "is-invalid"
                                   : ""
-                                }`}
+                              }`}
                               {...formik.getFieldProps(
                                 `items[${index}].unitPrice`
                               )}
+                              readOnly
                             />
-                            {formik.touched.items?.[index]?.unitPrice &&
-                              formik.errors.items?.[index]?.unitPrice && (
+                            {formik.errors.items &&
+                              formik.errors.items[index] &&
+                              formik.errors.items[index].unitPrice && (
                                 <div className="invalid-feedback">
                                   {formik.errors.items[index].unitPrice}
                                 </div>
@@ -621,52 +688,71 @@ const RecurringBillAdd = () => {
                           </td>
                           <td>
                             <input
+                              onInput={(event) => {
+                                event.target.value = event.target.value
+                                  .replace(/[^0-9]/g, "")
+                                  .slice(0, 2);
+                              }}
                               type="text"
-                              className={`form-control ${formik.touched.items?.[index]?.disc &&
-                                  formik.errors.items?.[index]?.disc
+                              className={`form-control ${
+                                formik.errors.items &&
+                                formik.errors.items[index] &&
+                                formik.errors.items[index].disc
                                   ? "is-invalid"
                                   : ""
-                                }`}
+                              }`}
                               {...formik.getFieldProps(`items[${index}].disc`)}
                             />
-                            {formik.touched.items?.[index]?.disc &&
-                              formik.errors.items?.[index]?.disc && (
+                            {formik.errors.items &&
+                              formik.errors.items[index] &&
+                              formik.errors.items[index].disc && (
                                 <div className="invalid-feedback">
                                   {formik.errors.items[index].disc}
                                 </div>
                               )}
                           </td>
+  
                           <td>
                             <input
-                              {...formik.getFieldProps(`items[${index}].taxRate`)}
-                              className={`form-control ${formik.touched.items?.[index]?.taxRate &&
-                                  formik.errors.items?.[index]?.taxRate
+                              onInput={(event) => {
+                                event.target.value = event.target.value
+                                  .replace(/[^0-9]/g, "")
+                                  .slice(0, 2);
+                              }}
+                              type="text"
+                              className={`form-control ${
+                                formik.errors.items &&
+                                formik.errors.items[index] &&
+                                formik.errors.items[index].taxRate
                                   ? "is-invalid"
                                   : ""
-                                }`}
+                              }`}
+                              {...formik.getFieldProps(`items[${index}].taxRate`)}
                             />
-
-                            {formik.touched.items?.[index]?.taxRate &&
-                              formik.errors.items?.[index]?.taxRate && (
+                            {formik.errors.items &&
+                              formik.errors.items[index] &&
+                              formik.errors.items[index].taxRate && (
                                 <div className="invalid-feedback">
                                   {formik.errors.items[index].taxRate}
                                 </div>
                               )}
                           </td>
                           <td>
-                            <input readOnly
+                            <input
                               type="text"
-                              className={`form-control ${formik.touched.items?.[index]?.amount &&
-                                  formik.errors.items?.[index]?.amount
+                              className={`form-control ${
+                                formik.errors.items &&
+                                formik.errors.items[index] &&
+                                formik.errors.items[index].amount
                                   ? "is-invalid"
                                   : ""
-                                }`}
-                              {...formik.getFieldProps(
-                                `items[${index}].amount`
-                              )}
+                              }`}
+                              {...formik.getFieldProps(`items[${index}].amount`)}
+                              readOnly
                             />
-                            {formik.touched.items?.[index]?.amount &&
-                              formik.errors.items?.[index]?.amount && (
+                            {formik.errors.items &&
+                              formik.errors.items[index] &&
+                              formik.errors.items[index].amount && (
                                 <div className="invalid-feedback">
                                   {formik.errors.items[index].amount}
                                 </div>

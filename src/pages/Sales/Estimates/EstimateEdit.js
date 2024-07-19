@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { MdDeleteSweep } from "react-icons/md";
 import toast from "react-hot-toast";
 import api from "../../../config/URL";
 import fetchAllCustomerWithIds from "../../List/CustomerList";
@@ -40,8 +39,8 @@ const EstimateEdit = () => {
   const [loading, setLoadIndicator] = useState(false);
   const [customerData, setCustomerData] = useState(null);
   const [itemData, setItemData] = useState(null);
-  const [rows, setRows] = useState([{ id: 1 }]);
   const [rowss, setRowss] = useState([]);
+
   const addRow = () => {
     formik.setFieldValue("quotesItemsModels", [
       ...formik.values.quotesItemsModels,
@@ -57,8 +56,6 @@ const EstimateEdit = () => {
     }
   };
 
-  console.log("object", customerData)
-  
   const formik = useFormik({
     initialValues: {
       qoutesId: id,
@@ -126,7 +123,6 @@ const EstimateEdit = () => {
       });
       setLoadIndicator(true);
       try {
-
         const response = await api.put(
           `/updateQuoteWithQuoteItems/${id}`,
           formData,
@@ -185,67 +181,80 @@ const EstimateEdit = () => {
         let totalRate = 0;
         let totalAmount = 0;
         let totalTax = 0;
-
+  
         const updatedItems = await Promise.all(
-          formik.values.quotesItemsModels.map(async (item, index) => {
-            if (item.item) {
+          formik.values.txnQuotesItems.map(async (item, index) => {
+            if (item.item ) {
               try {
                 const response = await api.get(`getMstrItemsById/${item.item}`);
-                console.log("object", response.data);
-                const updatedItem = { ...item, price: response.data.salesPrice };
-
-                const qty = updatedItem.qty || 1;
-                const taxAmount = calculateAmount(qty, updatedItem.taxRate, updatedItem.disc, updatedItem.price);
-                const itemTotalRate = qty * updatedItem.price;
+                const updatedItem = { ...item, price: response.data.salesPrice, qty:1 };
+                const taxAmount = calculateAmount(updatedItem.qty, updatedItem.price, updatedItem.disc, updatedItem.taxRate);
+                const itemTotalRate = updatedItem.qty * updatedItem.price;
                 const itemTotalTax = itemTotalRate * (updatedItem.taxRate / 100);
-
-                totalRate += updatedItem.price * qty;
+                totalRate += updatedItem.price;
                 totalAmount += taxAmount;
                 totalTax += itemTotalTax;
-
-                return { ...updatedItem, qty, taxAmount };
+                return { ...updatedItem, taxAmount };
               } catch (error) {
-                toast.error("Error fetching data: " + (error?.response?.data?.message || error.message));
+                toast.error("Error fetching data: ", error?.response?.data?.message);
               }
             }
-
-            const qty = item.qty;
-            // Calculate amount if all necessary values are present
-            if (item.price !== undefined && item.disc !== undefined && item.taxRate !== undefined) {
-              const taxAmount = calculateAmount(qty, item.taxRate, item.disc, item.price);
-              const itemTotalRate = qty * item.price;
-              const itemTotalTax = itemTotalRate * (item.taxRate / 100);
-
-              totalRate += item.price * qty;
-              totalAmount += taxAmount;
-              totalTax += itemTotalTax;
-
-              return { ...item, qty, taxAmount };
-            }
-
             return item;
           })
         );
-
-        formik.setValues({ ...formik.values, quotesItemsModels: updatedItems });
+        formik.setValues({ ...formik.values, txnQuotesItems: updatedItems });
         formik.setFieldValue("subTotal", totalRate);
         formik.setFieldValue("total", totalAmount);
         formik.setFieldValue("totalTax", totalTax);
       } catch (error) {
-        toast.error("Error updating items: " + error.message);
+        toast.error("Error updating items: ", error.message);
       }
     };
 
     updateAndCalculate();
   }, [
-    formik.values.quotesItemsModels.map((item) => item.item).join(""),
-    formik.values.quotesItemsModels.map((item) => item.qty).join(""),
-    formik.values.quotesItemsModels.map((item) => item.price).join(""),
-    formik.values.quotesItemsModels.map((item) => item.disc).join(""),
-    formik.values.quotesItemsModels.map((item) => item.taxRate).join(""),
+    formik.values.txnQuotesItems.map((item) => item.item).join(""),
+  ]);
+  
+  useEffect(() => {
+    const updateAndCalculate = async () => {
+      try {
+        let totalRate = 0;
+        let totalAmount = 0;
+        let totalTax = 0;
+  
+        const updatedItems = await Promise.all(
+          formik.values.txnQuotesItems.map(async (item, index) => {
+            if (item.qty && item.price && item.disc !== undefined && item.taxRate !== undefined) {
+              const taxAmount = calculateAmount(item.qty, item.price, item.disc, item.taxRate);
+              const itemTotalRate = item.qty * item.price;
+              const itemTotalTax = itemTotalRate * (item.taxRate / 100);
+              totalRate += item.price;
+              totalAmount += taxAmount;
+              totalTax += itemTotalTax;
+              return { ...item, taxAmount,};
+            }
+            return item;
+          })
+        );
+        formik.setValues({ ...formik.values, txnQuotesItems: updatedItems });
+        formik.setFieldValue("subTotal", totalRate);
+        formik.setFieldValue("total", totalAmount);
+        formik.setFieldValue("totalTax", totalTax);
+      } catch (error) {
+        toast.error("Error updating items: ", error.message);
+      }
+    };
+
+    updateAndCalculate();
+  }, [
+    formik.values.txnQuotesItems.map((item) => item.qty).join(""),
+    formik.values.txnQuotesItems.map((item) => item.price).join(""),
+    formik.values.txnQuotesItems.map((item) => item.disc).join(""),
+    formik.values.txnQuotesItems.map((item) => item.taxRate).join(""),
   ]);
 
-  const calculateAmount = (qty, taxRate, disc, price) => {
+  const calculateAmount = (qty, price, disc, taxRate) => {
     const totalRate = qty * price;
     const discountAmount = totalRate * (disc / 100);
     const taxableAmount = totalRate * (taxRate / 100);
@@ -530,10 +539,10 @@ const EstimateEdit = () => {
                   <thead>
                     <tr>
                       <th scope="col">S.NO</th>
-                      <th scope="col">
+                      <th scope="col" style={{ width: "25%" }}>
                         ITEM <span className="text-danger">*</span>
                       </th>
-                      <th scope="col">
+                      <th scope="col" style={{ width: "10%" }}>
                         QUANTITY<span className="text-danger">*</span>
                       </th>
                       <th scope="col">PRICE</th>
@@ -579,9 +588,8 @@ const EstimateEdit = () => {
                               )}
                           </td>
                           <td>
-                            <input
-                              type="number"
-                              min={1}
+                            <input onInput={(event)=>{ event.target.value = event.target.value.replace(/[^0-9]/g, '');}}
+                              type="text"
                               name={`quotesItemsModels[${index}].qty`}
                               className={`form-control ${formik.touched.quotesItemsModels?.[index]
                                 ?.qty &&
@@ -602,7 +610,7 @@ const EstimateEdit = () => {
                               )}
                           </td>
                           <td>
-                            <input
+                            <input readOnly
                               type="text"
                               name={`quotesItemsModels[${index}].price`}
                               className={`form-control ${formik.touched.quotesItemsModels?.[index]
@@ -615,15 +623,15 @@ const EstimateEdit = () => {
                                 `quotesItemsModels[${index}].price`
                               )}
                             />
-                            {formik.touched.items?.[index]?.price &&
-                              formik.errors.items?.[index]?.price && (
+                            {formik.touched.quotesItemsModels?.[index]?.price &&
+                              formik.errors.quotesItemsModels?.[index]?.price && (
                                 <div className="invalid-feedback">
-                                  {formik.errors.items[index].price}
+                                  {formik.errors.quotesItemsModels[index].price}
                                 </div>
                               )}
                           </td>
                           <td>
-                            <input
+                            <input onInput={(event)=>{ event.target.value = event.target.value.replace(/[^0-9]/g, '').slice(0, 2);}}
                               type="text"
                               name={`quotesItemsModels[${index}].disc`}
                               className={`form-control ${formik.touched.quotesItemsModels?.[index]
@@ -646,7 +654,7 @@ const EstimateEdit = () => {
                               )}
                           </td>
                           <td>
-                            <input
+                            <input onInput={(event)=>{ event.target.value = event.target.value.replace(/[^0-9]/g, '').slice(0, 2);}}
                               type="text"
                               name={`quotesItemsModels[${index}].taxRate`}
                               className={`form-control ${formik.touched.quotesItemsModels?.[index]
@@ -673,7 +681,7 @@ const EstimateEdit = () => {
                               )}
                           </td>
                           <td>
-                            <input
+                            <input  readOnly
                               type="text"
                               name={`quotesItemsModels[${index}].taxAmount`}
                               className={`form-control ${formik.touched.quotesItemsModels?.[index]

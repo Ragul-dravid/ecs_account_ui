@@ -48,7 +48,6 @@ function InvoiceEdit() {
           disc:"",
           taxRate:"",
           amount: "",
-          itemId: "",
         },
       ],
     },
@@ -137,118 +136,107 @@ function InvoiceEdit() {
       toast.error(error.message);
     }
   };
-
-  const itemAmt = async (id, index) => {
-    try {
-      const response = await api.get(`/getMstrItemsById/${id}`);
-      formik.setFieldValue(
-        `txnInvoiceOrderItemsModels[${index}].price`,
-        response.data.salesPrice
-      );
-    } catch (error) {
-      toast.error(error.message);
-    }
-  };
-
-  const handleSelectChange = (event, index) => {
-    const { value } = event.target;
-    formik.setFieldValue(`txnInvoiceOrderItemsModels[${index}].item`, value);
-    if (value) {
-      itemAmt(value, index);
-    }
-  };
-
   useEffect(() => {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    formik.values.txnInvoiceOrderItemsModels?.forEach((_, index) => {
-      if (
-        formik.values.txnInvoiceOrderItemsModels[index].item &&
-        !formik.values.txnInvoiceOrderItemsModels[index].qty
-      ) {
-        itemAmt(formik.values.txnInvoiceOrderItemsModels[index].item, index);
-        formik.setFieldValue(`txnInvoiceOrderItemsModels[${index}].qty`, 1);
-        formik.setFieldValue(`txnInvoiceOrderItemsModels[${index}].taxRate`, 0);
+  useEffect(() => { 
+    const updateAndCalculate = async () => {
+      try {
+        let totalRate = 0;
+        let totalAmount = 0;
+        let totalTax = 0;
+        const updatedItems = await Promise.all(
+          formik.values.txnInvoiceOrderItemsModels.map(async (item, index) => {
+            if (item.item) {
+              try {
+                const response = await api.get(`getMstrItemsById/${item.item}`);
+                const updatedItem = { ...item, price: response.data.salesPrice, qty:1 };
+                const amount = calculateAmount(updatedItem.qty, updatedItem.price, updatedItem.disc, updatedItem.taxRate);
+                const itemTotalRate = updatedItem.qty * updatedItem.price;
+                const itemTotalTax = itemTotalRate * (updatedItem.taxRate / 100);
+                totalRate += updatedItem.price;
+                totalAmount += amount;
+                totalTax += itemTotalTax;
+                return { ...updatedItem, amount };
+              } catch (error) {
+                toast.error("Error fetching data: ", error?.response?.data?.message);
+              }
+            }
+            return item;
+          })
+        );
+        formik.setValues({ ...formik.values, txnInvoiceOrderItemsModels: updatedItems });
+        formik.setFieldValue("subTotal", totalRate);
+        formik.setFieldValue("total", totalAmount);
+        formik.setFieldValue("totalTax", totalTax);
+      } catch (error) {
+        toast.error("Error updating items: ", error.message);
       }
-    });
-  }, [
-    formik.values.txnInvoiceOrderItemsModels
-      ?.map((item) => item.item)
-      .join(","),
-  ]);
-
-  const calculateAmount = (index) => {
-    const qty = formik.values.txnInvoiceOrderItemsModels[index].qty || 0;
-    const rate = formik.values.txnInvoiceOrderItemsModels[index].price || 0;
-    const tax = formik.values.txnInvoiceOrderItemsModels[index].taxRate || 0;
-    const discountPercentage =
-      formik.values.txnInvoiceOrderItemsModels[index].disc || 0;
-
-      const itemDiscount = qty * rate * (discountPercentage / 100);
-      const taxAmount = (tax / 100) * (qty * rate);
-      const amount = (qty * rate) - itemDiscount + taxAmount;
-      const roundedAmount = Math.round(amount * 100) / 100;
-
-    formik.setFieldValue(
-      `txnInvoiceOrderItemsModels[${index}].amount`,
-      amount
-    );
-
-    return roundedAmount;
-  };
-
-  const calculateTotals = () => {
-    let subTotal = 0;
-    let totalTax = 0;
-    let totalDiscount = 0;
-
-    formik.values.txnInvoiceOrderItemsModels?.forEach((item, index) => {
-      const amount = calculateAmount(index); // Calculate and set amount for each item
-
-      const qty = item.qty || 0;
-      const rate = item.price || 0;
-      const tax = item.taxRate || 0;
-      const discountPercentage = item.disc || 0;
-
-      subTotal += qty * rate;
-      totalTax += (tax / 100) * (qty * rate);
-      totalDiscount += qty * rate * (discountPercentage / 100);
-    });
-
-    const totalAmount = subTotal - totalDiscount + totalTax;
-
-    formik.setFieldValue("subTotal", subTotal.toFixed(2));
-    formik.setFieldValue("totalTax", totalTax.toFixed(2));
-    formik.setFieldValue("totalDiscount", totalDiscount.toFixed(2));
-    formik.setFieldValue("total", totalAmount.toFixed(2));
-  };
-
-  useEffect(() => {
-    calculateTotals();
-  }, [
-    formik.values.txnInvoiceOrderItemsModels
-      ?.map(
-        (item) =>
-         `${item.qty}-${item.price}-${item.taxRate}-${item.amount}-${item.disc}`
-      )
-      .join(","),
-  ]);
-
-  const AddRowContent = () => {
-    const newRow = {
-      item: "",
-      qty: "",
-      price: "",
-      disc:"",
-      tax: "",
-      taxRate: "",
-      itemId: "",
     };
+
+    updateAndCalculate();
+  }, [
+    formik.values.txnInvoiceOrderItemsModels.map((item) => item.item).join(""),
+  ]);
+  
+  useEffect(() => {
+    const updateAndCalculate = async () => {
+      try {
+        let totalRate = 0;
+        let totalAmount = 0;
+        let totalTax = 0;
+  
+        const updatedItems = await Promise.all(
+          formik.values.txnInvoiceOrderItemsModels.map(async (item, index) => {
+            if (item.qty && item.price && item.disc !== undefined && item.taxRate !== undefined) {
+              const amount = calculateAmount(item.qty, item.price, item.disc, item.taxRate);
+              const itemTotalRate = item.qty * item.price;
+              const itemTotalTax = itemTotalRate * (item.taxRate / 100);
+              totalRate += item.price;
+              totalAmount += amount;
+              totalTax += itemTotalTax;
+              return { ...item, amount};
+            }
+            return item;
+          })
+        );
+        formik.setValues({ ...formik.values, txnInvoiceOrderItemsModels: updatedItems });
+        formik.setFieldValue("subTotal", totalRate);
+        formik.setFieldValue("total", totalAmount);
+        formik.setFieldValue("totalTax", totalTax);
+      } catch (error) {
+        toast.error("Error updating items: ", error.message);
+      }
+    };
+
+    updateAndCalculate();
+  }, [
+    formik.values.txnInvoiceOrderItemsModels.map((item) => item.qty).join(""),
+    formik.values.txnInvoiceOrderItemsModels.map((item) => item.price).join(""),
+    formik.values.txnInvoiceOrderItemsModels.map((item) => item.disc).join(""),
+    formik.values.txnInvoiceOrderItemsModels.map((item) => item.taxRate).join(""),
+  ]);
+
+  const calculateAmount = (qty, price, disc, taxRate) => {
+    const totalRate = qty * price;
+    const discountAmount = totalRate * (disc / 100);
+    const taxableAmount = totalRate * (taxRate / 100);
+    const totalAmount = totalRate + taxableAmount - discountAmount;
+    return totalAmount;
+  };
+  
+  const AddRowContent = () => {
     formik.setFieldValue("txnInvoiceOrderItemsModels", [
       ...formik.values.txnInvoiceOrderItemsModels,
-      newRow,
+      {
+        item: "",
+        qty: "",
+        price: "",
+        disc:"",
+        taxRate: "",
+        amount: "",
+      },
     ]);
   };
 
@@ -498,6 +486,7 @@ function InvoiceEdit() {
                   <table className="table table-sm table-nowrap">
                     <thead>
                       <tr>
+                        <th >S.NO</th>
                         <th style={{ width: "25%" }}>Item<span className="text-danger">*</span></th>
                         <th style={{ width: "15%" }}>Quantity</th>
                         <th style={{ width: "15%" }}>Rate</th>
@@ -510,271 +499,152 @@ function InvoiceEdit() {
                       {formik.values.txnInvoiceOrderItemsModels?.map(
                         (item, index) => (
                           <tr key={index}>
-                            <td>
-                              <select
-                                className={`form-select ${
-                                  formik.touched.txnInvoiceOrderItemsModels &&
-                                  formik.touched.txnInvoiceOrderItemsModels[
-                                    index
-                                  ] &&
-                                  formik.errors.txnInvoiceOrderItemsModels &&
-                                  formik.errors.txnInvoiceOrderItemsModels[
-                                    index
-                                  ] &&
-                                  formik.errors.txnInvoiceOrderItemsModels[
-                                    index
-                                  ].item
-                                    ? "is-invalid"
-                                    : ""
+                          <th scope="row">{index + 1}</th>
+                          <td>
+                            <select
+                              name={`txnInvoiceOrderItemsModels[${index}].item`}
+                              {...formik.getFieldProps(
+                                `txnInvoiceOrderItemsModels[${index}].item`
+                              )}
+                              className={`form-select ${formik.touched.txnInvoiceOrderItemsModels?.[index]
+                                ?.item &&
+                                formik.errors.txnInvoiceOrderItemsModels?.[index]?.item
+                                ? "is-invalid"
+                                : ""
                                 }`}
-                                onChange={(e) => handleSelectChange(e, index)}
-                                value={item.item}
-                              >
-                                <option value=""></option>
-                                {itemData &&
-                                  itemData.map((itemId) => (
-                                    <option
-                                      key={itemId.id}
-                                      value={itemId.id}
-                                      disabled={formik.values.txnInvoiceOrderItemsModels.some(
-                                        (existingItem) =>
-                                          existingItem.item === itemId.id
-                                      )}
-                                    >
-                                      {itemId.itemName}
-                                    </option>
-                                  ))}
-                              </select>
-                              {formik.touched.txnInvoiceOrderItemsModels &&
-                                formik.touched.txnInvoiceOrderItemsModels[
-                                  index
-                                ] &&
-                                formik.errors.txnInvoiceOrderItemsModels &&
-                                formik.errors.txnInvoiceOrderItemsModels[
-                                  index
-                                ] &&
-                                formik.errors.txnInvoiceOrderItemsModels[index]
-                                  .item && (
-                                  <div className="invalid-feedback">
-                                    {
-                                      formik.errors.txnInvoiceOrderItemsModels[
-                                        index
-                                      ].item
-                                    }
-                                  </div>
-                                )}
-                            </td>
-                            <td>
-                              <input
-                                type="number"
-                                min="1"
-                                className={`form-control ${
-                                  formik.touched.txnInvoiceOrderItemsModels &&
-                                  formik.touched.txnInvoiceOrderItemsModels[
-                                    index
-                                  ] &&
-                                  formik.errors.txnInvoiceOrderItemsModels &&
-                                  formik.errors.txnInvoiceOrderItemsModels[
-                                    index
-                                  ] &&
-                                  formik.errors.txnInvoiceOrderItemsModels[
-                                    index
-                                  ].qty
-                                    ? "is-invalid"
-                                    : ""
+                            >
+                              <option selected> </option>
+                              {itemData &&
+                                itemData.map((itemId) => (
+                                  <option key={itemId.id} value={itemId.id}>
+                                    {itemId.itemName}
+                                  </option>
+                                ))}
+                            </select>
+                            {formik.touched.txnInvoiceOrderItemsModels?.[index]?.item &&
+                              formik.errors.txnInvoiceOrderItemsModels?.[index]
+                                ?.item && (
+                                <div className="invalid-feedback">
+                                  {formik.errors.txnInvoiceOrderItemsModels[index].item}
+                                </div>
+                              )}
+                          </td>
+                          <td>
+                            <input onInput={(event)=>{ event.target.value = event.target.value.replace(/[^0-9]/g, '');}}
+                              type="text"
+                              name={`txnInvoiceOrderItemsModels[${index}].qty`}
+                              className={`form-control ${formik.touched.txnInvoiceOrderItemsModels?.[index]
+                                ?.qty &&
+                                formik.errors.txnInvoiceOrderItemsModels?.[index]?.qty
+                                ? "is-invalid"
+                                : ""
                                 }`}
-                                {...formik.getFieldProps(
-                                  `txnInvoiceOrderItemsModels[${index}].qty`
-                                )}
-                              />
-                              {formik.touched.txnInvoiceOrderItemsModels &&
-                                formik.touched.txnInvoiceOrderItemsModels[
-                                  index
-                                ] &&
-                                formik.errors.txnInvoiceOrderItemsModels &&
-                                formik.errors.txnInvoiceOrderItemsModels[
-                                  index
-                                ] &&
-                                formik.errors.txnInvoiceOrderItemsModels[index]
-                                  .qty && (
-                                  <div className="invalid-feedback">
-                                    {
-                                      formik.errors.txnInvoiceOrderItemsModels[
-                                        index
-                                      ].qty
-                                    }
-                                  </div>
-                                )}
-                            </td>
-                            <td>
-                              <input
-                                type="number"
-                                min="1"
-                                className={`form-control ${
-                                  formik.touched.txnInvoiceOrderItemsModels &&
-                                  formik.touched.txnInvoiceOrderItemsModels[
-                                    index
-                                  ] &&
-                                  formik.errors.txnInvoiceOrderItemsModels &&
-                                  formik.errors.txnInvoiceOrderItemsModels[
-                                    index
-                                  ] &&
-                                  formik.errors.txnInvoiceOrderItemsModels[
-                                    index
-                                  ].price
-                                    ? "is-invalid"
-                                    : ""
+                              {...formik.getFieldProps(
+                                `txnInvoiceOrderItemsModels[${index}].qty`
+                              )}
+                            />
+                            {formik.touched.txnInvoiceOrderItemsModels?.[index]?.qty &&
+                              formik.errors.txnInvoiceOrderItemsModels?.[index]
+                                ?.qty && (
+                                <div className="invalid-feedback">
+                                  {formik.errors.txnInvoiceOrderItemsModels[index].qty}
+                                </div>
+                              )}
+                          </td>
+                          <td>
+                            <input readOnly
+                              type="text"
+                              name={`txnInvoiceOrderItemsModels[${index}].price`}
+                              className={`form-control ${formik.touched.txnInvoiceOrderItemsModels?.[index]
+                                ?.price &&
+                                formik.errors.txnInvoiceOrderItemsModels?.[index]?.price
+                                ? "is-invalid"
+                                : ""
                                 }`}
-                                {...formik.getFieldProps(
-                                  `txnInvoiceOrderItemsModels[${index}].price`
-                                )}
-                                readOnly
-                              />
-                              {formik.touched.txnInvoiceOrderItemsModels &&
-                                formik.touched.txnInvoiceOrderItemsModels[
-                                  index
-                                ] &&
-                                formik.errors.txnInvoiceOrderItemsModels &&
-                                formik.errors.txnInvoiceOrderItemsModels[
-                                  index
-                                ] &&
-                                formik.errors.txnInvoiceOrderItemsModels[index]
-                                  .price && (
-                                  <div className="invalid-feedback">
-                                    {
-                                      formik.errors.txnInvoiceOrderItemsModels[
-                                        index
-                                      ].price
-                                    }
-                                  </div>
-                                )}
-                            </td>
-                            <td>
-                              <input
-                                type="number"
-                                min="1"
-                                className={`form-control ${
-                                  formik.touched.txnInvoiceOrderItemsModels &&
-                                  formik.touched.txnInvoiceOrderItemsModels[
-                                    index
-                                  ] &&
-                                  formik.errors.txnInvoiceOrderItemsModels &&
-                                  formik.errors.txnInvoiceOrderItemsModels[
-                                    index
-                                  ] &&
-                                  formik.errors.txnInvoiceOrderItemsModels[
-                                    index
-                                  ].disc
-                                    ? "is-invalid"
-                                    : ""
+                              {...formik.getFieldProps(
+                                `txnInvoiceOrderItemsModels[${index}].price`
+                              )}
+                            />
+                            {formik.touched.txnInvoiceOrderItemsModels?.[index]?.price &&
+                              formik.errors.txnInvoiceOrderItemsModels?.[index]?.price && (
+                                <div className="invalid-feedback">
+                                  {formik.errors.txnInvoiceOrderItemsModels[index].price}
+                                </div>
+                              )}
+                          </td>
+                          <td>
+                            <input onInput={(event)=>{ event.target.value = event.target.value.replace(/[^0-9]/g, '').slice(0, 2);}}
+                              type="text"
+                              name={`txnInvoiceOrderItemsModels[${index}].disc`}
+                              className={`form-control ${formik.touched.txnInvoiceOrderItemsModels?.[index]
+                                ?.disc &&
+                                formik.errors.txnInvoiceOrderItemsModels?.[index]
+                                  ?.disc
+                                ? "is-invalid"
+                                : ""
                                 }`}
-                                {...formik.getFieldProps(
-                                  `txnInvoiceOrderItemsModels[${index}].disc`
-                                )}
-                              />
-                              {formik.touched.txnInvoiceOrderItemsModels &&
-                                formik.touched.txnInvoiceOrderItemsModels[
-                                  index
-                                ] &&
-                                formik.errors.txnInvoiceOrderItemsModels &&
-                                formik.errors.txnInvoiceOrderItemsModels[
-                                  index
-                                ] &&
-                                formik.errors.txnInvoiceOrderItemsModels[index]
-                                  .disc && (
-                                  <div className="invalid-feedback">
-                                    {
-                                      formik.errors.txnInvoiceOrderItemsModels[
-                                        index
-                                      ].disc
-                                    }
-                                  </div>
-                                )}
-                            </td>
-                            <td>
-                              <input
-                                type="number"
-                                max="100"
-                                className={`form-control ${
-                                  formik.touched.txnInvoiceOrderItemsModels &&
-                                  formik.touched.txnInvoiceOrderItemsModels[
-                                    index
-                                  ] &&
-                                  formik.errors.txnInvoiceOrderItemsModels &&
-                                  formik.errors.txnInvoiceOrderItemsModels[
-                                    index
-                                  ] &&
-                                  formik.errors.txnInvoiceOrderItemsModels[
-                                    index
-                                  ].taxRate
-                                    ? "is-invalid"
-                                    : ""
+                              {...formik.getFieldProps(
+                                `txnInvoiceOrderItemsModels[${index}].disc`
+                              )}
+                            />
+                            {formik.touched.txnInvoiceOrderItemsModels?.[index]?.disc &&
+                              formik.errors.txnInvoiceOrderItemsModels?.[index]
+                                ?.disc && (
+                                <div className="invalid-feedback">
+                                  {formik.errors.txnInvoiceOrderItemsModels[index].disc}
+                                </div>
+                              )}
+                          </td>
+                          <td>
+                            <input onInput={(event)=>{ event.target.value = event.target.value.replace(/[^0-9]/g, '').slice(0, 2);}}
+                              type="text"
+                              name={`txnInvoiceOrderItemsModels[${index}].taxRate`}
+                              className={`form-control ${formik.touched.txnInvoiceOrderItemsModels?.[index]
+                                ?.taxRate &&
+                                formik.errors.txnInvoiceOrderItemsModels?.[index]
+                                  ?.taxRate
+                                ? "is-invalid"
+                                : ""
                                 }`}
-                                {...formik.getFieldProps(
-                                  `txnInvoiceOrderItemsModels[${index}].taxRate`
-                                )}
-                              />
-                              {formik.touched.txnInvoiceOrderItemsModels &&
-                                formik.touched.txnInvoiceOrderItemsModels[
-                                  index
-                                ] &&
-                                formik.errors.txnInvoiceOrderItemsModels &&
-                                formik.errors.txnInvoiceOrderItemsModels[
-                                  index
-                                ] &&
-                                formik.errors.txnInvoiceOrderItemsModels[index]
-                                  .taxRate && (
-                                  <div className="invalid-feedback">
-                                    {
-                                      formik.errors.txnInvoiceOrderItemsModels[
-                                        index
-                                      ].taxRate
-                                    }
-                                  </div>
-                                )}
-                            </td>
-                            <td>
-                              <input
-                                type="number"
-                                min="0"
-                                className={`form-control ${
-                                  formik.touched.txnInvoiceOrderItemsModels &&
-                                  formik.touched.txnInvoiceOrderItemsModels[
-                                    index
-                                  ] &&
-                                  formik.errors.txnInvoiceOrderItemsModels &&
-                                  formik.errors.txnInvoiceOrderItemsModels[
-                                    index
-                                  ] &&
-                                  formik.errors.txnInvoiceOrderItemsModels[
-                                    index
-                                  ].amount
-                                    ? "is-invalid"
-                                    : ""
+                              {...formik.getFieldProps(
+                                `txnInvoiceOrderItemsModels[${index}].taxRate`
+                              )}
+                            />
+                            {formik.touched.txnInvoiceOrderItemsModels?.[index]
+                              ?.taxRate &&
+                              formik.errors.txnInvoiceOrderItemsModels?.[index]
+                                ?.taxRate && (
+                                <div className="invalid-feedback">
+                                  {
+                                    formik.errors.txnInvoiceOrderItemsModels[index]
+                                      .taxRate
+                                  }
+                                </div>
+                              )}
+                          </td>
+                          <td>
+                            <input  readOnly
+                              type="text"
+                              name={`txnInvoiceOrderItemsModels[${index}].amount`}
+                              className={`form-control ${formik.touched.txnInvoiceOrderItemsModels?.[index]
+                                ?.amount &&
+                                formik.errors.txnInvoiceOrderItemsModels?.[index]
+                                  ?.amount
+                                ? "is-invalid"
+                                : ""
                                 }`}
-                                readOnly
-                                value={item.amount}
-                              />
-                              {formik.touched.txnInvoiceOrderItemsModels &&
-                                formik.touched.txnInvoiceOrderItemsModels[
-                                  index
-                                ] &&
-                                formik.errors.txnInvoiceOrderItemsModels &&
-                                formik.errors.txnInvoiceOrderItemsModels[
-                                  index
-                                ] &&
-                                formik.errors.txnInvoiceOrderItemsModels[index]
-                                  .amount && (
-                                  <div className="invalid-feedback">
-                                    {
-                                      formik.errors.txnInvoiceOrderItemsModels[
-                                        index
-                                      ].amount
-                                    }
-                                  </div>
-                                )}
-                            </td>
-                          </tr>
+                              {...formik.getFieldProps(
+                                `txnInvoiceOrderItemsModels[${index}].amount`
+                              )}
+                            />
+                            {formik.touched.txnInvoiceOrderItemsModels?.[index]?.amount &&
+                              formik.errors.txnInvoiceOrderItemsModels?.[index]?.amount && (
+                                <div className="invalid-feedback">
+                                  {formik.errors.txnInvoiceOrderItemsModels[index].amount}
+                                </div>
+                              )}
+                          </td>
+                        </tr>
                         )
                       )}
                     </tbody>

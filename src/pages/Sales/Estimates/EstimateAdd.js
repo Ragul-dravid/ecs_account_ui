@@ -8,13 +8,39 @@ import fetchAllCustomerWithIds from "../../List/CustomerList";
 import fetchAllItemWithIds from "../../List/ItemList";
 import { MdDeleteSweep } from "react-icons/md";
 
+const validationSchema = Yup.object({
+  customerId: Yup.string().required("* Customer name is required"),
+  issuesDate: Yup.date().required("*Date is required"),
+  quoteNumber: Yup.string().required("*Quote Number is required"),
+  amountsAre: Yup.string().required("*Amounts Are is required"),
+  expiryDate: Yup.date().required("*Expiry Date is required"),
+  status: Yup.string().required("*status is required"),
+  txnQuotesItems: Yup.array().of(
+    Yup.object().shape({
+      item: Yup.string().required("*Item Details is required"),
+      qty: Yup.number()
+        .min(1, "*Quantity must be a min 1")
+        .typeError("*Quantity must be a number")
+        .required("*Quantity is required"),
+      price: Yup.number().typeError("*Rate must be a number").notRequired(),
+      disc: Yup.number()
+        .typeError("*Discount must be a number")
+        .notRequired(),
+      taxRate: Yup.number().typeError("*Tax must be a number").notRequired(),
+      taxAmount: Yup.number()
+        .typeError("*Amount must be a number")
+        .notRequired(),
+    })
+  ),
+});
+
 function EstimateAdd() {
   const navigate = useNavigate();
   const [loading, setLoadIndicator] = useState(false);
   const [customerData, setCustomerData] = useState(null);
   const [itemData, setItemData] = useState(null);
-  const [rows, setRows] = useState([{}]);
   const [rowss, setRowss] = useState(false);
+
   const addRow = () => {
     formik.setFieldValue("txnQuotesItems", [
       ...formik.values.txnQuotesItems,
@@ -30,30 +56,6 @@ function EstimateAdd() {
     }
   };
 
-  console.log("object", customerData)
-  const validationSchema = Yup.object({
-    customerId: Yup.string().required("* Customer name is required"),
-    issuesDate: Yup.date().required("*Date is required"),
-    quoteNumber: Yup.string().required("*Quote Number is required"),
-    amountsAre: Yup.string().required("*Amounts Are is required"),
-    expiryDate: Yup.date().required("*Expiry Date is required"),
-    status: Yup.string().required("*status is required"),
-    txnQuotesItems: Yup.array().of(
-      Yup.object().shape({
-        item: Yup.string().required("*Item Details is required"),
-        qty: Yup.number()
-          .min(1, "*Quantity must be a min 1")
-          .typeError("*Quantity must be a number")
-          .required("*Quantity is required"),
-        price: Yup.number().typeError("*Rate must be a number").notRequired(),
-        disc: Yup.number()
-          .typeError("*Discount must be a number")
-          .required("*Discount is required"),
-        taxRate: Yup.string().required("*Tax is required"),
-      })
-    ),
-  });
-
   const formik = useFormik({
     initialValues: {
       customerId: "",
@@ -67,6 +69,8 @@ function EstimateAdd() {
       summery: "",
       amountsAre: "",
       subTotal: "",
+      taxAmounts: "",
+      discountAmount: "",
       total: "",
       cusNotes: "",
       terms: "",
@@ -78,7 +82,6 @@ function EstimateAdd() {
           price: "",
           disc: "",
           taxRate: "",
-          itemId: "",
         },
       ],
     },
@@ -92,13 +95,15 @@ function EstimateAdd() {
         formData.append("reference", values.reference);
         formData.append("issuesDate", values.issuesDate);
         formData.append("expiryDate", values.expiryDate);
-        formData.append("projects", values.projects);;
+        formData.append("projects", values.projects);
         formData.append("status", values.status);
         formData.append("title", values.title);
         formData.append("summery", values.summery);
         formData.append("amountsAre", values.amountsAre);
         formData.append("subTotal", values.subTotal);
         formData.append("total", values.total);
+        formData.append("taxAmounts", values.total);
+        formData.append("discountAmount", values.discountAmount);
         formData.append("cusNotes", values.cusNotes);
         formData.append("terms", values.terms);
 
@@ -109,13 +114,11 @@ function EstimateAdd() {
           formData.append("description", "test");
           formData.append("account", "test");
           formData.append("disc", item.disc);
-          formData.append("taxAmount", '000');
+          formData.append("taxAmount", "000");
           formData.append("taxRate", item.taxRate);
           formData.append("mstrItemsId", item.item);
         });
-        if (values.files) (
-          formData.append("files", values.files)
-        )
+        if (values.files) formData.append("files", values.files);
 
         const response = await api.post(
           "/createQuoteWithQuoteItems",
@@ -162,67 +165,99 @@ function EstimateAdd() {
         let totalRate = 0;
         let totalAmount = 0;
         let totalTax = 0;
-
+         let discAmount=0;
         const updatedItems = await Promise.all(
           formik.values.txnQuotesItems.map(async (item, index) => {
             if (item.item) {
               try {
                 const response = await api.get(`getMstrItemsById/${item.item}`);
-                console.log("object", response.data);
-                const updatedItem = { ...item, price: response.data.salesPrice };
-
-                const qty = updatedItem.qty || 1;
-                const taxAmount = calculateAmount(qty, updatedItem.taxRate, updatedItem.disc, updatedItem.price);
-                const itemTotalRate = qty * updatedItem.price;
-                const itemTotalTax = itemTotalRate * (updatedItem.taxRate / 100);
-
-                totalRate += updatedItem.price * qty;
+                const updatedItem = {
+                  ...item,
+                  price: response.data.salesPrice,
+                  qty: 1,
+                };
+                const taxAmount = calculateAmount(
+                  updatedItem.qty,
+                  updatedItem.price,
+                  updatedItem.disc,
+                  updatedItem.taxRate
+                );
+                const itemTotalRate = updatedItem.qty * updatedItem.price;
+                const itemTotalTax =
+                  itemTotalRate * (updatedItem.taxRate / 100);
+                const itemTotalDisc =
+                  itemTotalRate * (updatedItem.disc / 100);
+                  discAmount +=itemTotalDisc
+                totalRate += updatedItem.price;
                 totalAmount += taxAmount;
                 totalTax += itemTotalTax;
-
-                return { ...updatedItem, qty, taxAmount };
+                return { ...updatedItem, taxAmount };
               } catch (error) {
-                toast.error("Error fetching data: " + (error?.response?.data?.message || error.message));
+                toast.error(
+                  "Error fetching data: ",
+                  error?.response?.data?.message
+                );
               }
             }
-
-            const qty = item.qty;
-            // Calculate amount if all necessary values are present
-            if (item.price !== undefined && item.disc !== undefined && item.taxRate !== undefined) {
-              const taxAmount = calculateAmount(qty, item.taxRate, item.disc, item.price);
-              const itemTotalRate = qty * item.price;
-              const itemTotalTax = itemTotalRate * (item.taxRate / 100);
-
-              totalRate += item.price * qty;
-              totalAmount += taxAmount;
-              totalTax += itemTotalTax;
-
-              return { ...item, qty, taxAmount };
-            }
-
             return item;
           })
         );
-
         formik.setValues({ ...formik.values, txnQuotesItems: updatedItems });
         formik.setFieldValue("subTotal", totalRate);
+        formik.setFieldValue("discountAmount", discAmount);
+        formik.setFieldValue("total", totalAmount);
+        formik.setFieldValue("taxAmounts", totalTax);
+      } catch (error) {
+        toast.error("Error updating items: ", error.message);
+      }
+    };
+
+    updateAndCalculate();
+  }, [formik.values.txnQuotesItems.map((item) => item.item).join("")]);
+
+  useEffect(() => {
+    const updateAndCalculate = async () => {
+      try {
+        let totalRate = 0;
+        let totalAmount = 0;
+        let totalTax = 0;
+        let discAmount=0;
+        const updatedItems = await Promise.all(
+          formik.values?.txnQuotesItems?.map(async (item, index) => {
+            if (item.qty && item.price &&item.disc !== undefined &&item.taxRate !== undefined) {
+              const taxAmount = calculateAmount(item.qty,item.price,item.disc,item.taxRate);
+              const itemTotalRate = item.qty * item.price;
+              const itemTotalTax = itemTotalRate * (item.taxRate / 100);
+              const itemTotalDisc =
+              itemTotalRate * (item.disc / 100);
+              discAmount +=itemTotalDisc
+              totalRate += item.price;
+              totalAmount += taxAmount;
+              totalTax += itemTotalTax;
+              return { ...item, taxAmount };
+            }
+            return item;
+          })
+        );
+        formik.setValues({ ...formik.values, txnQuotesItems: updatedItems });
+        formik.setFieldValue("subTotal", totalRate);
+        formik.setFieldValue("discountAmount", discAmount);
         formik.setFieldValue("total", totalAmount);
         formik.setFieldValue("totalTax", totalTax);
       } catch (error) {
-        toast.error("Error updating items: " + error.message);
+        toast.error("Error updating items: ", error.message);
       }
     };
 
     updateAndCalculate();
   }, [
-    formik.values.txnQuotesItems.map((item) => item.item).join(""),
     formik.values.txnQuotesItems.map((item) => item.qty).join(""),
     formik.values.txnQuotesItems.map((item) => item.price).join(""),
     formik.values.txnQuotesItems.map((item) => item.disc).join(""),
     formik.values.txnQuotesItems.map((item) => item.taxRate).join(""),
   ]);
 
-  const calculateAmount = (qty, taxRate, disc, price) => {
+  const calculateAmount = (qty, price, disc, taxRate) => {
     const totalRate = qty * price;
     const discountAmount = totalRate * (disc / 100);
     const taxableAmount = totalRate * (taxRate / 100);
@@ -277,10 +312,11 @@ function EstimateAdd() {
                   Customer Name<span className="text-danger">*</span>
                 </label>
                 <select
-                  className={`form-select ${formik.touched.customerId && formik.errors.customerId
-                    ? "is-invalid"
-                    : ""
-                    }`}
+                  className={`form-select ${
+                    formik.touched.customerId && formik.errors.customerId
+                      ? "is-invalid"
+                      : ""
+                  }`}
                   {...formik.getFieldProps("customerId")}
                 >
                   <option selected></option>
@@ -299,13 +335,15 @@ function EstimateAdd() {
               </div>
 
               <div className="col-md-6 col-12 mb-3">
-                <label className="form-label">Quote Number</label><span className="text-danger">*</span>
+                <label className="form-label">Quote Number</label>
+                <span className="text-danger">*</span>
                 <input
                   type="text"
-                  className={`form-control ${formik.touched.quoteNumber && formik.errors.quoteNumber
-                    ? "is-invalid"
-                    : ""
-                    }`}
+                  className={`form-control ${
+                    formik.touched.quoteNumber && formik.errors.quoteNumber
+                      ? "is-invalid"
+                      : ""
+                  }`}
                   {...formik.getFieldProps("quoteNumber")}
                 />
                 {formik.touched.quoteNumber && formik.errors.quoteNumber && (
@@ -319,10 +357,11 @@ function EstimateAdd() {
                 <label className="form-label">Reference</label>
                 <input
                   type="text"
-                  className={`form-control ${formik.touched.reference && formik.errors.reference
-                    ? "is-invalid"
-                    : ""
-                    }`}
+                  className={`form-control ${
+                    formik.touched.reference && formik.errors.reference
+                      ? "is-invalid"
+                      : ""
+                  }`}
                   {...formik.getFieldProps("reference")}
                 />
                 {formik.touched.reference && formik.errors.reference && (
@@ -338,10 +377,11 @@ function EstimateAdd() {
                 </label>
                 <input
                   type="date"
-                  className={`form-control ${formik.touched.issuesDate && formik.errors.issuesDate
-                    ? "is-invalid"
-                    : ""
-                    }`}
+                  className={`form-control ${
+                    formik.touched.issuesDate && formik.errors.issuesDate
+                      ? "is-invalid"
+                      : ""
+                  }`}
                   {...formik.getFieldProps("issuesDate")}
                 />
                 {formik.touched.issuesDate && formik.errors.issuesDate && (
@@ -357,10 +397,11 @@ function EstimateAdd() {
                 </label>
                 <input
                   type="date"
-                  className={`form-control ${formik.touched.expiryDate && formik.errors.expiryDate
-                    ? "is-invalid"
-                    : ""
-                    }`}
+                  className={`form-control ${
+                    formik.touched.expiryDate && formik.errors.expiryDate
+                      ? "is-invalid"
+                      : ""
+                  }`}
                   {...formik.getFieldProps("expiryDate")}
                 />
                 {formik.touched.expiryDate && formik.errors.expiryDate && (
@@ -374,10 +415,11 @@ function EstimateAdd() {
                 <label className="form-label">Project</label>
                 <input
                   type="text"
-                  className={`form-control ${formik.touched.projects && formik.errors.projects
-                    ? "is-invalid"
-                    : ""
-                    }`}
+                  className={`form-control ${
+                    formik.touched.projects && formik.errors.projects
+                      ? "is-invalid"
+                      : ""
+                  }`}
                   {...formik.getFieldProps("projects")}
                 />
                 {formik.touched.projects && formik.errors.projects && (
@@ -406,10 +448,11 @@ function EstimateAdd() {
                 <div className="overflow-x-auto">
                   <select
                     name="status"
-                    className={`form-select  ${formik.touched.status && formik.errors.status
-                      ? "is-invalid"
-                      : ""
-                      }`}
+                    className={`form-select  ${
+                      formik.touched.status && formik.errors.status
+                        ? "is-invalid"
+                        : ""
+                    }`}
                     {...formik.getFieldProps("status")}
                     style={{ width: "100%" }}
                   >
@@ -418,8 +461,7 @@ function EstimateAdd() {
                     <option value="APPROVED">Approved</option>
                     <option value="PENDING">Pending</option>
                   </select>
-                {formik.touched.status &&
-                  formik.errors.status && (
+                  {formik.touched.status && formik.errors.status && (
                     <div className="invalid-feedback">
                       {formik.errors.status}
                     </div>
@@ -468,16 +510,16 @@ function EstimateAdd() {
                   {rowss ? (
                     <button
                       type="button"
-                      onClick={() => (setRowss(false))}
+                      onClick={() => setRowss(false)}
                       className="btn btn-danger btn-sm"
                     >
-                      <MdDeleteSweep className="mb-1 mx-1" /> Delete Title & Summary
+                      <MdDeleteSweep className="mb-1 mx-1" /> Delete Title &
+                      Summary
                     </button>
-
                   ) : (
                     <button
                       type="button"
-                      onClick={() => (setRowss(true))}
+                      onClick={() => setRowss(true)}
                       className="btn btn-border btn-sm btn-button"
                     >
                       <i className="bx bx-plus"></i> Add Title & Summary
@@ -495,10 +537,11 @@ function EstimateAdd() {
                 <div className="overflow-x-auto">
                   <select
                     name="amountsAre"
-                    className={`form-select  ${formik.touched.amountsAre && formik.errors.amountsAre
-                      ? "is-invalid"
-                      : ""
-                      }`}
+                    className={`form-select  ${
+                      formik.touched.amountsAre && formik.errors.amountsAre
+                        ? "is-invalid"
+                        : ""
+                    }`}
                     {...formik.getFieldProps("amountsAre")}
                     style={{ width: "100%" }}
                   >
@@ -509,13 +552,17 @@ function EstimateAdd() {
                   </select>
                 </div>
               </div>
-              <div className="d-flex justify-content-end pe-5">{formik.touched.amountsAre && formik.errors.amountsAre && (
-              <div className="text-danger   " style={{fontSize: "0.875em"}}>
-                {formik.errors.amountsAre}
+              <div className="d-flex justify-content-end pe-5">
+                {formik.touched.amountsAre && formik.errors.amountsAre && (
+                  <div
+                    className="text-danger   "
+                    style={{ fontSize: "0.875em" }}
+                  >
+                    {formik.errors.amountsAre}
+                  </div>
+                )}
               </div>
-            )}</div>
             </div>
-            
 
             <div className="row">
               <div className="">
@@ -531,11 +578,17 @@ function EstimateAdd() {
                   <thead>
                     <tr>
                       <th scope="col">S.NO</th>
-                      <th scope="col">ITEM <span className="text-danger">*</span></th>
-                      <th scope="col">QUANTITY<span className="text-danger">*</span></th>
+                      <th scope="col" style={{ width: "25%" }}>
+                        ITEM <span className="text-danger">*</span>
+                      </th>
+                      <th scope="col" style={{ width: "10%" }}>
+                        QUANTITY<span className="text-danger">*</span>
+                      </th>
                       <th scope="col">PRICE</th>
-                      <th scope="col">DISCOUNT</th>
-                      <th scope="col">TAX RATE<span className="text-danger">*</span></th>
+                      <th scope="col">DISCOUNT(%)</th>
+                      <th scope="col">
+                        TAX RATE(%)<span className="text-danger">*</span>
+                      </th>
                       <th scope="col">AMOUNT</th>
                     </tr>
                   </thead>
@@ -549,11 +602,12 @@ function EstimateAdd() {
                             {...formik.getFieldProps(
                               `txnQuotesItems[${index}].item`
                             )}
-                            className={`form-select ${formik.touched.txnQuotesItems?.[index]?.item &&
+                            className={`form-select ${
+                              formik.touched.txnQuotesItems?.[index]?.item &&
                               formik.errors.txnQuotesItems?.[index]?.item
-                              ? "is-invalid"
-                              : ""
-                              }`}
+                                ? "is-invalid"
+                                : ""
+                            }`}
                           >
                             <option selected> </option>
                             {itemData &&
@@ -571,15 +625,15 @@ function EstimateAdd() {
                             )}
                         </td>
                         <td>
-                          <input
-                            type="number"
-                            min={1}
+                          <input onInput={(event)=>{ event.target.value = event.target.value.replace(/[^0-9]/g, '');}}
+                            type="text"
                             name={`txnQuotesItems[${index}].qty`}
-                            className={`form-control ${formik.touched.txnQuotesItems?.[index]?.qty &&
+                            className={`form-control ${
+                              formik.touched.txnQuotesItems?.[index]?.qty &&
                               formik.errors.txnQuotesItems?.[index]?.qty
-                              ? "is-invalid"
-                              : ""
-                              }`}
+                                ? "is-invalid"
+                                : ""
+                            }`}
                             {...formik.getFieldProps(
                               `txnQuotesItems[${index}].qty`
                             )}
@@ -592,34 +646,36 @@ function EstimateAdd() {
                             )}
                         </td>
                         <td>
-                          <input
+                          <input  readOnly
                             type="text"
                             name={`txnQuotesItems[${index}].price`}
-                            className={`form-control ${formik.touched.txnQuotesItems?.[index]?.price &&
+                            className={`form-control ${
+                              formik.touched.txnQuotesItems?.[index]?.price &&
                               formik.errors.txnQuotesItems?.[index]?.price
-                              ? "is-invalid"
-                              : ""
-                              }`}
+                                ? "is-invalid"
+                                : ""
+                            }`}
                             {...formik.getFieldProps(
                               `txnQuotesItems[${index}].price`
                             )}
                           />
-                          {formik.touched.items?.[index]?.price &&
-                            formik.errors.items?.[index]?.price && (
+                          {formik.touched.txnQuotesItems?.[index]?.price &&
+                            formik.errors.txnQuotesItems?.[index]?.price && (
                               <div className="invalid-feedback">
-                                {formik.errors.items[index].price}
+                                {formik.errors.txnQuotesItems[index].price}
                               </div>
                             )}
                         </td>
                         <td>
-                          <input
+                          <input onInput={(event)=>{ event.target.value = event.target.value.replace(/[^0-9]/g, '').slice(0, 2);}}
                             type="text"
                             name={`txnQuotesItems[${index}].disc`}
-                            className={`form-control ${formik.touched.txnQuotesItems?.[index]?.disc &&
+                            className={`form-control ${
+                              formik.touched.txnQuotesItems?.[index]?.disc &&
                               formik.errors.txnQuotesItems?.[index]?.disc
-                              ? "is-invalid"
-                              : ""
-                              }`}
+                                ? "is-invalid"
+                                : ""
+                            }`}
                             {...formik.getFieldProps(
                               `txnQuotesItems[${index}].disc`
                             )}
@@ -632,14 +688,15 @@ function EstimateAdd() {
                             )}
                         </td>
                         <td>
-                          <input
+                          <input onInput={(event)=>{ event.target.value = event.target.value.replace(/[^0-9]/g, '').slice(0, 2);}}
                             type="text"
                             name={`txnQuotesItems[${index}].taxRate`}
-                            className={`form-control ${formik.touched.txnQuotesItems?.[index]?.taxRate &&
+                            className={`form-control ${
+                              formik.touched.txnQuotesItems?.[index]?.taxRate &&
                               formik.errors.txnQuotesItems?.[index]?.taxRate
-                              ? "is-invalid"
-                              : ""
-                              }`}
+                                ? "is-invalid"
+                                : ""
+                            }`}
                             {...formik.getFieldProps(
                               `txnQuotesItems[${index}].taxRate`
                             )}
@@ -652,20 +709,23 @@ function EstimateAdd() {
                             )}
                         </td>
                         <td>
-                          <input
+                          <input readOnly
                             type="text"
                             name={`txnQuotesItems[${index}].taxAmount`}
-                            className={`form-control ${formik.touched.txnQuotesItems?.[index]?.taxAmount &&
+                            className={`form-control ${
+                              formik.touched.txnQuotesItems?.[index]
+                                ?.taxAmount &&
                               formik.errors.txnQuotesItems?.[index]?.taxAmount
-                              ? "is-invalid"
-                              : ""
-                              }`}
+                                ? "is-invalid"
+                                : ""
+                            }`}
                             {...formik.getFieldProps(
                               `txnQuotesItems[${index}].taxAmount`
                             )}
                           />
                           {formik.touched.txnQuotesItems?.[index]?.taxAmount &&
-                            formik.errors.txnQuotesItems?.[index]?.taxAmount && (
+                            formik.errors.txnQuotesItems?.[index]
+                              ?.taxAmount && (
                               <div className="invalid-feedback">
                                 {formik.errors.txnQuotesItems[index].taxAmount}
                               </div>
@@ -698,16 +758,15 @@ function EstimateAdd() {
 
             <div className="row mt-5 pt-0">
               <div className="col-md-6 col-12 mb-3 pt-0">
-                <lable className="form-lable">
-                  Credit Notes
-                </lable>
+                <lable className="form-lable">Credit Notes</lable>
                 <div className="mb-3">
                   <input
                     type="text"
-                    className={`form-control  ${formik.touched.cusNotes && formik.errors.cusNotes
-                      ? "is-invalid"
-                      : ""
-                      }`}
+                    className={`form-control  ${
+                      formik.touched.cusNotes && formik.errors.cusNotes
+                        ? "is-invalid"
+                        : ""
+                    }`}
                     {...formik.getFieldProps("cusNotes")}
                   />
                   {formik.touched.cusNotes && formik.errors.cusNotes && (
@@ -722,17 +781,16 @@ function EstimateAdd() {
                 style={{ border: "1px solid lightgrey" }}
               >
                 <div className="row mb-3 mt-2">
-                  <label className="col-sm-4 col-form-label">
-                    Sub Total
-                  </label>
+                  <label className="col-sm-4 col-form-label">Sub Total</label>
                   <div className="col-sm-4"></div>
                   <div className="col-sm-4">
                     <input
                       type="text"
-                      className={`form-control ${formik.touched.subTotal && formik.errors.subTotal
-                        ? "is-invalid"
-                        : ""
-                        }`}
+                      className={`form-control ${
+                        formik.touched.subTotal && formik.errors.subTotal
+                          ? "is-invalid"
+                          : ""
+                      }`}
                       {...formik.getFieldProps("subTotal")}
                       readOnly
                     />
@@ -744,23 +802,22 @@ function EstimateAdd() {
                   </div>
                 </div>
                 <div className="row mb-3">
-                  <label className="col-sm-4 col-form-label">
-                    Total Tax
-                  </label>
+                  <label className="col-sm-4 col-form-label">Total Tax</label>
                   <div className="col-sm-4"></div>
                   <div className="col-sm-4">
                     <input
                       type="text"
-                      className={`form-control ${formik.touched.totalTax && formik.errors.totalTax
-                        ? "is-invalid"
-                        : ""
-                        }`}
-                      {...formik.getFieldProps("totalTax")}
+                      className={`form-control ${
+                        formik.touched.taxAmounts && formik.errors.taxAmounts
+                          ? "is-invalid"
+                          : ""
+                      }`}
+                      {...formik.getFieldProps("taxAmounts")}
                       readOnly
                     />
-                    {formik.touched.totalTax && formik.errors.totalTax && (
+                    {formik.touched.taxAmounts && formik.errors.taxAmounts && (
                       <div className="invalid-feedback">
-                        {formik.errors.totalTax}
+                        {formik.errors.taxAmounts}
                       </div>
                     )}
                   </div>
@@ -773,10 +830,11 @@ function EstimateAdd() {
                   <div className="col-sm-4">
                     <input
                       type="text"
-                      className={`form-control ${formik.touched.total && formik.errors.total
-                        ? "is-invalid"
-                        : ""
-                        }`}
+                      className={`form-control ${
+                        formik.touched.total && formik.errors.total
+                          ? "is-invalid"
+                          : ""
+                      }`}
                       {...formik.getFieldProps("total")}
                       readOnly
                     />
@@ -789,23 +847,21 @@ function EstimateAdd() {
                 </div>
               </div>
               <div className="col-md-6 col-12 mb-3">
-                <lable className="form-lable">
-                  Terms & Conditions
-                </lable>
+                <lable className="form-lable">Terms & Conditions</lable>
                 <div className="mb-3">
                   <textarea
-                    className={`form-control  ${formik.touched.terms && formik.errors.terms
-                      ? "is-invalid"
-                      : ""
-                      }`}
+                    className={`form-control  ${
+                      formik.touched.terms && formik.errors.terms
+                        ? "is-invalid"
+                        : ""
+                    }`}
                     {...formik.getFieldProps("terms")}
                   />
-                  {formik.touched.terms &&
-                    formik.errors.terms && (
-                      <div className="invalid-feedback">
-                        {formik.errors.terms}
-                      </div>
-                    )}
+                  {formik.touched.terms && formik.errors.terms && (
+                    <div className="invalid-feedback">
+                      {formik.errors.terms}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

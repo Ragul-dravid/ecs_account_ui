@@ -14,8 +14,6 @@ const PurchaseEdit = () => {
   const [loading, setLoading] = useState(false);
   const [vendorData, setVendorData] = useState(null);
   const [items, setItems] = useState([]);
-  const [rows, setRows] = useState([{ id: 1 }]);
-  // const [rowss, setRowss] = useState([]);
 
   const validationSchema = Yup.object({
     vendorId: Yup.string().required("*Vendor Name is required"),
@@ -54,7 +52,8 @@ const PurchaseEdit = () => {
       currency: "",
       amountsAre: "",
       subTotal: "",
-      taxTotal: "",
+      taxAmounts: "",
+      discountAmount: "",
       total: "",
       attention: "",
       telePhone: "",
@@ -92,6 +91,8 @@ const PurchaseEdit = () => {
       formData.append("amountsAre", values.amountsAre);
       formData.append("subTotal", values.subTotal);
       formData.append("total", values.total);
+      formData.append("taxAmounts", values.total);
+        formData.append("discountAmount", values.discountAmount);
       formData.append("attention", values.attention);
       formData.append("telePhone", "6578899");
       formData.append("instructions", "Glass Items");
@@ -163,6 +164,7 @@ const PurchaseEdit = () => {
   useEffect(()=>{
     fetchData();
   },[])
+
   const addRow = () => {
     formik.setFieldValue("items", [
       ...formik.values.items,
@@ -176,50 +178,92 @@ const PurchaseEdit = () => {
       formik.setFieldValue("items", items);
     }
   };
+
   useEffect(() => {
     const updateAndCalculate = async () => {
       try {
         let totalRate = 0;
         let totalAmount = 0;
         let totalTax = 0;
-  
+         let discAmount=0;
         const updatedItems = await Promise.all(
-          formik.values.items?.map(async (item, index) => {
-            if (item.item && !formik.values.items[index].qty) {
-              formik.values.items[index].qty = 1;
-            }
+          formik.values.txnQuotesItems.map(async (item, index) => {
             if (item.item) {
               try {
                 const response = await api.get(`getMstrItemsById/${item.item}`);
-                const updatedItem = { ...item, unitPrice: response.data.salesPrice  };
-                const amount = calculateAmount(updatedItem.qty, updatedItem.unitPrice, updatedItem.disc, updatedItem.taxRate);
-                const itemTotalRate = updatedItem.qty * updatedItem.unitPrice;
-                const itemTotalTax = itemTotalRate * (updatedItem.taxRate / 100);
-                totalRate += updatedItem.unitPrice;
-                totalAmount += amount;
+                const updatedItem = {
+                  ...item,
+                  price: response.data.salesPrice,
+                  qty: 1,
+                };
+                const taxAmount = calculateAmount(
+                  updatedItem.qty,
+                  updatedItem.price,
+                  updatedItem.disc,
+                  updatedItem.taxRate
+                );
+                const itemTotalRate = updatedItem.qty * updatedItem.price;
+                const itemTotalTax =
+                  itemTotalRate * (updatedItem.taxRate / 100);
+                const itemTotalDisc =
+                  itemTotalRate * (updatedItem.disc / 100);
+                  discAmount +=itemTotalDisc
+                totalRate += updatedItem.price;
+                totalAmount += taxAmount;
                 totalTax += itemTotalTax;
-                return { ...updatedItem, amount };
+                return { ...updatedItem, taxAmount };
               } catch (error) {
-                toast.error("Error fetching data: ", error?.response?.data?.message);
+                toast.error(
+                  "Error fetching data: ",
+                  error?.response?.data?.message
+                );
               }
-            }
-          
-            if (item.qty && item.unitPrice && item.disc !== undefined && item.taxRate !== undefined) {
-              const amount = calculateAmount(item.qty, item.unitPrice, item.disc, item.taxRate);
-              const itemTotalRate = item.qty * item.unitPrice;
-              const itemTotalTax = itemTotalRate * (item.taxRate / 100);
-              totalRate += item.unitPrice;
-              totalAmount += amount;
-              totalTax += itemTotalTax;
-              return { ...item, amount,};
             }
             return item;
           })
         );
-        formik.setValues({ ...formik.values, items: updatedItems });
+        formik.setValues({ ...formik.values, txnQuotesItems: updatedItems });
         formik.setFieldValue("subTotal", totalRate);
+        formik.setFieldValue("discountAmount", discAmount);
         formik.setFieldValue("total", totalAmount);
-        formik.setFieldValue("taxTotal", totalTax);
+        formik.setFieldValue("taxAmounts", totalTax);
+      } catch (error) {
+        toast.error("Error updating items: ", error.message);
+      }
+    };
+
+    updateAndCalculate();
+  }, [formik.values.txnQuotesItems.map((item) => item.item).join("")]);
+
+  useEffect(() => {
+    const updateAndCalculate = async () => {
+      try {
+        let totalRate = 0;
+        let totalAmount = 0;
+        let totalTax = 0;
+        let discAmount=0;
+        const updatedItems = await Promise.all(
+          formik.values?.txnQuotesItems?.map(async (item, index) => {
+            if (item.qty && item.price &&item.disc !== undefined &&item.taxRate !== undefined) {
+              const taxAmount = calculateAmount(item.qty,item.price,item.disc,item.taxRate);
+              const itemTotalRate = item.qty * item.price;
+              const itemTotalTax = itemTotalRate * (item.taxRate / 100);
+              const itemTotalDisc =
+              itemTotalRate * (item.disc / 100);
+              discAmount +=itemTotalDisc
+              totalRate += item.price;
+              totalAmount += taxAmount;
+              totalTax += itemTotalTax;
+              return { ...item, taxAmount };
+            }
+            return item;
+          })
+        );
+        formik.setValues({ ...formik.values, txnQuotesItems: updatedItems });
+        formik.setFieldValue("subTotal", totalRate);
+        formik.setFieldValue("discountAmount", discAmount);
+        formik.setFieldValue("total", totalAmount);
+        formik.setFieldValue("totalTax", totalTax);
       } catch (error) {
         toast.error("Error updating items: ", error.message);
       }
@@ -227,15 +271,14 @@ const PurchaseEdit = () => {
 
     updateAndCalculate();
   }, [
-    formik.values.items?.map((item) => item.item).join(""),
-    formik.values.items?.map((item) => item.qty).join(","),
-    formik.values.items?.map((item) => item.unitPrice).join(""),
-    formik.values.items?.map((item) => item.disc).join(""),
-    formik.values.items?.map((item) => item.taxRate).join(""),
+    formik.values.txnQuotesItems.map((item) => item.qty).join(""),
+    formik.values.txnQuotesItems.map((item) => item.price).join(""),
+    formik.values.txnQuotesItems.map((item) => item.disc).join(""),
+    formik.values.txnQuotesItems.map((item) => item.taxRate).join(""),
   ]);
 
-  const calculateAmount = (qty, unitPrice, disc, taxRate) => {
-    const totalRate = qty * unitPrice;
+  const calculateAmount = (qty, price, disc, taxRate) => {
+    const totalRate = qty * price;
     const discountAmount = totalRate * (disc / 100);
     const taxableAmount = totalRate * (taxRate / 100);
     const totalAmount = totalRate + taxableAmount - discountAmount;
@@ -807,9 +850,9 @@ const PurchaseEdit = () => {
                 <lable className="form-lable">Total Tax</lable>
                 <div className="ms-3">
                   <input
-                    {...formik.getFieldProps("taxTotal")}
+                    {...formik.getFieldProps("taxAmounts")}
                     type="text"
-                    name="taxTotal"
+                    name="taxAmounts"
                     className="form-control form-control-sm"
                   />
                 </div>

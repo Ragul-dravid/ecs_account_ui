@@ -30,7 +30,7 @@ const DeliveryAdd = () => {
   const addRow = () => {
     formik.setFieldValue("challansItemsModels", [
       ...formik.values.challansItemsModels,
-      { item: "", qty: "", rate: "", taxRate: "", amount: "" },
+      { item: "", qty: "", rate: "",discountAmount:"", tax: "", amount: "" },
     ]);
   };
 
@@ -62,7 +62,8 @@ const DeliveryAdd = () => {
           item: "",
           qty: "",
           rate: "",
-          taxRate: "",
+          discountAmount: "",
+          tax: "",
           amount: "",
         },
       ],
@@ -72,7 +73,7 @@ const DeliveryAdd = () => {
     onSubmit: async (values) => {
       setLoading(true);
       try {
-        const { challansItemsModels, file, challanDate, ...value } = values;
+        const { challansItemsModels, file,  ...value } = values;
         const formData = new FormData();
 
         Object.entries(value).forEach(([key, value]) => {
@@ -85,8 +86,9 @@ const DeliveryAdd = () => {
           formData.append("item", item.item);
           formData.append("qty", item.qty);
           formData.append("rate", item.rate);
-          formData.append("tax", item.taxRate);
-          formData.append("taxAmount", item.amount);
+          formData.append("discountAmount", item.discountAmount);
+          formData.append("tax", item.tax);
+          formData.append("amount", item.amount);
         });
         if (file) {
           formData.append("files", file);
@@ -113,71 +115,6 @@ const DeliveryAdd = () => {
       }
     },
   });
-
-  const calculateTotals = () => {
-    let subTotal = 0;
-    let totalTax = 0;
-    let totalDiscount = 0;
-
-    formik.values.challansItemsModels.forEach((item, index) => {
-      const qty = item.qty || 0;
-      const rate = item.rate || 0;
-      const tax = item.taxRate || 0;
-      const discountPercentage = formik.values.discount || 0;
-
-      // Calculate the amount for each item
-      const itemDiscount = qty * rate * (discountPercentage / 100);
-      const discountedAmount =
-        qty * rate - itemDiscount + (tax / 100) * qty * rate;
-
-      // Update amount field
-      formik.setFieldValue(
-        `challansItemsModels[${index}].amount`,
-        discountedAmount.toFixed(2)
-      );
-
-      subTotal += qty * rate;
-      totalTax += (tax / 100) * (qty * rate);
-      totalDiscount += itemDiscount;
-    });
-
-    const totalAmount = subTotal + totalTax - totalDiscount;
-
-    formik.setFieldValue("subTotal", subTotal.toFixed(2));
-    formik.setFieldValue("taxAmount", totalTax.toFixed(2));
-    formik.setFieldValue("totalDiscount", totalDiscount.toFixed(2));
-    formik.setFieldValue("total", totalAmount.toFixed(2));
-  };
-
-  useEffect(() => {
-    calculateTotals();
-  }, [
-    formik.values.challansItemsModels
-      .map((item) => `${item.qty}-${item.rate}-${item.taxRate}-${item.amount}`)
-      .join(","),
-    formik.values.discount,
-  ]);
-
-  const itemAmt = async (id, index) => {
-    try {
-      const response = await api.get(`/getMstrItemsById/${id}`);
-      formik.setFieldValue(
-        `challansItemsModels[${index}].rate`,
-        response.data.salesPrice
-      );
-    } catch (error) {
-      toast.error(error.message);
-    }
-  };
-
-  const handleSelectChange = (event, index) => {
-    const { value } = event.target;
-    formik.setFieldValue(`challansItemsModels[${index}].item`, value);
-    if (value) {
-      itemAmt(value, index);
-    }
-  };
-
   const fetchData = async () => {
     try {
       const customerData = await fetchAllCustomerWithIds();
@@ -188,24 +125,95 @@ const DeliveryAdd = () => {
       toast.error(error.message);
     }
   };
-
-  useEffect(() => {
-    formik.values.challansItemsModels.forEach((_, index) => {
-      if (
-        formik.values.challansItemsModels[index].item &&
-        !formik.values.challansItemsModels[index].qty
-      ) {
-        itemAmt(formik.values.challansItemsModels[index].item, index);
-        formik.setFieldValue(`challansItemsModels[${index}].qty`, 1);
-        formik.setFieldValue(`challansItemsModels[${index}].taxRate`, 0);
-      }
-    });
-  }, [formik.values.challansItemsModels.map((item) => item.item).join(",")]);
-
   useEffect(() => {
     fetchData();
   }, []);
 
+  useEffect(() => { 
+    const updateAndCalculate = async () => {
+      try {
+        let totalRate = 0;
+        let totalAmount = 0;
+        let totalTax = 0;
+        const updatedItems = await Promise.all(
+          formik.values.challansItemsModels.map(async (item, index) => {
+            if (item.item) {
+              try {
+                const response = await api.get(`getMstrItemsById/${item.item}`);
+                const updatedItem = { ...item, rate: response.data.salesPrice, qty:1 };
+                const amount = calculateAmount(updatedItem.qty, updatedItem.rate, updatedItem.discountAmount, updatedItem.tax);
+                const itemTotalRate = updatedItem.qty * updatedItem.rate;
+                const itemTotalTax = itemTotalRate * (updatedItem.tax / 100);
+                totalRate += updatedItem.rate;
+                totalAmount += amount;
+                totalTax += itemTotalTax;
+                return { ...updatedItem, amount };
+              } catch (error) {
+                toast.error("Error fetching data: ", error?.response?.data?.message);
+              }
+            }
+            return item;
+          })
+        );
+        formik.setValues({ ...formik.values, challansItemsModels: updatedItems });
+        formik.setFieldValue("subTotal", totalRate);
+        formik.setFieldValue("total", totalAmount);
+        formik.setFieldValue("taxAmount", totalTax);
+      } catch (error) {
+        toast.error("Error updating items: ", error.message);
+      }
+    };
+
+    updateAndCalculate();
+  }, [
+    formik.values.challansItemsModels.map((item) => item.item).join(""),
+  ]);
+  
+  useEffect(() => {
+    const updateAndCalculate = async () => {
+      try {
+        let totalRate = 0;
+        let totalAmount = 0;
+        let totalTax = 0;
+  
+        const updatedItems = await Promise.all(
+          formik.values.challansItemsModels.map(async (item, index) => {
+            if (item.qty && item.rate && item.discountAmount !== undefined && item.tax !== undefined) {
+              const amount = calculateAmount(item.qty, item.rate, item.discountAmount, item.tax);
+              const itemTotalRate = item.qty * item.rate;
+              const itemTotalTax = itemTotalRate * (item.tax / 100);
+              totalRate += item.rate;
+              totalAmount += amount;
+              totalTax += itemTotalTax;
+              return { ...item, amount};
+            }
+            return item;
+          })
+        );
+        formik.setValues({ ...formik.values, challansItemsModels: updatedItems });
+        formik.setFieldValue("subTotal", totalRate);
+        formik.setFieldValue("total", totalAmount);
+        formik.setFieldValue("taxAmount", totalTax);
+      } catch (error) {
+        toast.error("Error updating items: ", error.message);
+      }
+    };
+
+    updateAndCalculate();
+  }, [
+    formik.values.challansItemsModels.map((item) => item.qty).join(""),
+    formik.values.challansItemsModels.map((item) => item.rate).join(""),
+    formik.values.challansItemsModels.map((item) => item.discountAmount).join(""),
+    formik.values.challansItemsModels.map((item) => item.tax).join(""),
+  ]);
+
+  const calculateAmount = (qty, rate, discountAmount, tax) => {
+    const totalRate = qty * rate;
+    const discountAmounts = totalRate * (discountAmount / 100);
+    const taxableAmount = totalRate * (tax / 100);
+    const totalAmount = totalRate + taxableAmount - discountAmounts;
+    return totalAmount;
+  };
   return (
     <div className="container-fluid p-2 minHeight m-0">
       <div className="card shadow border-0 mb-2 top-header">
@@ -365,7 +373,7 @@ const DeliveryAdd = () => {
                   />
                 </div>
               </div>
-              <div className="col-md-6 col-12 mb-2">
+              {/* <div className="col-md-6 col-12 mb-2">
                 <label className="form-label">Discount</label>
                 <div className="mb-3">
                   <input
@@ -375,7 +383,7 @@ const DeliveryAdd = () => {
                     {...formik.getFieldProps("discount")}
                   />
                 </div>
-              </div>
+              </div> */}
             </div>
             <div className="row">
               <div className="">
@@ -390,10 +398,11 @@ const DeliveryAdd = () => {
                 <table className="table">
                   <thead>
                     <tr>
-                      <th scope="col">ITEM DETAILS</th>
-                      <th scope="col">QUANTITY</th>
+                      <th scope="col"style={{ width: "25%" }}>ITEM DETAILS<span className="text-danger">*</span></th>
+                      <th scope="col" style={{ width: "10%" }}>QUANTITY</th>
                       <th scope="col">RATE</th>
-                      <th scope="col">TAX</th>
+                      <th scope="col">DISCOUNT(%)</th>
+                      <th scope="col">TAX(%)</th>
                       <th scope="col">AMOUNT</th>
                     </tr>
                   </thead>
@@ -402,16 +411,16 @@ const DeliveryAdd = () => {
                       <tr key={index}>
                         <td>
                           <select
+                            name={`challansItemsModels[${index}].item`}
+                            {...formik.getFieldProps(
+                              `challansItemsModels[${index}].item`
+                            )}
                             className={`form-select ${
-                              formik.touched.challansItemsModels &&
-                              formik.touched.challansItemsModels[index]?.item &&
-                              formik.errors.challansItemsModels &&
-                              formik.errors.challansItemsModels[index]?.item
+                              formik.touched.challansItemsModels?.[index]?.item &&
+                              formik.errors.challansItemsModels?.[index]?.item
                                 ? "is-invalid"
                                 : ""
                             }`}
-                            onChange={(e) => handleSelectChange(e, index)}
-                            value={item.item}
                           >
                             <option value=""></option>
                             {itemData &&
@@ -428,8 +437,7 @@ const DeliveryAdd = () => {
                                 </option>
                               ))}
                           </select>
-                          {formik.touched.challansItemsModels &&
-                          formik.touched.challansItemsModels[index]?.item &&
+                          {
                           formik.errors.challansItemsModels &&
                           formik.errors.challansItemsModels[index]?.item ? (
                             <div className="invalid-feedback">
@@ -438,12 +446,9 @@ const DeliveryAdd = () => {
                           ) : null}
                         </td>
                         <td>
-                          <input
-                            type="number"
-                            min="0"
+                          <input onInput={(event)=>{ event.target.value = event.target.value.replace(/[^0-9]/g, '');}}
+                            type="text"
                             className={`form-control ${
-                              formik.touched.challansItemsModels &&
-                              formik.touched.challansItemsModels[index]?.qty &&
                               formik.errors.challansItemsModels &&
                               formik.errors.challansItemsModels[index]?.qty
                                 ? "is-invalid"
@@ -455,12 +460,9 @@ const DeliveryAdd = () => {
                           />
                         </td>
                         <td>
-                          <input
-                            type="number"
-                            min="0"
+                          <input readOnly
+                            type="text"
                             className={`form-control ${
-                              formik.touched.challansItemsModels &&
-                              formik.touched.challansItemsModels[index]?.rate &&
                               formik.errors.challansItemsModels &&
                               formik.errors.challansItemsModels[index]?.rate
                                 ? "is-invalid"
@@ -472,27 +474,36 @@ const DeliveryAdd = () => {
                           />
                         </td>
                         <td>
-                          <input
-                            type="number"
-                            min="0"
-                            max="100"
+                          <input  onInput={(event)=>{ event.target.value = event.target.value.replace(/[^0-9]/g, '').slice(0, 2);}}
+                            type="text"
                             className={`form-control ${
-                              formik.touched.challansItemsModels &&
-                              formik.touched.challansItemsModels[index]?.taxRate &&
                               formik.errors.challansItemsModels &&
-                              formik.errors.challansItemsModels[index]?.taxRate
+                              formik.errors.challansItemsModels[index]?.discountAmount
                                 ? "is-invalid"
                                 : ""
                             }`}
                             {...formik.getFieldProps(
-                              `challansItemsModels[${index}].taxRate`
+                              `challansItemsModels[${index}].discountAmount`
                             )}
                           />
                         </td>
                         <td>
-                          <input
-                            type="number"
-                            min="0"
+                          <input  onInput={(event)=>{ event.target.value = event.target.value.replace(/[^0-9]/g, '').slice(0, 2);}}
+                            type="text"
+                            className={`form-control ${
+                              formik.errors.challansItemsModels &&
+                              formik.errors.challansItemsModels[index]?.tax
+                                ? "is-invalid"
+                                : ""
+                            }`}
+                            {...formik.getFieldProps(
+                              `challansItemsModels[${index}].tax`
+                            )}
+                          />
+                        </td>
+                        <td>
+                          <input 
+                            type="text"
                             className={`form-control ${
                               formik.touched.challansItemsModels &&
                               formik.touched.challansItemsModels[index]
@@ -502,8 +513,10 @@ const DeliveryAdd = () => {
                                 ? "is-invalid"
                                 : ""
                             }`}
+                            {...formik.getFieldProps(
+                              `challansItemsModels[${index}].amount`
+                            )}
                             readOnly
-                            value={item.amount}
                           />
                         </td>
                       </tr>
@@ -544,7 +557,7 @@ const DeliveryAdd = () => {
                 <div className="my-4 ms-2 d-flex justify-content-between align-items-center">
                   <label className="form-label">Sub Total</label>
                   <div className="ms-3">
-                    <input
+                    <input readOnly
                       type="text"
                       name="subTotal"
                       {...formik.getFieldProps("subTotal")}
@@ -555,7 +568,7 @@ const DeliveryAdd = () => {
                 <div className="ms-2 d-flex justify-content-between align-items-center">
                   <label className="form-label">Tax</label>
                   <div className="ms-3">
-                    <input
+                    <input readOnly
                       {...formik.getFieldProps("taxAmount")}
                       type="text"
                       name="taxAmount"
@@ -567,7 +580,7 @@ const DeliveryAdd = () => {
                 <div className="ms-2 d-flex justify-content-between align-items-center mt-2">
                   <label className="form-label">Total</label>
                   <div className="ms-3">
-                    <input
+                    <input readOnly
                       {...formik.getFieldProps("total")}
                       type="text"
                       name="total"

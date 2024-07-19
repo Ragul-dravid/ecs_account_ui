@@ -601,8 +601,8 @@ const RecurringInvoiceEdit = () => {
                     <thead>
                       <tr>
                         <th scope="col">S.NO</th>
-                        <th scope="col">ITEM DETAILS</th>
-                        <th scope="col">QUANTITY</th>
+                        <th scope="col" style={{ width: "25%" }}>ITEM DETAILS</th>
+                        <th scope="col" style={{ width: "10%" }}>QUANTITY</th>
                         <th scope="col">RATE</th>
                         <th scope="col">DISCOUNT</th>
                         <th scope="col">TAX</th>
@@ -639,9 +639,8 @@ const RecurringInvoiceEdit = () => {
                             )}
                         </td>
                         <td>
-                          <input
-                            type="number"
-                            min={1}
+                          <input onInput={(event)=>{ event.target.value = event.target.value.replace(/[^0-9]/g, '').slice(0, 2);}}
+                            type="text"
                             className={`form-control ${
                               formik.touched.items?.[index]?.qty &&
                               formik.errors.items?.[index]?.qty
@@ -678,7 +677,7 @@ const RecurringInvoiceEdit = () => {
                             )}
                         </td>
                         <td>
-                          <input
+                          <input onInput={(event)=>{ event.target.value = event.target.value.replace(/[^0-9]/g, '').slice(0, 2);}}
                             type="text"
                             className={`form-control ${
                               formik.touched.items?.[index]?.disc &&
@@ -696,7 +695,7 @@ const RecurringInvoiceEdit = () => {
                             )}
                         </td>
                         <td>
-                          <input
+                          <input onInput={(event)=>{ event.target.value = event.target.value.replace(/[^0-9]/g, '').slice(0, 2);}}
                             {...formik.getFieldProps(`items[${index}].taxRate`)}
                             className={`form-control ${
                               formik.touched.items?.[index]?.taxRate &&
