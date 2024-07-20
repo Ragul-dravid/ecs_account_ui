@@ -64,6 +64,8 @@ function CreditNotesEdit() {
       currency: "",
       amountsAre: "",
       subTotal: "",
+      taxAmounts: "",
+      discountAmount: "",
       total: "",
       creditNote: "",
       files: null,
@@ -88,6 +90,8 @@ function CreditNotesEdit() {
       formData.append("currency", values.currency);
       formData.append("amountsAre", values.amountsAre);
       formData.append("subTotal", values.subTotal);
+      formData.append("taxAmounts", values.taxAmounts);
+        formData.append("discountAmount", values.discountAmount);
       formData.append("total", values.total);
       formData.append("creditNote", values.creditNote);
       values.txnCreditNoteItems.forEach((item) => {
@@ -172,7 +176,7 @@ function CreditNotesEdit() {
         let totalRate = 0;
         let totalAmount = 0;
         let totalTax = 0;
-  
+        let discAmount=0;
         const updatedItems = await Promise.all(
           formik.values.txnCreditNoteItems.map(async (item, index) => {
             if (item.item) {
@@ -182,6 +186,9 @@ function CreditNotesEdit() {
                 const amount = calculateAmount(updatedItem.qty, updatedItem.price, updatedItem.discount, updatedItem.taxRate);
                 const itemTotalRate = updatedItem.qty * updatedItem.price;
                 const itemTotalTax = itemTotalRate * (updatedItem.taxRate / 100);
+                const itemTotalDisc =
+                  itemTotalRate * (updatedItem.discount / 100);
+                  discAmount +=itemTotalDisc
                 totalRate += updatedItem.price;
                 totalAmount += amount;
                 totalTax += itemTotalTax;
@@ -196,7 +203,8 @@ function CreditNotesEdit() {
         formik.setValues({ ...formik.values, txnCreditNoteItems: updatedItems });
         formik.setFieldValue("subTotal", totalRate);
         formik.setFieldValue("total", totalAmount);
-        formik.setFieldValue("tax", totalTax);
+        formik.setFieldValue("taxAmounts", totalTax);
+        formik.setFieldValue("discountAmount", discAmount);
       } catch (error) {
         toast.error("Error updating items: ", error.message);
       }
@@ -213,13 +221,17 @@ function CreditNotesEdit() {
         let totalRate = 0;
         let totalAmount = 0;
         let totalTax = 0;
-  
+        let discAmount= 0;
+
         const updatedItems = await Promise.all(
           formik.values.txnCreditNoteItems.map(async (item, index) => {
             if (item.qty && item.price && item.discount !== undefined && item.taxRate !== undefined) {
               const amount = calculateAmount(item.qty, item.price, item.discount, item.taxRate);
               const itemTotalRate = item.qty * item.price;
               const itemTotalTax = itemTotalRate * (item.taxRate / 100);
+              const itemTotalDisc =
+                  itemTotalRate * (item.discount / 100);
+                  discAmount +=itemTotalDisc
               totalRate += item.price;
               totalAmount += amount;
               totalTax += itemTotalTax;
@@ -231,7 +243,8 @@ function CreditNotesEdit() {
         formik.setValues({ ...formik.values, txnCreditNoteItems: updatedItems });
         formik.setFieldValue("subTotal", totalRate);
         formik.setFieldValue("total", totalAmount);
-        formik.setFieldValue("tax", totalTax);
+        formik.setFieldValue("taxAmounts", totalTax);
+        formik.setFieldValue("discountAmount", discAmount);
       } catch (error) {
         toast.error("Error updating items: ", error.message);
       }
@@ -699,16 +712,16 @@ function CreditNotesEdit() {
                     <input
                       type="text"
                       className={`form-control ${
-                        formik.touched.tax && formik.errors.tax
+                        formik.touched.taxAmounts && formik.errors.taxAmounts
                           ? "is-invalid"
                           : ""
                       }`}
-                      {...formik.getFieldProps("tax")}
+                      {...formik.getFieldProps("taxAmounts")}
                       readOnly
                     />
-                    {formik.touched.tax && formik.errors.tax && (
+                    {formik.touched.taxAmounts && formik.errors.taxAmounts && (
                       <div className="invalid-feedback">
-                        {formik.errors.tax}
+                        {formik.errors.taxAmounts}
                       </div>
                     )}
                   </div>

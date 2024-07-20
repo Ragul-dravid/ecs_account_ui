@@ -85,8 +85,9 @@ const RecurringInvoiceAdd = () => {
       notes: "",
       subTotal: "",
       tax: "",
+      discountAmount: "",
       totalAmount: "",
-      termsAndconditions: "",
+      termsCondition: "",
       file: null,
     },
     validationSchema: validationSchema,
@@ -168,16 +169,20 @@ const RecurringInvoiceAdd = () => {
         let totalRate = 0;
         let totalAmount = 0;
         let totalTax = 0;
-  
+        let discAmount=0;
+
         const updatedItems = await Promise.all(
           formik.values.items.map(async (item, index) => {
-            if (item.item && !formik.values.items[index].qty) {
+            if (item.item) {
               try {
                 const response = await api.get(`getMstrItemsById/${item.item}`);
                 const updatedItem = { ...item, price: response.data.salesPrice, qty:1 };
                 const amount = calculateAmount(updatedItem.qty, updatedItem.price, updatedItem.disc, updatedItem.taxRate);
                 const itemTotalRate = updatedItem.qty * updatedItem.price;
                 const itemTotalTax = itemTotalRate * (updatedItem.taxRate / 100);
+                const itemTotalDisc =
+                itemTotalRate * (updatedItem.disc / 100);
+                discAmount +=itemTotalDisc
                 totalRate += updatedItem.price;
                 totalAmount += amount;
                 totalTax += itemTotalTax;
@@ -192,6 +197,7 @@ const RecurringInvoiceAdd = () => {
         formik.setValues({ ...formik.values, items: updatedItems });
         formik.setFieldValue("subTotal", totalRate);
         formik.setFieldValue("totalAmount", totalAmount);
+        formik.setFieldValue("discountAmount", discAmount);
         formik.setFieldValue("tax", totalTax);
       } catch (error) {
         toast.error("Error updating items: ", error.message);
@@ -209,13 +215,16 @@ const RecurringInvoiceAdd = () => {
         let totalRate = 0;
         let totalAmount = 0;
         let totalTax = 0;
-  
+        let discAmount=0;
         const updatedItems = await Promise.all(
           formik.values.items.map(async (item, index) => {
             if (item.qty && item.price && item.disc !== undefined && item.taxRate !== undefined) {
               const amount = calculateAmount(item.qty, item.price, item.disc, item.taxRate);
               const itemTotalRate = item.qty * item.price;
               const itemTotalTax = itemTotalRate * (item.taxRate / 100);
+              const itemTotalDisc =
+                  itemTotalRate * (item.disc / 100);
+                  discAmount +=itemTotalDisc
               totalRate += item.price;
               totalAmount += amount;
               totalTax += itemTotalTax;
@@ -228,6 +237,7 @@ const RecurringInvoiceAdd = () => {
         formik.setFieldValue("subTotal", totalRate);
         formik.setFieldValue("totalAmount", totalAmount);
         formik.setFieldValue("tax", totalTax);
+        formik.setFieldValue("discountAmount", discAmount);
       } catch (error) {
         toast.error("Error updating items: ", error.message);
       }
@@ -825,17 +835,17 @@ const RecurringInvoiceAdd = () => {
                   <div className="mb-3">
                     <textarea
                       className={`form-control  ${
-                        formik.touched.termsAndconditions &&
-                        formik.errors.termsAndconditions
+                        formik.touched.termsCondition &&
+                        formik.errors.termsCondition
                           ? "is-invalid"
                           : ""
                       }`}
-                      {...formik.getFieldProps("termsAndconditions")}
+                      {...formik.getFieldProps("termsCondition")}
                     />
-                    {formik.touched.termsAndconditions &&
-                      formik.errors.termsAndconditions && (
+                    {formik.touched.termsCondition &&
+                      formik.errors.termsCondition && (
                         <div className="invalid-feedback">
-                          {formik.errors.termsAndconditions}
+                          {formik.errors.termsCondition}
                         </div>
                       )}
                   </div>

@@ -39,6 +39,7 @@ function SalesOrderEdit() {
       salesPerson: "",
       subTotal: "",
       discount: "",
+      taxTotal: "",
       adjustment: "",
       total: "",
       cusNotes: "",
@@ -68,8 +69,9 @@ function SalesOrderEdit() {
       formData.append("salesPerson", values.salesPerson);
       formData.append("discount", values.discount);
       formData.append("subTotal", values.subTotal);
-      formData.append("adjustment", values.adjustment);
       formData.append("total", values.total);
+      formData.append("taxTotal", values.taxTotal);
+      formData.append("adjustment", values.adjustment);
       formData.append("cusNotes", values.cusNotes);
       formData.append("termsConditions", values.termsConditions);
       if(values.files){
@@ -440,7 +442,7 @@ function SalesOrderEdit() {
                   </div>
                 )}
               </div>
-              <div className="col-md-6 col-12 mb-3">
+              {/* <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">Discount</label>
                 <input
                   type="text"
@@ -456,7 +458,7 @@ function SalesOrderEdit() {
                     {formik.errors.discount}
                   </div>
                 )}
-              </div>
+              </div> */}
 
               <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">Adjustment</label>

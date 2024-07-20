@@ -226,7 +226,7 @@ const RecurringInvoiceView = () => {
                   </table>
                 </div>
                 <div className="col-md-6 col-12"></div>
-                <div className="col-md-6 col-12">
+                <div className="col-md-6 col-12 mt-5">
                   {datas && (
                     <>
                       <div className="row mb-3 mt-2">
@@ -256,7 +256,7 @@ const RecurringInvoiceView = () => {
                       <div className="d-flex justify-content-center flex-column align-items-start">
                         <h3>Terms & Conditions</h3>
                         <p className="fw-small">
-                          {datas.termsConditions ||
+                          {datas.termsCondition ||
                             "Payment is due upon receipt of the invoice unless otherwise agreed upon in writing."}
                         </p>
                       </div>

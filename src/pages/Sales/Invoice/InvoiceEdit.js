@@ -37,7 +37,7 @@ function InvoiceEdit() {
       amountsAre: "",
       subTotal: "",
       totalTax: "",
-      totalDiscount: "",
+      discountAmount: "",
       total: "",
       files: null,
       txnInvoiceOrderItemsModels: [
@@ -63,9 +63,10 @@ function InvoiceEdit() {
         formData.append("reference", values.reference);
         formData.append("dueDate", values.dueDate);
         formData.append("invoiceNumber", values.invoiceNumber);
-        formData.append("amountsAre", values.amountsAre);
+        formData.append("AmountsAre", values.amountsAre);
         formData.append("subTotal", values.subTotal);
         formData.append("totalTax", values.totalTax);
+        formData.append("discountAmount", values.discountAmount);
         formData.append("total", values.total);
         values.txnInvoiceOrderItemsModels?.forEach((item) => {
           formData.append("item", item.item);
@@ -74,7 +75,7 @@ function InvoiceEdit() {
             formData.append("taxRate", item.taxRate);
             formData.append("disc", item.disc);
             formData.append("amount", item.amount);
-            formData.append("taxAmount", 889);
+            formData.append("taxAmount", "000");
             formData.append("mstrItemsId", item.item);
             if(item.id!== undefined){
               formData.append("itemId", item.id);}
@@ -146,6 +147,8 @@ function InvoiceEdit() {
         let totalRate = 0;
         let totalAmount = 0;
         let totalTax = 0;
+        let discAmount=0;
+
         const updatedItems = await Promise.all(
           formik.values.txnInvoiceOrderItemsModels.map(async (item, index) => {
             if (item.item) {
@@ -155,6 +158,9 @@ function InvoiceEdit() {
                 const amount = calculateAmount(updatedItem.qty, updatedItem.price, updatedItem.disc, updatedItem.taxRate);
                 const itemTotalRate = updatedItem.qty * updatedItem.price;
                 const itemTotalTax = itemTotalRate * (updatedItem.taxRate / 100);
+                const itemTotalDisc =
+                  itemTotalRate * (updatedItem.disc / 100);
+                  discAmount +=itemTotalDisc
                 totalRate += updatedItem.price;
                 totalAmount += amount;
                 totalTax += itemTotalTax;
@@ -170,6 +176,7 @@ function InvoiceEdit() {
         formik.setFieldValue("subTotal", totalRate);
         formik.setFieldValue("total", totalAmount);
         formik.setFieldValue("totalTax", totalTax);
+        formik.setFieldValue("discountAmount", discAmount);
       } catch (error) {
         toast.error("Error updating items: ", error.message);
       }
@@ -186,13 +193,17 @@ function InvoiceEdit() {
         let totalRate = 0;
         let totalAmount = 0;
         let totalTax = 0;
-  
+        let discAmount=0;
+
         const updatedItems = await Promise.all(
           formik.values.txnInvoiceOrderItemsModels.map(async (item, index) => {
             if (item.qty && item.price && item.disc !== undefined && item.taxRate !== undefined) {
               const amount = calculateAmount(item.qty, item.price, item.disc, item.taxRate);
               const itemTotalRate = item.qty * item.price;
               const itemTotalTax = itemTotalRate * (item.taxRate / 100);
+              const itemTotalDisc =
+                  itemTotalRate * (item.disc / 100);
+                  discAmount +=itemTotalDisc
               totalRate += item.price;
               totalAmount += amount;
               totalTax += itemTotalTax;
@@ -205,6 +216,7 @@ function InvoiceEdit() {
         formik.setFieldValue("subTotal", totalRate);
         formik.setFieldValue("total", totalAmount);
         formik.setFieldValue("totalTax", totalTax);
+        formik.setFieldValue("discountAmount", discAmount);
       } catch (error) {
         toast.error("Error updating items: ", error.message);
       }
@@ -729,17 +741,17 @@ function InvoiceEdit() {
                       <input
                         type="text"
                         className={`form-control ${
-                          formik.touched.totalDiscount &&
-                          formik.errors.totalDiscount
+                          formik.touched.discountAmount &&
+                          formik.errors.discountAmount
                             ? "is-invalid"
                             : ""
                         }`}
-                        {...formik.getFieldProps("totalDiscount")}
+                        {...formik.getFieldProps("discountAmount")}
                       />
-                      {formik.touched.totalDiscount &&
-                        formik.errors.totalDiscount && (
+                      {formik.touched.discountAmount &&
+                        formik.errors.discountAmount && (
                           <div className="invalid-feedback">
-                            {formik.errors.totalDiscount}
+                            {formik.errors.discountAmount}
                           </div>
                         )}
                     </div>

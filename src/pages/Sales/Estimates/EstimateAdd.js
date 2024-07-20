@@ -44,7 +44,7 @@ function EstimateAdd() {
   const addRow = () => {
     formik.setFieldValue("txnQuotesItems", [
       ...formik.values.txnQuotesItems,
-      { item: "", qty: "", price: "", disc: "", taxRate: "", taxAmount: "" },
+      { item: "", qty: "", price: "", disc: "", taxRate: "", amount: "" },
     ]);
   };
 
@@ -82,6 +82,7 @@ function EstimateAdd() {
           price: "",
           disc: "",
           taxRate: "",
+          amount: "",
         },
       ],
     },
@@ -102,7 +103,7 @@ function EstimateAdd() {
         formData.append("amountsAre", values.amountsAre);
         formData.append("subTotal", values.subTotal);
         formData.append("total", values.total);
-        formData.append("taxAmounts", values.total);
+        formData.append("taxAmounts", values.taxAmounts);
         formData.append("discountAmount", values.discountAmount);
         formData.append("cusNotes", values.cusNotes);
         formData.append("terms", values.terms);
@@ -114,7 +115,7 @@ function EstimateAdd() {
           formData.append("description", "test");
           formData.append("account", "test");
           formData.append("disc", item.disc);
-          formData.append("taxAmount", "000");
+          formData.append("amount", item.amount);
           formData.append("taxRate", item.taxRate);
           formData.append("mstrItemsId", item.item);
         });
@@ -176,7 +177,7 @@ function EstimateAdd() {
                   price: response.data.salesPrice,
                   qty: 1,
                 };
-                const taxAmount = calculateAmount(
+                const amount = calculateAmount(
                   updatedItem.qty,
                   updatedItem.price,
                   updatedItem.disc,
@@ -189,9 +190,9 @@ function EstimateAdd() {
                   itemTotalRate * (updatedItem.disc / 100);
                   discAmount +=itemTotalDisc
                 totalRate += updatedItem.price;
-                totalAmount += taxAmount;
+                totalAmount += amount;
                 totalTax += itemTotalTax;
-                return { ...updatedItem, taxAmount };
+                return { ...updatedItem, amount };
               } catch (error) {
                 toast.error(
                   "Error fetching data: ",
@@ -225,16 +226,16 @@ function EstimateAdd() {
         const updatedItems = await Promise.all(
           formik.values?.txnQuotesItems?.map(async (item, index) => {
             if (item.qty && item.price &&item.disc !== undefined &&item.taxRate !== undefined) {
-              const taxAmount = calculateAmount(item.qty,item.price,item.disc,item.taxRate);
+              const amount = calculateAmount(item.qty,item.price,item.disc,item.taxRate);
               const itemTotalRate = item.qty * item.price;
               const itemTotalTax = itemTotalRate * (item.taxRate / 100);
               const itemTotalDisc =
               itemTotalRate * (item.disc / 100);
               discAmount +=itemTotalDisc
               totalRate += item.price;
-              totalAmount += taxAmount;
+              totalAmount += amount;
               totalTax += itemTotalTax;
-              return { ...item, taxAmount };
+              return { ...item, amount };
             }
             return item;
           })

@@ -53,8 +53,8 @@ const DeliveryAdd = () => {
       subTotal: "",
       discount: "",
       taxAmount: "",
-      adjustment: "",
       total: "",
+      adjustment: "",
       cusNotes: "",
       termsConditions: "",
       challansItemsModels: [
@@ -135,6 +135,7 @@ const DeliveryAdd = () => {
         let totalRate = 0;
         let totalAmount = 0;
         let totalTax = 0;
+        let discAmount =0;
         const updatedItems = await Promise.all(
           formik.values.challansItemsModels.map(async (item, index) => {
             if (item.item) {
@@ -144,6 +145,9 @@ const DeliveryAdd = () => {
                 const amount = calculateAmount(updatedItem.qty, updatedItem.rate, updatedItem.discountAmount, updatedItem.tax);
                 const itemTotalRate = updatedItem.qty * updatedItem.rate;
                 const itemTotalTax = itemTotalRate * (updatedItem.tax / 100);
+                const itemTotalDisc =
+                itemTotalRate * (updatedItem.discountAmount / 100);
+                discAmount +=itemTotalDisc
                 totalRate += updatedItem.rate;
                 totalAmount += amount;
                 totalTax += itemTotalTax;
@@ -159,6 +163,7 @@ const DeliveryAdd = () => {
         formik.setFieldValue("subTotal", totalRate);
         formik.setFieldValue("total", totalAmount);
         formik.setFieldValue("taxAmount", totalTax);
+        formik.setFieldValue("discount", discAmount);
       } catch (error) {
         toast.error("Error updating items: ", error.message);
       }
@@ -175,6 +180,7 @@ const DeliveryAdd = () => {
         let totalRate = 0;
         let totalAmount = 0;
         let totalTax = 0;
+        let discAmount = 0;
   
         const updatedItems = await Promise.all(
           formik.values.challansItemsModels.map(async (item, index) => {
@@ -182,6 +188,9 @@ const DeliveryAdd = () => {
               const amount = calculateAmount(item.qty, item.rate, item.discountAmount, item.tax);
               const itemTotalRate = item.qty * item.rate;
               const itemTotalTax = itemTotalRate * (item.tax / 100);
+              const itemTotalDisc =
+                itemTotalRate * (item.discountAmount / 100);
+                discAmount +=itemTotalDisc
               totalRate += item.rate;
               totalAmount += amount;
               totalTax += itemTotalTax;
@@ -194,6 +203,7 @@ const DeliveryAdd = () => {
         formik.setFieldValue("subTotal", totalRate);
         formik.setFieldValue("total", totalAmount);
         formik.setFieldValue("taxAmount", totalTax);
+        formik.setFieldValue("discount", discAmount);
       } catch (error) {
         toast.error("Error updating items: ", error.message);
       }

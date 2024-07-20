@@ -69,6 +69,7 @@ function SalesOrderAdd() {
         formData.append("salesPerson", values.salesPerson);
         formData.append("subTotal", values.subTotal);
         formData.append("discount", values.discount);
+        formData.append("taxTotal", values.taxTotal);
         formData.append("adjustment", values.adjustment);
         formData.append("total", values.total);
         formData.append("cusNotes", values.cusNotes);

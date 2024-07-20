@@ -44,7 +44,7 @@ const EstimateEdit = () => {
   const addRow = () => {
     formik.setFieldValue("quotesItemsModels", [
       ...formik.values.quotesItemsModels,
-      { item: "", qty: "", price: "", disc: "", taxRate: "", taxAmount: "" },
+      { item: "", qty: "", price: "", disc: "", taxRate: "", amount: "" },
     ]);
   };
 
@@ -81,7 +81,7 @@ const EstimateEdit = () => {
           price: "",
           disc: "",
           taxRate: "",
-          taxAmount: "",
+          amount: "",
         },
       ],
     },
@@ -117,7 +117,7 @@ const EstimateEdit = () => {
         formData.append("description", "test");
         formData.append("account", "test");
         formData.append("disc", item.disc);
-        formData.append("taxAmount", item.taxAmount);
+        formData.append("amount", item.amount);
         formData.append("taxRate", item.taxRate);
         formData.append("mstrItemsId", item.item);
       });
@@ -181,20 +181,23 @@ const EstimateEdit = () => {
         let totalRate = 0;
         let totalAmount = 0;
         let totalTax = 0;
-  
+        let discAmount=0;
         const updatedItems = await Promise.all(
           formik.values.txnQuotesItems.map(async (item, index) => {
             if (item.item ) {
               try {
                 const response = await api.get(`getMstrItemsById/${item.item}`);
                 const updatedItem = { ...item, price: response.data.salesPrice, qty:1 };
-                const taxAmount = calculateAmount(updatedItem.qty, updatedItem.price, updatedItem.disc, updatedItem.taxRate);
+                const amount = calculateAmount(updatedItem.qty, updatedItem.price, updatedItem.disc, updatedItem.taxRate);
                 const itemTotalRate = updatedItem.qty * updatedItem.price;
                 const itemTotalTax = itemTotalRate * (updatedItem.taxRate / 100);
+                const itemTotalDisc =
+                itemTotalRate * (updatedItem.disc / 100);
+                discAmount +=itemTotalDisc
                 totalRate += updatedItem.price;
-                totalAmount += taxAmount;
+                totalAmount += amount;
                 totalTax += itemTotalTax;
-                return { ...updatedItem, taxAmount };
+                return { ...updatedItem, amount };
               } catch (error) {
                 toast.error("Error fetching data: ", error?.response?.data?.message);
               }
@@ -204,8 +207,9 @@ const EstimateEdit = () => {
         );
         formik.setValues({ ...formik.values, txnQuotesItems: updatedItems });
         formik.setFieldValue("subTotal", totalRate);
+        formik.setFieldValue("discountAmount", discAmount);
         formik.setFieldValue("total", totalAmount);
-        formik.setFieldValue("totalTax", totalTax);
+        formik.setFieldValue("taxAmounts", totalTax);
       } catch (error) {
         toast.error("Error updating items: ", error.message);
       }
@@ -213,7 +217,7 @@ const EstimateEdit = () => {
 
     updateAndCalculate();
   }, [
-    formik.values.txnQuotesItems.map((item) => item.item).join(""),
+    formik.values.txnQuotesItems?.map((item) => item.item).join(""),
   ]);
   
   useEffect(() => {
@@ -222,25 +226,30 @@ const EstimateEdit = () => {
         let totalRate = 0;
         let totalAmount = 0;
         let totalTax = 0;
-  
+        let discAmount=0;
+
         const updatedItems = await Promise.all(
           formik.values.txnQuotesItems.map(async (item, index) => {
             if (item.qty && item.price && item.disc !== undefined && item.taxRate !== undefined) {
-              const taxAmount = calculateAmount(item.qty, item.price, item.disc, item.taxRate);
+              const amount = calculateAmount(item.qty, item.price, item.disc, item.taxRate);
               const itemTotalRate = item.qty * item.price;
               const itemTotalTax = itemTotalRate * (item.taxRate / 100);
+              const itemTotalDisc =
+                  itemTotalRate * (item.disc / 100);
+                  discAmount +=itemTotalDisc
               totalRate += item.price;
-              totalAmount += taxAmount;
+              totalAmount += amount;
               totalTax += itemTotalTax;
-              return { ...item, taxAmount,};
+              return { ...item, amount,};
             }
             return item;
           })
         );
         formik.setValues({ ...formik.values, txnQuotesItems: updatedItems });
         formik.setFieldValue("subTotal", totalRate);
+        formik.setFieldValue("discountAmount", discAmount);
         formik.setFieldValue("total", totalAmount);
-        formik.setFieldValue("totalTax", totalTax);
+        formik.setFieldValue("taxAmounts", totalTax);
       } catch (error) {
         toast.error("Error updating items: ", error.message);
       }
@@ -248,10 +257,10 @@ const EstimateEdit = () => {
 
     updateAndCalculate();
   }, [
-    formik.values.txnQuotesItems.map((item) => item.qty).join(""),
-    formik.values.txnQuotesItems.map((item) => item.price).join(""),
-    formik.values.txnQuotesItems.map((item) => item.disc).join(""),
-    formik.values.txnQuotesItems.map((item) => item.taxRate).join(""),
+    formik.values.txnQuotesItems?.map((item) => item.qty).join(""),
+    formik.values.txnQuotesItems?.map((item) => item.price).join(""),
+    formik.values.txnQuotesItems?.map((item) => item.disc).join(""),
+    formik.values.txnQuotesItems?.map((item) => item.taxRate).join(""),
   ]);
 
   const calculateAmount = (qty, price, disc, taxRate) => {
@@ -783,16 +792,16 @@ const EstimateEdit = () => {
                   <div className="col-sm-4">
                     <input
                       type="text"
-                      className={`form-control ${formik.touched.totalTax && formik.errors.totalTax
+                      className={`form-control ${formik.touched.taxAmounts && formik.errors.taxAmounts
                         ? "is-invalid"
                         : ""
                         }`}
-                      {...formik.getFieldProps("totalTax")}
+                      {...formik.getFieldProps("taxAmounts")}
                       readOnly
                     />
-                    {formik.touched.totalTax && formik.errors.totalTax && (
+                    {formik.touched.taxAmounts && formik.errors.taxAmounts && (
                       <div className="invalid-feedback">
-                        {formik.errors.totalTax}
+                        {formik.errors.taxAmounts}
                       </div>
                     )}
                   </div>

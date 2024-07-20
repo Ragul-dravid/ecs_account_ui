@@ -93,8 +93,8 @@ function SalesOrderView() {
               </div>
             </div>
           </div>
-          <div className="card shadow border-0 mb-2 minHeight">
-            <div className="container">
+          <div className="card shadow border-0 mb-2 minHeight ">
+            <div className="container mb-5 mt-1">
               <div className="row">
                 <div className="col-md-6 col-12">
                   <div className="d-flex justify-content-center flex-column align-items-start">
@@ -218,8 +218,8 @@ function SalesOrderView() {
                         <th scope="col">ITEM </th>
                         <th scope="col">QUANTITY</th>
                         <th scope="col">RATE</th>
-                        <th scope="col">DISCOUNT</th>
-                        <th scope="col">TAX</th>
+                        <th scope="col">DISCOUNT(%)</th>
+                        <th scope="col">TAX(%)</th>
                         <th scope="col">AMOUNT</th>
                       </tr>
                     </thead>
@@ -233,8 +233,8 @@ function SalesOrderView() {
                               <td>{itemName(item.item)}</td>
                               <td>{item.qty}</td>
                               <td>{item.rate}</td>
-                              <td>{item.discount}</td>
-                              <td>{item.tax}</td>
+                              <td>{item.discountAmount}</td>
+                              <td>{item.taxAmount}</td>
                               <td>{item.amount}</td>
                             </tr>
                           )

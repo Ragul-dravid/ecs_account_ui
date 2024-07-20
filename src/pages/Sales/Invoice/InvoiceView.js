@@ -205,13 +205,13 @@ function InvoiceView() {
               </div>
               <div className="row mt-5 flex-nowrap">
                 <div className="col-12">
-                  <div className="table-responsive table-bordered">
+                  <div className="table-responsive ">
                     <div className="">
                       <h3 style={{ background: "#4066D5" }} className="text-light p-2">
                         Item Table
                       </h3>
                     </div>
-                    <table class="table table-light table-nowrap table table-bordered">
+                    <table class="table">
                       <thead className="thead-light">
                         <tr>
                           <th>S.NO</th>
@@ -241,6 +241,7 @@ function InvoiceView() {
                           )}
                       </tbody>
                     </table>
+
                   </div>
                 </div>
               </div>
@@ -256,12 +257,7 @@ function InvoiceView() {
                     Terms & Conditions
                   </lable>
                   <div className="mb-3">
-                    <p>1.Payment Terms: Payment is due upon receipt of the invoice unless
-                      otherwise agreed upon in writing. Late payments may be subject to
-                      a late fee of [X]% per Month</p>
-                    <p>2.Payment Methods: We accept payment by [list acceptable payment
-                      methods, e.g., cash, check, credit card, bank transfer, etc.]. Payments
-                      should be made in [currency].</p>
+                    {/* <p>{data.}</p> */}
                   </div>
                 </div>
                 <div className="col-md-6 col-12 mt-5 mb-3 rounded" style={{ border: "1px solid lightgrey" }}>

@@ -124,7 +124,7 @@ const Invoice = () => {
             </div>
             <hr className="removeHrMargin"></hr>
             <div className="table-responsive p-2 minHeight">
-              <table ref={tableRef} className="display">
+              <table ref={tableRef} className="display table">
                 <thead className="thead-light">
                   <tr>
                     <th
