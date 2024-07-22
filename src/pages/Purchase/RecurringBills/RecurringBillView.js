@@ -22,7 +22,7 @@ const RecurringBillView = () => {
         setRecurringBill(response.data);
         console.log("object", response.data);
       } catch (error) {
-        toast.error("Error fetching data: ", error?.response?.data?.message);
+        // toast.error("Error fetching data: ", error?.response?.data?.message);
       } finally {
         setLoading(false);
       }
@@ -78,7 +78,7 @@ const RecurringBillView = () => {
                         <span>Back</span>
                       </button>
                     </Link>
-                    <SendInvoice recurringBill={recurringBill}/>
+                    
                   </div>
                 </div>
               </div>

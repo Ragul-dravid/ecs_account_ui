@@ -105,7 +105,8 @@ const RecurringBillEdit = () => {
         formData.append("unitPrice", 2000);
         formData.append("taxRate", item.taxRate);
         formData.append("amount", 2333);
-        // formData.append("itemId", item.id);
+        if(item.id!== undefined){
+          formData.append("itemId", item.id);}
         formData.append("mstrItemsId", item.item);
         formData.append("account", "item");
         formData.append("description", "test");

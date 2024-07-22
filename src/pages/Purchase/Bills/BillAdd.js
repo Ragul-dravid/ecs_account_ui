@@ -14,7 +14,7 @@ function BillsAdd() {
     dueDate: Yup.date().required("*Due Date is required"),
     date: Yup.date().required("*Bill Date is required"),
     amountsAre: Yup.string().required("*Amounts Are is required"),
-    // invoiceFrom: Yup.string().required("*Invoice From is required"),
+    permitNumber: Yup.number().typeError("*Permit number must ba number").notRequired(),
     currency: Yup.string().required("*Currency is required"),
     billItemsModels: Yup.array().of(
       Yup.object().shape({
@@ -91,7 +91,7 @@ function BillsAdd() {
       formData.append("subTotal", values.subTotal);
       formData.append("cusNotes", values.cusNotes);
       formData.append("termsCondition", values.termsCondition);
-      formData.append("status", "ISSUED");
+      formData.append("status", values.status);
 
       values.billItemsModels.forEach((item) => {
         formData.append("item", item.item);
@@ -397,14 +397,22 @@ function BillsAdd() {
               </div>
               <div className="col-md-6 col-12 mb-2">
                 <lable className="form-lable">Permit Number</lable>
-                <div className="mb-3">
                   <input
                     type="text"
                     name="permitNumber"
-                    className="form-control"
+                    className={`form-control ${
+                      formik.touched.permitNumber && formik.errors.permitNumber
+                        ? "is-invalid"
+                        : ""
+                    }`}
                     {...formik.getFieldProps("permitNumber")}
                   />
-                </div>
+                  {formik.touched.permitNumber  && formik.errors.permitNumber  && (
+                  <div className="invalid-feedback">
+                    {formik.errors.permitNumber}
+                  </div>
+                )}
+                
               </div>
               <div className="col-md-6 col-12 mb-2">
                 <lable className="form-lable">

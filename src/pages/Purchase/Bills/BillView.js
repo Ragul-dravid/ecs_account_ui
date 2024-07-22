@@ -102,7 +102,7 @@ const BillView = () => {
             </div>
           </div>
           <div className="card shadow border-0 mb-2 minHeight">
-            <div className="container-fluid mt-5">
+            <div className="container-fluid ">
               <div className="row mt-4 p-3">
                 <div className="col-md-6 col-12 ">
                   <div className=" d-flex align-items-center">

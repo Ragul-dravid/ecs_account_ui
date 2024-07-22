@@ -187,7 +187,7 @@ const PurchaseEdit = () => {
         let totalTax = 0;
          let discAmount=0;
         const updatedItems = await Promise.all(
-          formik.values.txnQuotesItems.map(async (item, index) => {
+          formik.values.txnQuotesItems?.map(async (item, index) => {
             if (item.item) {
               try {
                 const response = await api.get(`getMstrItemsById/${item.item}`);
@@ -233,7 +233,7 @@ const PurchaseEdit = () => {
     };
 
     updateAndCalculate();
-  }, [formik.values.txnQuotesItems.map((item) => item.item).join("")]);
+  }, [formik.values.txnQuotesItems?.map((item) => item.item).join("")]);
 
   useEffect(() => {
     const updateAndCalculate = async () => {
@@ -271,10 +271,10 @@ const PurchaseEdit = () => {
 
     updateAndCalculate();
   }, [
-    formik.values.txnQuotesItems.map((item) => item.qty).join(""),
-    formik.values.txnQuotesItems.map((item) => item.price).join(""),
-    formik.values.txnQuotesItems.map((item) => item.disc).join(""),
-    formik.values.txnQuotesItems.map((item) => item.taxRate).join(""),
+    formik.values.txnQuotesItems?.map((item) => item.qty).join(""),
+    formik.values.txnQuotesItems?.map((item) => item.price).join(""),
+    formik.values.txnQuotesItems?.map((item) => item.disc).join(""),
+    formik.values.txnQuotesItems?.map((item) => item.taxRate).join(""),
   ]);
 
   const calculateAmount = (qty, price, disc, taxRate) => {

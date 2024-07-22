@@ -5,14 +5,16 @@ import * as yup from "yup";
 import { useFormik } from "formik";
 import { GrAttachment } from "react-icons/gr";
 import user from "../../assets/profile.png";
+import api from "../../config/URL";
 import CompanyLogo from "../../assets/AccountsLogo2.png";
+import toast from "react-hot-toast";
 
 const validationSchema = yup.object().shape({
   subject: yup.string().required("*Subject is required"),
   // files: yup.array().min(1, "Attacment is Must").required("Attacment is Must"),
 });
-const SendInvoice = ({ recurringBill }) => {
-  console.log("recurringBill", recurringBill);
+const SendInvoice = ({ datas }) => {
+  console.log("datas", datas);
   const [show, setShow] = useState(false);
   const [loadIndicator, setLoadIndicator] = useState(false);
   const [subject, setSubject] = useState("");
@@ -31,63 +33,65 @@ const SendInvoice = ({ recurringBill }) => {
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       console.log("object", values);
-      //   try {
-      //     const formData = new FormData();
-      //     formData.append("to", invoiceData.email);
-      //     formData.append("from", userEmail);
-      //     formData.append("subject", values.subject);
-      //     formData.append("htmlContent", generateInvoice(invoiceData.invoice));
-      //     values.files.forEach((file) => {
-      //       formData.append("files", file);
-      //     });
-      //     setLoadIndicator(true);
-      //     const response = await axios.post(
-      //       `${API_URL}sendMailWithHtmlContentAndAttachment`,
-      //       formData,
-      //       {
-      //         headers: {
-      //           "Content-Type": "multipart/form-data",
-      //         },
-      //       }
-      //     );
+      
+        try {
+          const formData = new FormData();
+          formData.append("from", "premvppoovai@gmail.com");
+          formData.append("to", "premvp24@gmail.com");
+          formData.append("subject", values.subject);
+          formData.append("body", "test");
+          formData.append("htmlContent", generateInvoice(datas));
+          if(values.files){
+            values.files.forEach((file) => {
+              formData.append("files", file);
+            });
+          }
+          setLoadIndicator(true);
+          const response = await api.post(
+            `accSendMailWithAttachment`,
+            formData,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            }
+          );
 
-      //     if (response.status === 201) {
-      //       toast.success("Mail sent successfully");
-      //       handleHide();
-      //     } else {
-      //       toast.error(response.data.message);
-      //     }
-      //   } catch (error) {
-      //     console.error("Error sending email:", error);
-      //     toast.error("Failed to send email");
-      //   } finally {
-      //     setLoadIndicator(false);
-      //   }
+          if (response.status === 201) {
+            toast.success("Mail sent successfully");
+            handleHide();
+          } else {
+            toast.error(response.data.message);
+          }
+        } catch (error) {
+          console.error("Error sending email:", error);
+          toast.error("Failed to send email");
+        } finally {
+          setLoadIndicator(false);
+        }
     },
   });
 
   useEffect(() => {
-    if (formik.values.subject && recurringBill) {
-      const htmlContent = generateInvoice(recurringBill);
+    if (formik.values.subject && datas) {
+      const htmlContent = generateInvoice(datas);
       formik.setFieldValue("htmlContent", htmlContent);
       formik.setFieldValue("isSendingEmail", true);
     }
   }, [formik.values.subject]);
 
-  const generateInvoice = (recurringBill) => {
-    if (!recurringBill || recurringBill.length === 0) {
+  const generateInvoice = (datas) => {
+    if (!datas || datas.length === 0) {
       return "No invoice available";
     }
-    const tableRows = recurringBill.map(
-      (row, index) => `
-        <div id="LABEL1" id="LABEL2" style="width: 150% !important">
+    const tableRows = (`<div id="LABEL1" id="LABEL2" style="width: 150% !important">
           <br />
           <div style="display: flex">
             <label><b>Quote Name</b></label>
-            <span>:&nbsp;&nbsp;${row.contactName || "--"}</span>
+            <span>:&nbsp;&nbsp;${datas.contactName || "--"}</span>
 
             <label><b>Subject</b></label>
-            <span>:&nbsp;&nbsp;${row.subject || "--"}</span>
+            <span>:&nbsp;&nbsp;${datas.subject || "--"}</span>
           </div>
         </div>
         <br />
@@ -104,8 +108,8 @@ const SendInvoice = ({ recurringBill }) => {
               </tr>
               
               ${
-                row.recurringBillItemModels &&
-                row.recurringBillItemModels
+                datas.recurringBillItemModels &&
+                datas.recurringBillItemModels
                   .map(
                     (product, productIndex) => `
                   <tr class="item">
@@ -130,25 +134,25 @@ const SendInvoice = ({ recurringBill }) => {
           <div style="text-align: end">
             <label style="width: 40%; margin-right: 5px">Sub Total(SGT)</label>
             <span style="width: 23%; text-align: start"
-              >&nbsp;:&nbsp; ${row.subTotal}</span
+              >&nbsp;:&nbsp; ${datas.subTotal}</span
             >
           </div>
           <div style="text-align: end">
             <label style="width: 40%; margin-right: 5px">Discount(%)</label>
             <span style="width: 23%; text-align: start"
-              >&nbsp;:&nbsp; ${row.txnDiscount || 0}</span
+              >&nbsp;:&nbsp; ${datas.txnDiscount || 0}</span
             >
           </div>
           <div style="text-align: end">
             <label style="width: 40%; margin-right: 5px">Tax(%)</label>
             <span style="width: 23%; text-align: start"
-              >&nbsp;:&nbsp; ${row.tax || 0}</span
+              >&nbsp;:&nbsp; ${datas.tax || 0}</span
             >
           </div>
           <div style="text-align: end">
             <label style="width: 40%; margin-right: 5px">Grand Total(SGT)</label>
             <span style="width: 23%; text-align: start"
-              >&nbsp;:&nbsp; ${row.totalAmount}</span
+              >&nbsp;:&nbsp; ${datas.totalAmount}</span
             >
           </div>
         </div>
@@ -158,12 +162,12 @@ const SendInvoice = ({ recurringBill }) => {
           <br />
           <div>
             <label><b>Customer Note :</b></label>
-            <div>&nbsp;&nbsp;${row.notes || "--"}</div>
+            <div>&nbsp;&nbsp;${datas.notes || "--"}</div>
           </div>
           <br />
           <div>
             <label><b>Terms And Conditions :</b></label>
-            <div>&nbsp;&nbsp;${row.termsAndConditions || "--"}</div>
+            <div>&nbsp;&nbsp;${datas.termsAndConditions || "--"}</div>
           </div>
         </div>
       
@@ -308,23 +312,23 @@ const SendInvoice = ({ recurringBill }) => {
             <br />
             <div style="display: flex;">
               <label>Billing Street</label>
-              <span>:&nbsp;&nbsp;${recurringBill.billingStreet || "--"}</span>
+              <span>:&nbsp;&nbsp;${datas.billingStreet || "--"}</span>
        
               <label>Billing City</label>
-              <span>:&nbsp;&nbsp;${recurringBill.billingCity || "--"}</span>
+              <span>:&nbsp;&nbsp;${datas.billingCity || "--"}</span>
             </div>
        
             <div style="display: flex">
               <label>Billing State</label>
-              <span>:&nbsp;&nbsp;${recurringBill.billingState || "--"}</span>
+              <span>:&nbsp;&nbsp;${datas.billingState || "--"}</span>
        
               <label>Billing Code</label>
-              <span>:&nbsp;&nbsp;${recurringBill.billingCode || "--"}</span>
+              <span>:&nbsp;&nbsp;${datas.billingCode || "--"}</span>
             </div>
              
             <div style="display: flex">
               <label>Billing Country</label>
-              <span>:&nbsp;&nbsp;${recurringBill.billingCountry || "--"}</span>
+              <span>:&nbsp;&nbsp;${datas.billingCountry || "--"}</span>
             </div>
           </div>
           <br/>
@@ -332,30 +336,30 @@ const SendInvoice = ({ recurringBill }) => {
             
               <div style="display: flex;">
               <label>Shipping Street</label>
-              <span>:&nbsp;&nbsp;${recurringBill.shippingStreet || "--"}</span>
+              <span>:&nbsp;&nbsp;${datas.shippingStreet || "--"}</span>
        
               <label>Shipping City</label>
-              <span>:&nbsp;&nbsp;${recurringBill.shippingCity || "--"}</span>
+              <span>:&nbsp;&nbsp;${datas.shippingCity || "--"}</span>
               </div>
        
               <div style="display: flex">
                 <label>Shipping State</label>
-                <span>:&nbsp;&nbsp;${recurringBill.shippingState || "--"}</span>
+                <span>:&nbsp;&nbsp;${datas.shippingState || "--"}</span>
        
                 <label>Shipping Code</label>
-                <span>:&nbsp;&nbsp;${recurringBill.shippingCode || "--"}</span>
+                <span>:&nbsp;&nbsp;${datas.shippingCode || "--"}</span>
               </div>
                  
               <div style="display: flex">
                 <label>Shipping Country</label>
                 <span>:&nbsp;&nbsp;${
-                  recurringBill.shippingCountry || "--"
+                  datas.shippingCountry || "--"
                 }</span>
               </div>
             </div>
            
             <br />
-            ${tableRows.join("")}
+            ${tableRows}
           </div>
         </body>
       </html>
@@ -600,7 +604,7 @@ const SendInvoice = ({ recurringBill }) => {
             </p>
             <div className="container-fluid row" id="Details">
               <div className="container  col-12">
-                {recurringBill ? (
+                {datas ? (
                   <div>
                       <div  className="row mt-4">
                         <div className="col-md-6 col-12">
@@ -608,7 +612,7 @@ const SendInvoice = ({ recurringBill }) => {
                             <b>Invoice Owner</b>
                           </label>
                           <span className="text-dark">
-                            &nbsp; : &nbsp;{recurringBill.invoiceOwner || "--"}
+                            &nbsp; : &nbsp;{datas.invoiceOwner || "--"}
                           </span>
                         </div>
                         <div className="col-md-6 col-12">
@@ -616,7 +620,7 @@ const SendInvoice = ({ recurringBill }) => {
                             <b>Subject</b>
                           </label>
                           <span className="text-dark">
-                            &nbsp; : &nbsp;{recurringBill.subject || "--"}
+                            &nbsp; : &nbsp;{datas.subject || "--"}
                           </span>
                         </div>
 
@@ -634,8 +638,8 @@ const SendInvoice = ({ recurringBill }) => {
                               </tr>
                             </thead>
                             <tbody>
-                              {recurringBill.recurringBillItemModels &&
-                                recurringBill.recurringBillItemModels.map(
+                              {datas.recurringBillItemModels &&
+                                datas.recurringBillItemModels.map(
                                   (item, index) => (
                                     <tr key={item.id}>
                                       <td>{index + 1}</td>
@@ -666,7 +670,7 @@ const SendInvoice = ({ recurringBill }) => {
                                   </div>
                                   <div className="col-md-4 col-12">
                                     {" "}
-                                    <span>: {recurringBill.subTotal || "0"}.00</span>
+                                    <span>: {datas.subTotal || "0"}.00</span>
                                   </div>
                                 </div>
                               </div>
@@ -681,7 +685,7 @@ const SendInvoice = ({ recurringBill }) => {
                                   <div className="col-md-4 col-12">
                                     {" "}
                                     <span>
-                                      : {recurringBill.txnDiscount || "0"}.00
+                                      : {datas.txnDiscount || "0"}.00
                                     </span>
                                   </div>
                                 </div>
@@ -694,7 +698,7 @@ const SendInvoice = ({ recurringBill }) => {
                                   </div>
                                   <div className="col-md-4 col-12">
                                     {" "}
-                                    <span>: {recurringBill.tax || "0"}.00</span>
+                                    <span>: {datas.tax || "0"}.00</span>
                                   </div>
                                 </div>
                               </div>
@@ -707,7 +711,7 @@ const SendInvoice = ({ recurringBill }) => {
                                   </div>
                                   <div className="col-md-4 col-12">
                                     <span>
-                                      : {recurringBill.totalAmount || "0"}.00
+                                      : {datas.totalAmount || "0"}.00
                                     </span>
                                   </div>
                                 </div>

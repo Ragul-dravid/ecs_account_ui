@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 import Logo from "../../../assets/AccountsLogo.png";
 import fetchAllCustomerWithIds from "../../List/CustomerList";
 import fetchAllItemWithIds from "../../List/ItemList";
+import SendInvoice from "../../SendMails/SendInvoice";
 
 const RecurringInvoiceView = () => {
   const { id } = useParams();
@@ -83,6 +84,7 @@ const RecurringInvoiceView = () => {
                         <span>Back</span>
                       </button>
                     </Link>
+                    <SendInvoice datas={datas}/>
                   </div>
                 </div>
               </div>

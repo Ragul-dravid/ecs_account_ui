@@ -13,7 +13,7 @@ function BillsEdit() {
     dueDate: Yup.date().required("*Due Date is required"),
     date: Yup.date().required("*Bill Date is required"),
     amountsAre: Yup.string().required("*Amounts Are is required"),
-    invoiceFrom: Yup.string().required("*Invoice From is required"),
+    permitNumber: Yup.number().typeError("*Permit number must ba number").notRequired(),
     currency: Yup.string().required("*Currency is required"),
     billItemsModels: Yup.array().of(
       Yup.object().shape({
@@ -90,9 +90,11 @@ function BillsEdit() {
       formData.append("tax", values.tax);
       formData.append("subTotal", values.subTotal);
       formData.append("total", values.total);
-      formData.append("customerNote", values.cusNotes);
+      formData.append("cusNotes", values.cusNotes);
       formData.append("termsCondition", values.termsCondition);
-
+      if (values.file) {
+        formData.append("files", values.file);
+      }
       values.billItemsModels.forEach((item) => {
         formData.append("item", item.item);
         formData.append("qty", item.qty);
@@ -103,10 +105,9 @@ function BillsEdit() {
         formData.append("account", "item");
         formData.append("description", "test");
         formData.append("mstrItemsId", item.item);
+        if(item.id!== undefined){
+          formData.append("itemId", item.id);}
       });
-      if (values.file) {
-        formData.append("files", values.file);
-      }
 
       try {
         const response = await api.put(`/updateTxnBill/${id}`, formData);
@@ -115,7 +116,7 @@ function BillsEdit() {
           navigate("/bills");
         }
       } catch (e) {
-        toast.error("Error fetching data: ", e?.response?.data?.message);
+        toast.error("Error fetching datas");
       } finally {
         setLoadIndicator(false);
       }
@@ -164,7 +165,7 @@ function BillsEdit() {
         const response = await api.get(`/getTxnBillById/${id}`);
         formik.setValues(response.data);
       } catch (e) {
-        toast.error("Error fetching data: ", e?.response?.data?.message);
+        toast.error("Error fetching data ");
       }
     };
 
@@ -219,7 +220,7 @@ function BillsEdit() {
         formik.setFieldValue("discount", totalDisc);
         formik.setFieldValue("tax", totalTax);
       } catch (error) {
-        toast.error("Error updating items: ", error.message);
+        toast.error("Error updating items ");
       }
     };
 
@@ -265,7 +266,7 @@ function BillsEdit() {
         formik.setFieldValue("discount", totalDisc);
         formik.setFieldValue("tax", totalTax);
       } catch (error) {
-        toast.error("Error updating items: ", error.message);
+        toast.error("Error updating items ");
       }
     };
 
@@ -409,15 +410,20 @@ function BillsEdit() {
                 )}
               </div>
               <div className="col-md-6 col-12 mb-2">
-                <lable className="form-lable">Permit Number</lable>
-                <div className="mb-3">
-                  <input
-                    type="text"
-                    name="permitNumber"
-                    className="form-control"
-                    {...formik.getFieldProps("permitNumber")}
-                  />
-                </div>
+              <input
+                  type="text"
+                  className={`form-control ${
+                    formik.touched.reference && formik.errors.reference
+                      ? "is-invalid"
+                      : ""
+                  }`}
+                  {...formik.getFieldProps("reference")}
+                />
+                {formik.touched.reference && formik.errors.reference && (
+                  <div className="invalid-feedback">
+                    {formik.errors.reference}
+                  </div>
+                )}
               </div>
               <div className="col-md-6 col-12 mb-2">
                 <lable className="form-lable">
