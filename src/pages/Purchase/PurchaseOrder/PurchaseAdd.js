@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 import * as Yup from "yup";
 import fetchAllVendorNameWithIds from "../../List/VendorList";
 import fetchAllItemWithIds from "../../List/ItemList";
+import axios from "axios";
 
 const PurchaseAdd = () => {
   const navigate = useNavigate();
@@ -110,12 +111,22 @@ const PurchaseAdd = () => {
         formData.append("mstrItemsId", item.item);
       });
       formData.append("file", values.file);
-
+      const {items,file,...value}=values
+      const payload={
+        txnPurchaseOrderDTO:value,
+        txnPurchaseOrderItemDTOList : items
+      }
       try {
-        const response = await api.post("/createTxnPurchaseOrder", formData);
+        const response = await axios.post("http://localhost:8080/api/createPurchaseOrderWithOutAttachment", payload);
         if (response.status === 201) {
-          toast.success("Estimate created successfully");
-          navigate("/purchase");
+          if(file){
+          const responsefile = await axios.post(`http://localhost:8080/api/createAttachment/${response.data.id}`, file);
+          if (responsefile.status === 201) { 
+            toast.success("Estimate created successfully");
+            navigate("/purchase");}
+        }
+        toast.success("Estimate created successfully");
+        navigate("/purchase");
         }
       } catch (e) {
         toast.error("Error fetching data: ", e?.response?.data?.message);

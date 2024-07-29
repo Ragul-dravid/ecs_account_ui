@@ -48,7 +48,7 @@ const SendInvoice = ({ datas }) => {
           }
           setLoadIndicator(true);
           const response = await api.post(
-            `accSendMailWithAttachment`,
+            `sendMailWithHtmlContentAndAttachment`,
             formData,
             {
               headers: {
