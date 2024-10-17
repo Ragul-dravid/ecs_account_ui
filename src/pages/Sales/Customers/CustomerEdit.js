@@ -67,7 +67,7 @@ const CustomerEdit = () => {
       setLoadIndicator(true);
       console.log(values);
       try {
-        const response = await api.put(`/updateMstrCustomer/${id}`, values, {
+        const response = await api.put(`/customer/${id}`, values, {
         });
         if (response.status === 200) {
           toast.success(response.data.message);
@@ -86,7 +86,7 @@ const CustomerEdit = () => {
   useEffect(() => {
     const getData = async () => {
       try {
-        const response = await api.get(`/getMstrCustomerById/${id}`);
+        const response = await api.get(`/customerById/${id}`);
         formik.setValues(response.data);
       } catch (e) {
         toast.error("Error fetching data: ", e?.response?.data?.message);

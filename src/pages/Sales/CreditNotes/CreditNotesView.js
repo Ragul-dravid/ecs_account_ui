@@ -17,7 +17,7 @@ function CreditNotesView() {
         const fetchCreditNotes = async () => {
             setLoading(true);
             try {
-                const response = await api.get(`/getTxnCreditNotesById/${id}`);
+                const response = await api.get(`credit-notes/${id}`);
                 setcreditNotes(response.data);
             } catch (e) {
                 toast.error("Error fetching data: " + e.message);

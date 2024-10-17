@@ -95,7 +95,7 @@ const DeliveryAdd = () => {
         }
 
         const response = await api.post(
-          "/createDeliveryChallanWithDeliveryItems",
+          "delivery-challan-items",
           formData,
           {
             headers: {
@@ -140,7 +140,7 @@ const DeliveryAdd = () => {
           formik.values.challansItemsModels.map(async (item, index) => {
             if (item.item) {
               try {
-                const response = await api.get(`getMstrItemsById/${item.item}`);
+                const response = await api.get(`itemsById/${item.item}`);
                 const updatedItem = { ...item, rate: response.data.salesPrice, qty:1 };
                 const amount = calculateAmount(updatedItem.qty, updatedItem.rate, updatedItem.discountAmount, updatedItem.tax);
                 const itemTotalRate = updatedItem.qty * updatedItem.rate;

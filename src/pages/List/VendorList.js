@@ -3,7 +3,7 @@ import api from "../../config/URL";
 
 const fetchAllVendorNameWithIds = async () => {
   try {
-    const response = await api.get("getAllVendorWithIds");
+    const response = await api.get("vendorWithIds");
     return response.data;
   } catch (error) {
     toast.error("Error fetching vendor   data:", error);

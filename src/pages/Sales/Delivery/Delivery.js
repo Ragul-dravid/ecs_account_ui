@@ -7,6 +7,7 @@ import { FaPlus } from "react-icons/fa";
 import DeleteModel from "../../../components/common/DeleteModel";
 import api from "../../../config/URL";
 import toast from "react-hot-toast";
+import fetchAllCustomerWithIds from "../../List/CustomerList";
 
 const Delivery = () => {
   const [datas, setDatas] = useState();
@@ -16,7 +17,7 @@ const Delivery = () => {
 
   const getData = async () => {
     try {
-      const response = await api.get("/getAllTxnDeliveryChallans");
+      const response = await api.get("delivery-challan");
       if (response.status === 200) {
         setDatas(response.data);
         setLoading(false);
@@ -39,7 +40,7 @@ const Delivery = () => {
     destroyDataTable();
     setLoading(true);
     try {
-      const response = await api.get("/getAllTxnDeliveryChallans");
+      const response = await api.get("delivery-challan");
       setDatas(response.data);
       initializeDataTable(); // Reinitialize DataTable after successful data update
     } catch (error) {
@@ -64,8 +65,8 @@ const Delivery = () => {
 
   const fetchCustamerData = async () => {
     try {
-      const response = await api.get("getAllCustomerWithIds");
-      setCustomerData(response.data);
+      const customerData = await fetchAllCustomerWithIds();
+      setCustomerData(customerData);
     } catch (error) {
       toast.error("Error fetching tax data:", error);
     }
@@ -162,7 +163,7 @@ const Delivery = () => {
                             </button>
                           </Link>
                           <DeleteModel onSuccess={refreshData}
-                            path={`/deleteTxnDeliveryChallans/${data.id}` }
+                            path={`delivery-challan/${data.id}` }
                           />
                         </div>
                       </td>

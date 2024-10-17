@@ -20,7 +20,7 @@ const Bills = () => {
   useEffect(() => {
     const getData = async () => {
       try {
-        const response = await api.get("/getAllTxnBill");
+        const response = await api.get("bill");
         setDatas(response.data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -62,7 +62,7 @@ const Bills = () => {
     destroyDataTable();
     setLoading(true);
     try {
-      const response = await api.get("/getAllTxnBill");
+      const response = await api.get("bill");
       setDatas(response.data);
       initializeDataTable(); // Reinitialize DataTable after successful data update
     } catch (error) {

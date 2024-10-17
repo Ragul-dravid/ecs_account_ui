@@ -12,7 +12,7 @@ function VendorView() {
     const getData = async () => {
       setLoading(true);
       try {
-        const response = await api.get(`/getMstrVendorById/${id}`);
+        const response = await api.get(`vendorById/${id}`);
         setData(response.data);
       } catch (e) {
         toast.error("Error fetching data: ", e?.response?.data?.message);

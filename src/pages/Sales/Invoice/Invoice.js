@@ -7,6 +7,7 @@ import { FaPlus } from "react-icons/fa6";
 import DeleteModel from "../../../components/common/DeleteModel";
 import api from "../../../config/URL";
 import toast from "react-hot-toast";
+import fetchAllCustomerWithIds from "../../List/CustomerList";
 
 const Invoice = () => {
   const tableRef = useRef(null);
@@ -18,7 +19,7 @@ const Invoice = () => {
     const getData = async () => {
       setLoading(true);
       try {
-        const response = await api.get("/getAllTxnInvoice");
+        const response = await api.get("invoice");
         setDatas(response.data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -31,8 +32,8 @@ const Invoice = () => {
   }, []);
   const fetchCustamerData = async () => {
     try {
-      const response = await api.get("getAllCustomerWithIds");
-      setCustomerData(response.data);
+      const customerData = await fetchAllCustomerWithIds();
+      setCustomerData(customerData);
     } catch (error) {
       toast.error("Error fetching tax data:", error);
     }
@@ -67,7 +68,7 @@ const Invoice = () => {
     destroyDataTable();
     setLoading(true);
     try {
-      const response = await api.get("/getAllTxnInvoice");
+      const response = await api.get("invoice");
       setDatas(response.data);
       initializeDataTable(); // Reinitialize DataTable after successful data update
     } catch (error) {
@@ -198,7 +199,7 @@ const Invoice = () => {
                           </Link>
                           <DeleteModel
                             onSuccess={refreshData}
-                            path={`/deleteTxnInvoice/${data.id}`}
+                            path={`/invoice/${data.id}`}
                           />
                         </div>
                       </td>

@@ -119,7 +119,7 @@ const RecurringInvoiceAdd = () => {
 
       try {
         const response = await api.post(
-          "/createRecurringInvoiceAndRecurringInvoiceItems",
+          "recurring-invoice-item",
           formData
         );
         if (response.status === 201) {
@@ -175,7 +175,7 @@ const RecurringInvoiceAdd = () => {
           formik.values.items.map(async (item, index) => {
             if (item.item) {
               try {
-                const response = await api.get(`getMstrItemsById/${item.item}`);
+                const response = await api.get(`itemsById/${item.item}`);
                 const updatedItem = { ...item, price: response.data.salesPrice, qty:1 };
                 const amount = calculateAmount(updatedItem.qty, updatedItem.price, updatedItem.disc, updatedItem.taxRate);
                 const itemTotalRate = updatedItem.qty * updatedItem.price;

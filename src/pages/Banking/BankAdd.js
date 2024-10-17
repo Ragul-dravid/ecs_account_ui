@@ -32,7 +32,7 @@ function BankAdd() {
     onSubmit: async (values) => {
       setLoading(true);
       try {
-        const response = await api.post("/createTxnBank", values, {
+        const response = await api.post("/bank", values, {
           headers: {
             "Content-Type": "application/json",
           },

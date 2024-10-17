@@ -97,7 +97,7 @@ const DeliveryEdit = () => {
       setLoading(true);
       try {
         const response = await api.put(
-          `/updateDeliveryChallanWithDeliveryItems/${id}`,
+          `delivery-challan-items/${id}`,
           formData,
           {
             headers: {
@@ -119,7 +119,7 @@ const DeliveryEdit = () => {
   useEffect(() => {
     const getData = async () => {
       try {
-        const response = await api.get(`/getTxnDeliveryChallansById/${id}`);
+        const response = await api.get(`delivery-challan/${id}`);
         formik.setValues(response.data);
         formik.setFieldValue(
           "challansItemsModels",
@@ -165,7 +165,7 @@ const DeliveryEdit = () => {
           formik.values.challansItemsModels.map(async (item, index) => {
             if (item.item) {
               try {
-                const response = await api.get(`getMstrItemsById/${item.item}`);
+                const response = await api.get(`itemsById/${item.item}`);
                 const updatedItem = { ...item, rate: response.data.salesPrice, qty:1 };
                 const amount = calculateAmount(updatedItem.qty, updatedItem.rate, updatedItem.discountAmount, updatedItem.tax);
                 const itemTotalRate = updatedItem.qty * updatedItem.rate;

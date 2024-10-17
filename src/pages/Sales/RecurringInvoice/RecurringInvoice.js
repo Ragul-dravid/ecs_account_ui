@@ -7,6 +7,7 @@ import { FaPlus } from "react-icons/fa6";
 import DeleteModel from "../../../components/common/DeleteModel";
 import api from "../../../config/URL"
 import toast from "react-hot-toast";
+import fetchAllCustomerWithIds from "../../List/CustomerList";
 
 const RecurringInvoice = () => {
     const tableRef = useRef(null);
@@ -17,7 +18,7 @@ const RecurringInvoice = () => {
   useEffect(() => {
     const getData = async () => {
       try {
-        const response = await api.get("/getAllTxnRecurringInvoice");
+        const response = await api.get("recurring-invoice");
         setDatas(response.data);
         fetchCustamerData();
         console.log("object",response.data)
@@ -32,8 +33,8 @@ const RecurringInvoice = () => {
   
   const fetchCustamerData = async () => {
     try {
-      const response = await api.get("getAllCustomerWithIds");
-      setCustomerData(response.data);
+      const customerData = await fetchAllCustomerWithIds();
+      setCustomerData(customerData);
     } catch (error) {
       toast.error("Error fetching tax data:", error);
     }
@@ -67,7 +68,7 @@ const RecurringInvoice = () => {
     destroyDataTable();
     setLoading(true);
     try {
-      const response = await api.get("/getAllTxnRecurringInvoice");
+      const response = await api.get("recurring-invoice");
       setDatas(response.data);
       initializeDataTable();
     } catch (error) {
@@ -164,7 +165,7 @@ const RecurringInvoice = () => {
                             </Link>
                             <DeleteModel
                               onSuccess={refreshData}
-                              path={`/deleteTxnRecurringInvoice/${data.id}`}
+                              path={`recurring-invoice/${data.id}`}
                             />
                           </div>
                         </td>

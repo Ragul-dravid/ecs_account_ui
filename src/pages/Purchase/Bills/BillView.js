@@ -19,7 +19,7 @@ const BillView = () => {
     const fetchBill = async () => {
       setLoading(true);
       try {
-        const response = await api.get(`/getTxnBillById/${id}`);
+        const response = await api.get(`bill/${id}`);
         setDatas(response.data);
       } catch (error) {
 

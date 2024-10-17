@@ -34,7 +34,7 @@ function AddItems() {
       // console.log("additems:", values);
       setLoading(true);
       try {
-        const response = await api.post(`createMstrItems`, values);
+        const response = await api.post(`items`, values);
         console.log(response);
         if (response.status === 201) {
           toast.success(response.data.message);

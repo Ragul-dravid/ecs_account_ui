@@ -41,7 +41,7 @@ function ExpensesAdd() {
     onSubmit: async (values) => {
       setLoading(true);
       try {
-        const response = await api.post("/createTxnExpenses", values, {
+        const response = await api.post("expense", values, {
           headers: {
             "Content-Type": "application/json",
           },

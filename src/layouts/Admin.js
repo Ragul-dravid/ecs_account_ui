@@ -96,13 +96,13 @@ import PaymentReceivedEdit from "../pages/Sales/PaymentReceived/PaymentReceivedE
 
 function Admin({ handleLogout }) {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/accounts">
       <Toaster />
       <div className="d-flex flex-column flex-lg-row h-lg-full bg-surface-secondary">
         <Sidebar onLogout={handleLogout} />
         <div className="h-screen flex-grow-1 overflow-y-lg-auto">
           <main className="py-1 bg-surface-secondary">
-            <Routes>
+            <Routes >
               <Route path="/" element={<Dashboard />} />
               <Route path="/dashboard" element={<Dashboard />} />
 

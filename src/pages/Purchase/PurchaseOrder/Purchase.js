@@ -42,7 +42,7 @@ const Purchase = () => {
     destroyDataTable();
     setLoading(true);
     try {
-      const response = await api.get("getAllTxnPurchaseOrder");
+      const response = await api.get("purchase-order");
       setDatas(response.data);
       initializeDataTable();
     } catch (error) {
@@ -55,8 +55,8 @@ const Purchase = () => {
   useEffect(() => {
     const getExpensesData = async () => {
       try {
-        const resposnse = await api.get("getAllTxnPurchaseOrder");
-        setDatas(resposnse.data);
+        const response = await api.get("purchase-order");
+        setDatas(response.data);
       } catch (error) {
         toast.error("Error fetching data: ", error?.response?.data?.message);
       } finally {

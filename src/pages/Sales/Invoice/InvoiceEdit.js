@@ -88,7 +88,7 @@ function InvoiceEdit() {
         }
 
         const response = await api.put(
-          `/updateInvoiceWithInvoiceItems/${id}`,
+          `invoice-invoice-item/${id}`,
           formData,
           {
             headers: {
@@ -113,7 +113,7 @@ function InvoiceEdit() {
   useEffect(() => {
     const getData = async () => {
       try {
-        const response = await api.get(`/getTxnInvoiceById/${id}`);
+        const response = await api.get(`invoice/${id}`);
         console.log(response.data);
         formik.setValues(response.data);
         formik.setFieldValue(
@@ -153,7 +153,7 @@ function InvoiceEdit() {
           formik.values.txnInvoiceOrderItemsModels.map(async (item, index) => {
             if (item.item) {
               try {
-                const response = await api.get(`getMstrItemsById/${item.item}`);
+                const response = await api.get(`itemsById/${item.item}`);
                 const updatedItem = { ...item, price: response.data.salesPrice, qty:1 };
                 const amount = calculateAmount(updatedItem.qty, updatedItem.price, updatedItem.disc, updatedItem.taxRate);
                 const itemTotalRate = updatedItem.qty * updatedItem.price;

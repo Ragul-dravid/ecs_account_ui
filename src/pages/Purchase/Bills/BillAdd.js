@@ -4,6 +4,8 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import toast from "react-hot-toast";
 import api from "../../../config/URL";
+import fetchAllVendorNameWithIds from "../../List/VendorList";
+import fetchAllItemWithIds from "../../List/ItemList";
 
 function BillsAdd() {
   const validationSchema = Yup.object().shape({
@@ -109,7 +111,7 @@ function BillsAdd() {
       }
 
       try {
-        const response = await api.post("/createTxnBill", formData);
+        const response = await api.post("bill", formData);
         if (response.status === 201) {
           toast.success(response.data.message);
           navigate("/bills");
@@ -138,7 +140,7 @@ function BillsAdd() {
 
   const fetchItemsData = async () => {
     try {
-      const response = await api.get("getAllItemNameWithIds");
+      const response = await fetchAllItemWithIds();
       setItems(response.data);
     } catch (error) {
       toast.error("Error fetching tax data:", error);
@@ -146,7 +148,7 @@ function BillsAdd() {
   };
   const fetchCustamerData = async () => {
     try {
-      const response = await api.get("getAllVendorWithIds");
+      const response = await fetchAllVendorNameWithIds();;
       setVendorData(response.data);
     } catch (error) {
       toast.error("Error fetching tax data:", error);
@@ -169,7 +171,7 @@ function BillsAdd() {
           formik.values.billItemsModels.map(async (item, index) => {
             if (item.item) {
               try {
-                const response = await api.get(`getMstrItemsById/${item.item}`);
+                const response = await api.get(`itemsById/${item.item}`);
                 const updatedItem = {
                   ...item,
                   price: response.data.costPrice,

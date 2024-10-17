@@ -46,7 +46,7 @@ console.log("vendorData",vendorData)
       const {attachment,...value}=values
       try {
         const response = await api.put(
-          `/updateTxnExpenses/${id}`,
+          `expense/${id}`,
           value
         );
         if (response.status === 200) {
@@ -64,7 +64,7 @@ console.log("vendorData",vendorData)
   useEffect(() => {
     const getData = async () => {
       try {
-        const response = await api.get(`/getTxnExpensesById/${id}`);
+        const response = await api.get(`expense/${id}`);
         formik.setValues(response.data);
       } catch (error) {
         toast.error("Error Fetch Data ", error);

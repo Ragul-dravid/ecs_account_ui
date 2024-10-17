@@ -35,7 +35,7 @@ function EditItems() {
     onSubmit: async (values) => {
       setLoading(true);
       try {
-        const response = await api.put(`updateMstrItems/${id}`, values);
+        const response = await api.put(`items/${id}`, values);
         if (response.status === 200) {
           toast.success(response.data.message);
           navigate("/items");
@@ -53,7 +53,7 @@ function EditItems() {
   useEffect(() => {
     const getData = async () => {
       try {
-        const response = await api.get(`getMstrItemsById/${id}`);
+        const response = await api.get(`itemsById/${id}`);
         formik.setValues(response.data);
         console.log("Fetched Data:", response.data);
       } catch (error) {

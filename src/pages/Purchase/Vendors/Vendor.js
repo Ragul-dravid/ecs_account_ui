@@ -40,7 +40,7 @@ const Vendor = () => {
     destroyDataTable();
     setLoading(true);
     try {
-      const response = await api.get("getAllMstrVendors");
+      const response = await api.get("vendor");
       setDatas(response.data);
       initializeDataTable();
     } catch (error) {
@@ -53,7 +53,7 @@ const Vendor = () => {
   useEffect(() => {
     const getVendorData = async () => {
       try {
-        const resposnse = await api.get("getAllMstrVendors");
+        const resposnse = await api.get("vendor");
         setDatas(resposnse.data);
       } catch (error) {
         toast.error("Error fetching data: ", error?.response?.data?.message);
@@ -144,7 +144,7 @@ const Vendor = () => {
                           </button>
                         </Link>
                         <DeleteModel
-                          path={`/deleteMstrVendor/${data.id}`}
+                          path={`vendor/${data.id}`}
                           onSuccess={refreshData}
                         />
                       </div>

@@ -19,7 +19,7 @@ const RecurringBill = () => {
     const getData = async () => {
       setLoading(true);
       try {
-        const response = await api.get("/getAllTxnRecurringBill");
+        const response = await api.get("recurring-bill");
         setDatas(response.data);
       } catch (error) {
         toast.error("Error fetching data: ", error?.response?.data?.message);
@@ -60,7 +60,7 @@ const RecurringBill = () => {
       destroyDataTable();
       setLoading(true);
     try {
-      const response = await api.get("/getAllTxnRecurringBill");
+      const response = await api.get("recurring-bill");
       setDatas(response.data);
       initializeDataTable();
     } catch (error) {

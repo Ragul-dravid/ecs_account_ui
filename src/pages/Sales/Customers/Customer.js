@@ -16,7 +16,7 @@ const Customers = () => {
   useEffect(() => {
     const getData = async () => {
       try {
-        const response = await api.get("/getAllMstrCustomers");
+        const response = await api.get("/customer");
         setDatas(response.data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -57,7 +57,7 @@ const Customers = () => {
     destroyDataTable();
     setLoading(true);
     try {
-      const response = await api.get("/getAllMstrCustomers");
+      const response = await api.get("/customer");
       setDatas(response.data);
       initializeDataTable(); // Reinitialize DataTable after successful data update
     } catch (error) {
@@ -151,7 +151,7 @@ const Customers = () => {
                           </Link>
                           <DeleteModel
                             onSuccess={refreshData}
-                            path={`/deleteMstrCustomer/${data.id}`}
+                            path={`/customer/${data.id}`}
                           />
                         </div>
                       </td>

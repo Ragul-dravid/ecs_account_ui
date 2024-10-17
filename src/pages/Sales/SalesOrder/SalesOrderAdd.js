@@ -87,7 +87,7 @@ function SalesOrderAdd() {
           formData.append("files", values.files);
         }
         const response = await api.post(
-          "/createSalesOrderAndSalesItems",
+          "/sales-order-with-item",
           formData,
           {
             headers: {
@@ -135,7 +135,7 @@ function SalesOrderAdd() {
           formik.values.txnSalesOrderItemsModels.map(async (item, index) => {
             if (item.item) {
               try {
-                const response = await api.get(`getMstrItemsById/${item.item}`);
+                const response = await api.get(`itemsById/${item.item}`);
                 const updatedItem = { ...item, rate: response.data.salesPrice, qty:1 };
                 const amount = calculateAmount(updatedItem.qty, updatedItem.rate, updatedItem.discountAmount, updatedItem.taxAmount);
                 const itemTotalRate = updatedItem.qty * updatedItem.rate;

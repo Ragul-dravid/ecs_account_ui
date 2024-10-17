@@ -7,6 +7,7 @@ import { FaPlus } from "react-icons/fa6";
 import DeleteModel from "../../../components/common/DeleteModel";
 import api from "../../../config/URL"
 import toast from "react-hot-toast";
+import fetchAllCustomerWithIds from "../../List/CustomerList";
 
 const SalesOrder = () => {
   const tableRef = useRef(null);
@@ -18,7 +19,7 @@ const SalesOrder = () => {
   useEffect(() => {
     const getData = async () => {
       try {
-        const response = await api.get("/getAllTxnSalesOrder");
+        const response = await api.get("sales-order");
         setDatas(response.data);
       } catch (error) {
         toast.error("Error fetching data:", error);
@@ -32,10 +33,10 @@ const SalesOrder = () => {
 
   const fetchCustamerData = async () => {
     try {
-      const response = await api.get("getAllCustomerWithIds");
-      setCustomerData(response.data);
+      const customerData = await fetchAllCustomerWithIds();
+      setCustomerData(customerData);
     } catch (error) {
-      toast.error("Error fetching tax data:", error);
+      toast.error(error.message);
     }
   };
 
@@ -69,7 +70,7 @@ const SalesOrder = () => {
     destroyDataTable();
     setLoading(true);
     try {
-      const response = await api.get("/getAllTxnSalesOrder");
+      const response = await api.get("/sales-order");
       setDatas(response.data);
       initializeDataTable(); // Reinitialize DataTable after successful data update
     } catch (error) {
@@ -168,7 +169,7 @@ const SalesOrder = () => {
                         </Link>
                         <DeleteModel
                           onSuccess={refreshData}
-                          path={`/deleteTxnSalesOrder/${data.id}`}
+                          path={`/sales-order/${data.id}`}
                         />
                       </div>
                     </td>

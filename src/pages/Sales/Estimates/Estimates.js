@@ -7,6 +7,7 @@ import { FaPlus } from "react-icons/fa";
 import DeleteModel from "../../../components/common/DeleteModel";
 import api from "../../../config/URL";
 import toast from "react-hot-toast";
+import fetchAllCustomerWithIds from "../../List/CustomerList";
 
 
 const Estimates = () => {
@@ -18,7 +19,7 @@ const Estimates = () => {
 
   const getData = async () => {
     try {
-      const response = await api.get("/getAllTxnQuotes");
+      const response = await api.get("/quote");
       if (response.status === 200) {
         setDatas(response.data)
         setLoading(false);
@@ -32,13 +33,13 @@ const Estimates = () => {
 
   const fetchCustamerData = async () => {
     try {
-      const response = await api.get("getAllCustomerWithIds");
-      setCustomerData(response.data);
+      const response = await fetchAllCustomerWithIds();
+      setCustomerData(response);
+      // console.log("object",response)
     } catch (error) {
       toast.error("Error fetching tax data:", error);
     }
   };
-
   const initializeDataTable = () => {
     if ($.fn.DataTable.isDataTable(tableRef.current)) {
       // DataTable already initialized, no need to initialize again
@@ -57,7 +58,7 @@ const Estimates = () => {
   };
 
   const customer =(id)=>{
-    const name= customerData.find((item)=>(item.id == id))
+    const name= customerData?.find((item)=>(item.id == id))
     return name?.contactName
   }
 
@@ -168,7 +169,7 @@ const Estimates = () => {
                       </Link>
                       <DeleteModel
                         onSuccess={refreshData}
-                        path={`/deleteTxnQuotes/${data.id}`}
+                        path={`/quote/${data.id}`}
                       />
                     </div>
                   </td>

@@ -124,7 +124,7 @@ const EstimateEdit = () => {
       setLoadIndicator(true);
       try {
         const response = await api.put(
-          `/updateQuoteWithQuoteItems/${id}`,
+          `/quote-with-item/${id}`,
           formData,
           {
             headers: {
@@ -165,7 +165,7 @@ const EstimateEdit = () => {
   useEffect(() => {
     const getData = async () => {
       try {
-        const response = await api.get(`/getTxnQuotesById/${id}`);
+        const response = await api.get(`/quote/${id}`);
         formik.setValues(response.data);
       } catch (e) {
         toast.error("Error fetching data: ", e?.response?.data?.message);
@@ -186,7 +186,7 @@ const EstimateEdit = () => {
           formik.values.txnQuotesItems.map(async (item, index) => {
             if (item.item ) {
               try {
-                const response = await api.get(`getMstrItemsById/${item.item}`);
+                const response = await api.get(`itemsById/${item.item}`);
                 const updatedItem = { ...item, price: response.data.salesPrice, qty:1 };
                 const amount = calculateAmount(updatedItem.qty, updatedItem.price, updatedItem.disc, updatedItem.taxRate);
                 const itemTotalRate = updatedItem.qty * updatedItem.price;

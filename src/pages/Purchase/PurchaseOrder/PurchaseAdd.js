@@ -111,22 +111,11 @@ const PurchaseAdd = () => {
         formData.append("mstrItemsId", item.item);
       });
       formData.append("file", values.file);
-      const {items,file,...value}=values
-      const payload={
-        txnPurchaseOrderDTO:value,
-        txnPurchaseOrderItemDTOList : items
-      }
       try {
-        const response = await axios.post("http://localhost:8080/api/createPurchaseOrderWithOutAttachment", payload);
+        const response = await api.post(`/purchase-order-attach`, formData)
         if (response.status === 201) {
-          if(file){
-          const responsefile = await axios.post(`http://localhost:8080/api/createAttachment/${response.data.id}`, file);
-          if (responsefile.status === 201) { 
-            toast.success("Estimate created successfully");
-            navigate("/purchase");}
-        }
-        toast.success("Estimate created successfully");
-        navigate("/purchase");
+          toast.success("Estimate created successfully");
+          navigate("/purchase");
         }
       } catch (e) {
         toast.error("Error fetching data: ", e?.response?.data?.message);
@@ -176,7 +165,7 @@ const PurchaseAdd = () => {
           formik.values.items.map(async (item, index) => {
             if (item.item) {
               try {
-                const response = await api.get(`getMstrItemsById/${item.item}`);
+                const response = await api.get(`itemsById/${item.item}`);
                 const updatedItem = {
                   ...item,
                   unitPrice: response.data.costPrice,

@@ -65,7 +65,7 @@ const CustomerAdd = () => {
       setLoadIndicator(true);
       console.log(values);
       try {
-        const response = await api.post("/createMstrCustomer", values, {
+        const response = await api.post("/customer", values, {
         });
         if (response.status === 201) {
           toast.success(response.data.message);

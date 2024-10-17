@@ -109,7 +109,7 @@ function CreditNotesAdd() {
           formData.append("files", values.files);
         }
         const response = await api.post(
-          "/createCreditAndCreditItems",
+          "credit-credit-items",
           formData,
           {
             headers: {
@@ -159,7 +159,7 @@ function CreditNotesAdd() {
           formik.values.txnCreditNoteItems.map(async (item, index) => {
             if (item.item) {
               try {
-                const response = await api.get(`getMstrItemsById/${item.item}`);
+                const response = await api.get(`itemsById/${item.item}`);
                 const updatedItem = { ...item, price: response.data.salesPrice, qty:1 };
                 const amount = calculateAmount(updatedItem.qty, updatedItem.price, updatedItem.discount, updatedItem.taxRate);
                 const itemTotalRate = updatedItem.qty * updatedItem.price;

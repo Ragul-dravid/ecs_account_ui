@@ -83,7 +83,7 @@ function InvoiceAdd() {
           formData.append("files", values.files);
           }
           const response = await api.post(
-            "/createTxnInvoiceWithInvoiceItems",
+            "invoice-invoice-item",
             formData,
             {
               headers: {
@@ -131,7 +131,7 @@ function InvoiceAdd() {
           formik.values.txnInvoiceOrderItemsModels.map(async (item, index) => {
             if (item.item) {
               try {
-                const response = await api.get(`getMstrItemsById/${item.item}`);
+                const response = await api.get(`itemsById/${item.item}`);
                 const updatedItem = { ...item, price: response.data.salesPrice, qty:1 };
                 const amount = calculateAmount(updatedItem.qty, updatedItem.price, updatedItem.disc, updatedItem.taxRate);
                 const itemTotalRate = updatedItem.qty * updatedItem.price;

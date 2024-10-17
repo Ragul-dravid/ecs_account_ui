@@ -21,7 +21,7 @@ const PurchaseView = () => {
     const fetchPurchase = async () => {
       setLoading(true);
       try {
-        const response = await api.get(`/getTxnPurchaseOrderById/${id}`);
+        const response = await api.get(`purchase-order/${id}`);
         setData(response.data);
       } catch (error) {
         toast.error("Error Fetching Data", error);

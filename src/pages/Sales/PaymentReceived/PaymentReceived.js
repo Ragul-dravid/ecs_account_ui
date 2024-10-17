@@ -19,7 +19,7 @@ const PaymentReceived = () => {
     destroyDataTable();
     setLoading(true);
     try {
-      const response = await api.get("/getAllTxnPaymentsReceived");
+      const response = await api.get("payments-received");
       setDatas(response.data);
       initializeDataTable(); // Reinitialize DataTable after successful data update
     } catch (error) {
@@ -29,7 +29,7 @@ const PaymentReceived = () => {
   };
   const getPaymentData = async () => {
     try {
-      const response = await api.get("/getAllTxnPaymentsReceived");
+      const response = await api.get("payments-received");
       if (response.status === 200) {
         setDatas(response.data);
         setLoading(false);
@@ -77,10 +77,12 @@ const PaymentReceived = () => {
   useEffect(() => {
     fetchData();
   }, []);
+
   const customer =(id)=>{
-    const name= customerData?.find((item)=>(item.id === id))
+    const name= customerData?.find((item)=>(item.id == id))
     return name?.contactName
   }
+
   return (
     <div>
     {loading ? (
@@ -155,7 +157,7 @@ const PaymentReceived = () => {
               {datas?.map((data, index) => (
                 <tr key={index}>
                   <td className="text-center">{index + 1}</td>
-                  <td className="text-center">{customer(data.customerId)}</td>
+                  <td className="text-center">{customer(data.customerName)}</td>
                   <td className="text-center">
                     {data?.paymentDate.split('-').reverse().join('-')}
                   </td>
@@ -184,7 +186,7 @@ const PaymentReceived = () => {
                         </button>
                       </Link>
                       <DeleteModel
-                        path={`/deleteTxnPaymentsReceived/${data.id}`}
+                        path={`/payments-received/${data.id}`}
                         onSuccess={refreshData}
                       />
                     </div>

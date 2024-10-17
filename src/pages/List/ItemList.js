@@ -4,7 +4,7 @@ import api from "../../config/URL";
 
 const fetchAllItemWithIds = async () => {
   try {
-    const response = await api.get("getAllItemNameWithIds");
+    const response = await api.get("item-name-with-ids");
     return response.data;
   } catch (error) {
     toast.error("Error fetching center data:", error);

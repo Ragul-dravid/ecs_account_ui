@@ -135,7 +135,7 @@ const RecurringInvoiceEdit = () => {
 
       try {
         const response = await api.put(
-          `/updateRecurringInvoiceAndRecurringInvoiceItems/${id}`,
+          `/recurring-invoice-item/${id}`,
           formData
         );
         if (response.status === 200) {
@@ -168,7 +168,7 @@ const RecurringInvoiceEdit = () => {
     const getData = async () => {
       try {
         const response = await api.get(
-          `/getTxnRecurringInvoiceById/${id}`
+          `/recurring-invoice/${id}`
         );
         formik.setValues(response.data); 
         formik.setFieldValue(
@@ -210,7 +210,7 @@ const RecurringInvoiceEdit = () => {
           formik.values.items.map(async (item, index) => {
             if (item.item && !formik.values.items[index].qty) {
               try {
-                const response = await api.get(`getMstrItemsById/${item.item}`);
+                const response = await api.get(`itemsById/${item.item}`);
                 const updatedItem = { ...item, price: response.data.salesPrice, qty:1 };
                 const amount = calculateAmount(updatedItem.qty, updatedItem.price, updatedItem.disc, updatedItem.taxRate);
                 const itemTotalRate = updatedItem.qty * updatedItem.price;

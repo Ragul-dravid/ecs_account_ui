@@ -56,7 +56,7 @@ const PaymentReceivedAdd = () => {
       const {attachment,...value}=values
       try {
         const response = await api.post(
-          "/createTxnPaymentsReceived",
+          "payments-received",
           value
         );
         if (response.status === 201) {

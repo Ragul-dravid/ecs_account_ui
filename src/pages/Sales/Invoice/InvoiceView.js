@@ -22,7 +22,7 @@ function InvoiceView() {
     const getData = async () => {
       setLoading(true);
       try {
-        const response = await api.get(`/getTxnInvoiceById/${id}`);
+        const response = await api.get(`invoice/${id}`);
         setData(response.data);
       } catch (e) {
         toast.error("Error fetching data: ", e?.response?.data?.message);

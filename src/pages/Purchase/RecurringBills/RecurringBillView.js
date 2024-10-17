@@ -18,7 +18,7 @@ const RecurringBillView = () => {
     const getBillData = async () => {
       setLoading(true);
       try {
-        const response = await api.get(`getTxnRecurringBillById/${id}`);
+        const response = await api.get(`recurring-bill/${id}`);
         setRecurringBill(response.data);
         console.log("object", response.data);
       } catch (error) {

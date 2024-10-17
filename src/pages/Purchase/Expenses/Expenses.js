@@ -42,7 +42,7 @@ const Expenses = () => {
     destroyDataTable();
     setLoading(true);
     try {
-      const response = await api.get("getAllTxnExpenses");
+      const response = await api.get("expense");
       setDatas(response.data);
       initializeDataTable();
     } catch (error) {
@@ -55,8 +55,8 @@ const Expenses = () => {
   useEffect(() => {
     const getExpensesData = async () => {
       try {
-        const resposnse = await api.get("getAllTxnExpenses");
-        setDatas(resposnse.data);
+        const response = await api.get("expense");
+        setDatas(response.data);
       } catch (error) {
         toast.error("Error fetching data: ", error?.response?.data?.message);
       } finally {
@@ -160,7 +160,7 @@ const Expenses = () => {
                             </button>
                           </Link>
                           <DeleteModel
-                            path={`/deleteTxnExpenses/${data.id}`}
+                            path={`expense/${data.id}`}
                             onSuccess={refreshData}
                           />
                         </div>

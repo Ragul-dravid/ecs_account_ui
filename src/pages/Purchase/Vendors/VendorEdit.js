@@ -96,7 +96,7 @@ function VendorEdit() {
       try {
 
         const response = await api.put(
-          `/updateVendorWithAttachment/${id}`,
+          `vendor-with-attachment/${id}`,
           formData,
           {
             headers: {
@@ -122,7 +122,7 @@ function VendorEdit() {
   useEffect(() => {
     const getData = async () => {
       try {
-        const response = await api.get(`/getMstrVendorById/${id}`);
+        const response = await api.get(`vendorById/${id}`);
         formik.setValues(response.data);
       } catch (error) {
         toast.error("Error fetching data: ", error?.response?.data?.message);

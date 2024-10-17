@@ -34,7 +34,7 @@ function BankEdit() {
     onSubmit: async (values) => {
       setLoading(true);
       try {
-        const response = await api.put(`/updateTxnBank/${id}`, values, {
+        const response = await api.put(`/bank/${id}`, values, {
           headers: {
             "Content-Type": "application/json",
           },
@@ -53,7 +53,7 @@ function BankEdit() {
   useEffect(() => {
     const getData = async () => {
       try {
-        const response = await api.get(`/getTxnBankById/${id}`);
+        const response = await api.get(`/bank/${id}`);
         formik.setValues(response.data);
       } catch (error) {
         toast.error("Error Fetch Data ", error);

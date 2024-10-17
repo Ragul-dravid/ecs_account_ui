@@ -18,7 +18,7 @@ function SalesOrderView() {
     const fetchSalesOrder = async () => {
       setLoading(true);
       try {
-        const response = await api.get(`/getTxnSalesOrderById/${id}`);
+        const response = await api.get(`/sales-order/${id}`);
         setSalesOrder(response.data);
       } catch (error) {
         setError(error.message || "Failed to fetch data");

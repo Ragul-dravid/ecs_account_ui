@@ -91,7 +91,7 @@ function SalesOrderEdit() {
       setLoadIndicator(true);
       try {
         const response = await api.put(
-          `/updateSalesOrderAndSalesItems/${id}`,
+          `/sales-order-with-item/${id}`,
           formData,
           {
             headers: {
@@ -132,7 +132,7 @@ function SalesOrderEdit() {
   useEffect(() => {
     const getData = async () => {
       try {
-        const response = await api.get(`/getTxnSalesOrderById/${id}`);
+        const response = await api.get(`/sales-order/${id}`);
         formik.setValues(response.data);
       } catch (e) {
         toast.error("Error fetching data: ", e?.response?.data?.message);
@@ -156,7 +156,7 @@ function SalesOrderEdit() {
           formik.values.txnSalesOrderItemsModels.map(async (item, index) => {
             if (item.item) {
               try {
-                const response = await api.get(`getMstrItemsById/${item.item}`);
+                const response = await api.get(`itemsById/${item.item}`);
                 const updatedItem = { ...item, rate: response.data.salesPrice, qty:1 };
                 const amount = calculateAmount(updatedItem.qty, updatedItem.rate, updatedItem.discountAmount, updatedItem.taxAmount);
                 const itemTotalRate = updatedItem.qty * updatedItem.rate;

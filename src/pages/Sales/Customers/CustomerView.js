@@ -12,7 +12,7 @@ const CustomerView = () => {
     const getData = async () => {
       setLoading(true);
       try{
-      const response = await api.get(`/getMstrCustomerById/${id}`);
+      const response = await api.get(`/customerById/${id}`);
       setData(response.data);
       }catch(e){
         toast.error("Error fetching data: ", e?.response?.data?.message);

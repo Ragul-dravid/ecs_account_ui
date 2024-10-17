@@ -16,7 +16,7 @@ const Bank = () => {
     destroyDataTable();
     setLoading(true);
     try {
-      const response = await api.get("/getAllTxnBank");
+      const response = await api.get("/bank");
       setDatas(response.data);
       initializeDataTable(); // Reinitialize DataTable after successful data update
     } catch (error) {
@@ -27,7 +27,7 @@ const Bank = () => {
 
   const getData = async () => {
     try {
-      const response = await api.get("/getAllTxnBank");
+      const response = await api.get("/bank");
       if (response.status === 200) {
         setDatas(response.data);
         setLoading(false);

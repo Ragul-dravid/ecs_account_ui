@@ -22,7 +22,7 @@ const DeliveryView = () => {
     const fetchDelivery = async () => {
       setLoading(true);
       try {
-        const response = await api.get(`/getTxnDeliveryChallansById/${id}`);
+        const response = await api.get(`delivery-challan/${id}`);
         setData(response.data);
       } catch (error) {
         toast.error("Error Fetching Data", error);

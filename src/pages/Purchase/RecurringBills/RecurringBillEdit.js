@@ -4,6 +4,8 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import api from "../../../config/URL";
 import toast from "react-hot-toast";
+import fetchAllItemWithIds from "../../List/ItemList";
+import fetchAllVendorNameWithIds from "../../List/VendorList";
 
 const validationSchema = Yup.object().shape({
   vendorId: Yup.string().required("*Vendor Name is required"),
@@ -117,7 +119,7 @@ const RecurringBillEdit = () => {
 
       try {
         const response = await api.put(
-          `/updateTxnRecurringBill/${id}`,
+          `recurring-bill/${id}`,
           formData
         );
         if (response.status === 200) {
@@ -135,7 +137,7 @@ const RecurringBillEdit = () => {
     const getData = async () => {
       try {
         const response = await api.get(
-          `/getTxnRecurringBillById/${id}`
+          `recurring-bill/${id}`
         );
         formik.setValues(response.data);
         formik.setFieldValue(
@@ -166,7 +168,7 @@ const RecurringBillEdit = () => {
 
   const fetchItemsData = async () => {
     try {
-      const response = await api.get("getAllItemNameWithIds");
+      const response = await fetchAllItemWithIds;
       setItems(response.data);
     } catch (error) {
       toast.error("Error fetching tax data:", error);
@@ -174,7 +176,7 @@ const RecurringBillEdit = () => {
   };
   const fetchCustamerData = async () => {
     try {
-      const response = await api.get("getAllVendorWithIds");
+      const response = await fetchAllVendorNameWithIds();
       setVendorData(response.data);
     } catch (error) {
       toast.error("Error fetching tax data:", error);
@@ -197,7 +199,7 @@ const RecurringBillEdit = () => {
           formik.values.items.map(async (item, index) => {
             if (item.item) {
               try {
-                const response = await api.get(`getMstrItemsById/${item.item}`);
+                const response = await api.get(`itemsById/${item.item}`);
                 const updatedItem = {
                   ...item,
                   unitPrice: response.data.costPrice,

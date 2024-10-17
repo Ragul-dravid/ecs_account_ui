@@ -94,7 +94,7 @@ const VendorAdd = () => {
           formData.append("file", values.file)
         )
         const response = await api.post(
-          "/createVendorWithAttachment",
+          "vendor-with-attachment",
           formData,
           {
             headers: {

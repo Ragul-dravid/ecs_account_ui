@@ -14,7 +14,7 @@ function ExpensesView() {
     const getExpensesData = async () => {
       setLoading(true);
       try {
-        const response = await api.get(`getTxnExpensesById/${id}`);
+        const response = await api.get(`expense/${id}`);
         setData(response.data);
       } catch (error) {
         toast.error("Error fetching data: ", error?.response?.data?.message);

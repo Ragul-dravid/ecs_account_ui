@@ -114,7 +114,7 @@ function CreditNotesEdit() {
       setLoadIndicator(true);
       try {
         const response = await api.put(
-          `/updateCreditAndCreditItems/${id}`,
+          `credit-credit-items/${id}`,
           formData,
           {
             headers: {
@@ -155,7 +155,7 @@ function CreditNotesEdit() {
   useEffect(() => {
     const getData = async () => {
       try {
-        const response = await api.get(`/getTxnCreditNotesById/${id}`);
+        const response = await api.get(`credit-notes/${id}`);
         formik.setValues(response.data);
         console.log("object", response.data);
         formik.setFieldValue(
@@ -181,7 +181,7 @@ function CreditNotesEdit() {
           formik.values.txnCreditNoteItems.map(async (item, index) => {
             if (item.item) {
               try {
-                const response = await api.get(`getMstrItemsById/${item.item}`);
+                const response = await api.get(`itemsById/${item.item}`);
                 const updatedItem = { ...item, price: response.data.salesPrice, qty:1 };
                 const amount = calculateAmount(updatedItem.qty, updatedItem.price, updatedItem.discount, updatedItem.taxRate);
                 const itemTotalRate = updatedItem.qty * updatedItem.price;

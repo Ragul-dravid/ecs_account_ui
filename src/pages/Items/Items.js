@@ -40,7 +40,7 @@ const Items = () => {
     destroyDataTable();
     setLoading(true);
     try {
-      const response = await api.get("getAllMstrItems");
+      const response = await api.get("items");
       setDatas(response.data);
       initializeDataTable(); 
     } catch (error) {
@@ -54,7 +54,7 @@ const Items = () => {
     const getItemData = async () => {
       try {
         const resposnse = await api.get(
-          "getAllMstrItems"
+          "items"
         );
         setDatas(resposnse.data);
       } catch (error) {
@@ -145,7 +145,7 @@ const Items = () => {
                       </Link>
                       <DeleteModel
                         onSuccess={refreshData}
-                        path={`deleteMstrItem/${data.id}`}
+                        path={`item/${data.id}`}
                         style={{ display: "inline-block" }}
                       />
                     </div>

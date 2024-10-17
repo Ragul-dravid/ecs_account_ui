@@ -18,7 +18,7 @@ const PaymentMadeView = () => {
       setLoading(true);
       try {
         const response = await api.get(
-          `getTxnBillPaymentMadeById/${id}`
+          `bill-payment-made/${id}`
         );
         setData(response.data);
       } catch (error) {

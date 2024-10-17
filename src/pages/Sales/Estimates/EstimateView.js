@@ -17,7 +17,7 @@ const RecurringInvoiceView = () => {
       const getData = async () => {
         setLoading(true);
         try{
-        const response = await api.get(`/getTxnQuotesById/${id}`);
+        const response = await api.get(`/quote/${id}`);
         setData(response.data);
         console.log("object",datas);
         }catch(e){

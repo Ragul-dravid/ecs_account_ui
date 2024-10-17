@@ -18,7 +18,7 @@ const Paymentmade = () => {
     destroyDataTable();
     setLoading(true);
     try {
-      const response = await api.get("/getAllTxnBillPaymentMade");
+      const response = await api.get("bill-payment-made");
       setDatas(response.data);
       initializeDataTable(); // Reinitialize DataTable after successful data update
     } catch (error) {
@@ -29,7 +29,7 @@ const Paymentmade = () => {
 
   const getData = async () => {
     try {
-      const response = await api.get("/getAllTxnBillPaymentMade");
+      const response = await api.get("bill-payment-made");
       if (response.status === 200) {
         setDatas(response.data);
         setLoading(false);

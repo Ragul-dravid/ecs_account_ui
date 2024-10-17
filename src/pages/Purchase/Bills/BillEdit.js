@@ -4,6 +4,8 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import toast from "react-hot-toast";
 import api from "../../../config/URL";
+import fetchAllItemWithIds from "../../List/ItemList";
+import fetchAllVendorNameWithIds from "../../List/VendorList";
 
 function BillsEdit() {
   const validationSchema = Yup.object().shape({
@@ -110,7 +112,7 @@ function BillsEdit() {
       });
 
       try {
-        const response = await api.put(`/updateTxnBill/${id}`, formData);
+        const response = await api.put(`bill/${id}`, formData);
         if (response.status === 200) {
           toast.success(response.data.message);
           navigate("/bills");
@@ -139,16 +141,10 @@ function BillsEdit() {
 
   const fetchItemsData = async () => {
     try {
-      const response = await api.get("getAllItemNameWithIds");
-      setItems(response.data);
-    } catch (error) {
-      toast.error("Error fetching tax data:", error);
-    }
-  };
-  const fetchCustamerData = async () => {
-    try {
-      const response = await api.get("getAllVendorWithIds");
+      const itemData = await fetchAllItemWithIds();
+      const response = await fetchAllVendorNameWithIds();
       setVendorData(response.data);
+      setItems(itemData.data);
     } catch (error) {
       toast.error("Error fetching tax data:", error);
     }
@@ -156,13 +152,12 @@ function BillsEdit() {
 
   useEffect(() => {
     fetchItemsData();
-    fetchCustamerData();
   }, []);
 
   useEffect(() => {
     const getData = async () => {
       try {
-        const response = await api.get(`/getTxnBillById/${id}`);
+        const response = await api.get(`bill/${id}`);
         formik.setValues(response.data);
       } catch (e) {
         toast.error("Error fetching data ");
@@ -183,7 +178,7 @@ function BillsEdit() {
           formik.values.billItemsModels.map(async (item, index) => {
             if (item.item) {
               try {
-                const response = await api.get(`getMstrItemsById/${item.item}`);
+                const response = await api.get(`itemsById/${item.item}`);
                 const updatedItem = {
                   ...item,
                   price: response.data.costPrice,

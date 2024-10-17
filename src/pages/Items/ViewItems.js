@@ -14,7 +14,7 @@ function ViewItems() {
       setLoading(true);
       try {
         const response = await api.get(
-          `getMstrItemsById/${id}`
+          `itemsById/${id}`
         );
         setData(response.data);
       } catch (error) {

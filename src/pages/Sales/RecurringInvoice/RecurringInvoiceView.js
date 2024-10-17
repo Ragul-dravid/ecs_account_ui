@@ -20,9 +20,9 @@ const RecurringInvoiceView = () => {
     const getData = async () => {
       setLoading(true);
       try {
-        const response = await api.get(`/getTxnRecurringInvoiceById/${id}`);
+        const response = await api.get(`recurring-invoice/${id}`);
         setData(response.data);
-        console.log("object", datas);
+        // console.log("object", datas);
       } catch (e) {
         toast.error("Error fetching data: ", e?.response?.data?.message);
       } finally {

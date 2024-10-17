@@ -122,7 +122,7 @@ function EstimateAdd() {
         if (values.files) formData.append("files", values.files);
 
         const response = await api.post(
-          "/createQuoteWithQuoteItems",
+          "/quote-with-item",
           formData,
           {
             headers: {
@@ -171,7 +171,7 @@ function EstimateAdd() {
           formik.values.txnQuotesItems.map(async (item, index) => {
             if (item.item) {
               try {
-                const response = await api.get(`getMstrItemsById/${item.item}`);
+                const response = await api.get(`itemsById/${item.item}`);
                 const updatedItem = {
                   ...item,
                   price: response.data.salesPrice,

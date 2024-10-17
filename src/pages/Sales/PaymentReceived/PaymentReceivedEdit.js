@@ -57,7 +57,7 @@ const PaymentReceivedEdit = () => {
         const {attachment,...value}=values
         try {
           const response = await api.put(
-            `/updateTxnPaymentsReceived/${id}`,
+            `payments-received/${id}`,
             value
           );
           if (response.status === 201) {
@@ -85,7 +85,7 @@ const PaymentReceivedEdit = () => {
     };
     const getPaymentData = async () => {
         try {
-            const response = await api.get(`/getTxnPaymentsReceivedById/${id}`);
+            const response = await api.get(`payments-received/${id}`);
           if (response.status === 200) {
             formik.setValues(response.data);
           }

@@ -21,7 +21,7 @@ function PaymentReceivedView() {
     const getData = async () => {
       setLoading(true);
       try {
-        const response = await api.get(`/getTxnPaymentsReceivedById/${id}`);
+        const response = await api.get(`payments-received/${id}`);
         setData(response.data);
       } catch (e) {
         toast.error("Error fetching data: ", e?.response?.data?.message);

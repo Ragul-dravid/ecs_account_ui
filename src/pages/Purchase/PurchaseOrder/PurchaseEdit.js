@@ -122,7 +122,7 @@ const PurchaseEdit = () => {
       if(values.file){
         formData.append("file", values.file);}
       try {
-        const response = await api.put(`/updateTxnPurchaseOrder/${id}`, formData, {
+        const response = await api.put(`purchase-order-attach/${id}`, formData, {
           
         });
         if (response.status === 200) {
@@ -140,7 +140,7 @@ const PurchaseEdit = () => {
   useEffect(() => {
     const getExpensesData = async () => {
       try {
-        const response = await api.get(`getTxnPurchaseOrderById/${id}`);
+        const response = await api.get(`purchase-order/${id}`);
         formik.setValues(response.data);
         formik.setFieldValue("items",response.data.purchaseOrderItemModels)
       } catch (error) {
@@ -190,7 +190,7 @@ const PurchaseEdit = () => {
           formik.values.txnQuotesItems?.map(async (item, index) => {
             if (item.item) {
               try {
-                const response = await api.get(`getMstrItemsById/${item.item}`);
+                const response = await api.get(`itemsById/${item.item}`);
                 const updatedItem = {
                   ...item,
                   price: response.data.salesPrice,
